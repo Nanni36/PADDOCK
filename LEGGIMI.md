@@ -139,6 +139,22 @@ confrontalo con quello che vedi tu navigando il sito vero:
 La cartella `debug/` resta solo sul tuo Mac: non serve caricarla su
 GitHub, e il programma la riscrive ad ogni lancio.
 
+## Le icone dei circuiti
+
+Ogni evento mostra una piccola sagoma del circuito vista dall'alto, sia
+nella lista sia nel dettaglio. **Sono icone decorative, non mappe
+tecniche**: non c'e' nessun dato GPS reale dietro, quindi non sono a
+scala e non pretendono di essere accurate.
+
+Per otto circuiti piu' noti (Mugello, Misano, Jerez, Barcellona-Catalunya,
+Red Bull Ring, Cremona, Magione, Imola) la forma e' scelta per evocare
+vagamente il loro carattere generale. Tutti gli altri circuiti ricevono
+una di quattro forme generiche, sempre la stessa per lo stesso nome, cosi'
+restano riconoscibili nel tempo anche senza un profilo dedicato.
+
+Per aggiungere un profilo dedicato a un altro circuito, cerca
+`SAGOME_PISTA` e `CIRCUITO_SAGOMA_DEDICATA` dentro `docs/index.html`.
+
 ## Il dettaglio evento
 
 Cliccando su una data si apre una scheda con tutto quello che serve per

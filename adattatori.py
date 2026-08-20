@@ -1059,7 +1059,7 @@ def da_pagina_eventi_ticket(
         if nome_grezzo != nome_circuito:
             nota = f"Edizione: {nome_grezzo}"
         if piu_di_un_biglietto:
-            extra = "prezzo del pacchetto completo; esistono anche opzioni per meno giorni, a prezzo minore"
+            extra = "prezzo del pacchetto completo — questo organizzatore permette di prenotare anche un solo giorno, a un prezzo piu' basso"
             nota = f"{nota} — {extra}" if nota else extra.capitalize()
 
         eventi.append(
