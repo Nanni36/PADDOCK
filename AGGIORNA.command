@@ -44,6 +44,11 @@ if curl -sfL "https://github.com/$REPO/archive/refs/heads/main.tar.gz" \
     [ -f "$SORGENTE/dati/circuiti.json" ] && cp "$SORGENTE/dati/circuiti.json" "$CARTELLA/dati/"
     [ -f "$SORGENTE/dati/organizzatori.json" ] && cp "$SORGENTE/dati/organizzatori.json" "$CARTELLA/dati/"
     [ -f "$SORGENTE/docs/index.html" ]    && cp "$SORGENTE/docs/index.html"    "$CARTELLA/docs/"
+    # immagini del sito (sfondi, foto): copia tutto quello che trova, non
+    # solo nomi fissi, cosi' funziona anche quando se ne aggiungono di nuove
+    for immagine in "$SORGENTE"/docs/*.jpg "$SORGENTE"/docs/*.jpeg "$SORGENTE"/docs/*.png; do
+        [ -f "$immagine" ] && cp "$immagine" "$CARTELLA/docs/"
+    done
 
     # manuali.csv NON si tocca mai: le date scritte a mano sono tue
     [ -f "$CARTELLA/dati/manuali.csv" ] || \

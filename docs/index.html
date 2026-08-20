@@ -314,9 +314,8 @@
   </div>
 </header>
 
-<main class="wrap">
-
-  <section class="apertura">
+<section class="apertura">
+  <div class="wrap">
     <div class="occhiello">Track day europa · calendario aggiornato</div>
     <div class="logo-eroe">Paddock</div>
     <div class="striscia-livrea"><span></span><span></span><span></span></div>
@@ -329,9 +328,11 @@
       <div class="cifra"><b id="c-eventi">0</b><span>eventi</span></div>
       <div class="cifra"><b id="c-circuiti">0</b><span>circuiti</span></div>
       <div class="cifra"><b id="c-posti">0</b><span>ancora aperte</span></div>
-      <div class="cifra"><b id="c-min">—</b><span>prezzo minimo</span></div>
     </div>
-  </section>
+  </div>
+</section>
+
+<main class="wrap">
 
   <section class="filtri">
     <div class="campo">
@@ -599,8 +600,7 @@ function disegna(){
   $("#c-circuiti").textContent = new Set(dati.map(e=>e.circuito)).size;
   $("#c-posti").textContent = dati.filter(e =>
     e.disponibilita ? e.disponibilita !== "esaurito" : (e.posti ?? 0) > 0).length;
-  const prezziNoti = dati.map(e=>e.prezzo).filter(p => p != null);
-  $("#c-min").textContent = prezziNoti.length ? Math.min(...prezziNoti)+" €" : "—";
+
 }
 
 /* --------------------------------------------------------------
