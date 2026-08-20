@@ -771,10 +771,12 @@ def da_schede_framer(
             "controlla il selettore con l'ispettore del browser"
         )
 
+    senza_data_o_circuito = 0
     for scheda in trovati:
         nodo_data = scheda.select_one(selettore_data)
         nodo_circuito = scheda.select_one(selettore_circuito)
         if not nodo_data or not nodo_circuito:
+            senza_data_o_circuito += 1
             continue
 
         testo_data = " ".join(nodo_data.get_text(" ", strip=True).split())
@@ -823,6 +825,14 @@ def da_schede_framer(
             )
         )
 
+    if senza_data_o_circuito and not eventi:
+        avvisi.append(
+            f"trovate {senza_data_o_circuito} schede ma nessuna aveva sia data "
+            f"che circuito con i selettori {selettore_data!r} / {selettore_circuito!r}: "
+            "il sito ha probabilmente cambiato la struttura interna delle schede, "
+            "controlla con l'ispettore del browser"
+        )
+
     return eventi, avvisi
 
 
@@ -868,11 +878,13 @@ def da_pagina_giorgioteam(
             "struttura, controlla a mano"
         )
 
+    senza_link_modulo = 0
     for blocco in blocchi_ombra:
         link_modulo = blocco.find(
             "a", href=lambda h: h and "moduloiscrizione" in h
         )
         if not link_modulo:
+            senza_link_modulo += 1
             continue                                       # avviso generico, non un evento
 
         m = re.search(r"moduloiscrizione_(\d{2})_(\d{2})_(\d{4})", link_modulo["href"])
@@ -907,6 +919,13 @@ def da_pagina_giorgioteam(
                 fonte_url=fonte_url,
                 note="Controlla circuito e dettagli sul modulo di iscrizione",
             )
+        )
+
+    if senza_link_modulo and not eventi:
+        avvisi.append(
+            f"trovati {senza_link_modulo} blocchi 'ombra' ma nessuno conteneva "
+            "un link 'moduloiscrizione': il sito ha probabilmente cambiato "
+            "come pubblica gli eventi, controlla a mano"
         )
 
     return eventi, avvisi
