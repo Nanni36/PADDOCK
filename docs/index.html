@@ -40,8 +40,10 @@
   .bar{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
   .marchio{display:flex;align-items:baseline;gap:10px}
   .marchio b{
-    font-family:var(--display);font-weight:700;font-size:26px;
-    letter-spacing:.14em;text-transform:uppercase;
+    font-family:var(--display);font-weight:700;font-size:24px;
+    letter-spacing:.02em;text-transform:uppercase;
+    transform:skewX(-8deg);display:inline-block;
+    border-left:4px solid var(--cordolo);padding-left:8px;
   }
   .marchio span{
     font-family:var(--mono);font-size:11px;letter-spacing:.1em;
@@ -55,30 +57,53 @@
   .spia{width:8px;height:8px;border-radius:50%;background:var(--verde);
     box-shadow:0 0 0 3px rgba(47,143,91,.2)}
 
-  /* ---------- APERTURA ---------- */
-  .apertura{padding:64px 0 40px;border-bottom:1px solid var(--linea)}
+  /* ---------- APERTURA / EROE FOTOGRAFICO ---------- */
+  .apertura{
+    position:relative;overflow:hidden;
+    padding:88px 0 44px;
+    border-bottom:2px solid var(--asfalto);
+    background:
+      linear-gradient(180deg, rgba(35,38,43,.45) 0%, rgba(35,38,43,.88) 100%),
+      var(--asfalto) url('sfondo-hero.jpg') center 35% / cover no-repeat;
+    background-blend-mode:normal;
+    color:var(--cemento-hi);
+  }
+  /* finche' non c'e' una foto, questo gradiente resta comunque un fondo
+     dignitoso: la foto si aggiunge sopra senza dover toccare il resto */
   .occhiello{
     font-family:var(--mono);font-size:11px;letter-spacing:.18em;
-    text-transform:uppercase;color:var(--cordolo);margin-bottom:18px;
+    text-transform:uppercase;color:var(--bandiera);margin-bottom:18px;
   }
+  .logo-eroe{
+    font-family:var(--display);font-weight:700;text-transform:uppercase;
+    font-size:clamp(52px,11vw,104px);line-height:.9;letter-spacing:-.01em;
+    color:var(--cemento-hi);
+    transform:skewX(-6deg);display:inline-block;
+    text-shadow:0 2px 18px rgba(0,0,0,.35);
+  }
+  .striscia-livrea{display:flex;gap:5px;margin-top:14px;width:min(320px,70%)}
+  .striscia-livrea span{height:6px;flex:1;border-radius:1px}
+  .striscia-livrea span:nth-child(1){background:var(--cordolo)}
+  .striscia-livrea span:nth-child(2){background:var(--bandiera)}
+  .striscia-livrea span:nth-child(3){background:var(--cemento-hi)}
   h1{
     font-family:var(--display);font-weight:600;text-transform:uppercase;
-    font-size:clamp(38px,7vw,76px);line-height:.94;letter-spacing:-.01em;
-    max-width:14ch;
+    font-size:clamp(26px,4vw,38px);line-height:1.1;letter-spacing:-.01em;
+    max-width:20ch;margin-top:22px;color:var(--cemento-hi);
   }
-  h1 em{font-style:normal;color:var(--cordolo)}
+  h1 em{font-style:normal;color:var(--bandiera)}
   .sottotitolo{
-    margin-top:22px;max-width:52ch;font-size:16px;line-height:1.6;
-    color:var(--asfalto-soft);
+    margin-top:14px;max-width:52ch;font-size:16px;line-height:1.6;
+    color:rgba(228,229,227,.82);
   }
   .cifre{display:flex;gap:36px;margin-top:36px;flex-wrap:wrap}
   .cifra b{
     display:block;font-family:var(--mono);font-weight:600;font-size:30px;
-    letter-spacing:-.02em;
+    letter-spacing:-.02em;color:var(--cemento-hi);
   }
   .cifra span{
     font-family:var(--mono);font-size:10px;letter-spacing:.14em;
-    text-transform:uppercase;color:var(--asfalto-soft);
+    text-transform:uppercase;color:rgba(228,229,227,.65);
   }
 
   /* ---------- FILTRI ---------- */
@@ -199,6 +224,22 @@
   }
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
+  /* ---- fascia fotografica secondaria, prima del footer ---- */
+  .fascia-foto{
+    position:relative;min-height:200px;display:flex;align-items:center;
+    overflow:hidden;
+    background:
+      linear-gradient(180deg, rgba(35,38,43,.6) 0%, rgba(35,38,43,.8) 100%),
+      var(--asfalto) url('sfondo-secondario.jpg') center 55% / cover no-repeat;
+    border-top:2px solid var(--asfalto);
+  }
+  .fascia-foto-contenuto{padding:32px 0}
+  .fascia-foto p{
+    font-family:var(--display);font-weight:600;text-transform:uppercase;
+    font-size:clamp(19px,3.2vw,30px);line-height:1.3;color:var(--cemento-hi);
+    max-width:18ch;text-shadow:0 2px 14px rgba(0,0,0,.4);
+  }
+
   /* ---- badge giorni multipli ---- */
   .badge-giorni{display:inline-block;background:var(--bandiera);color:var(--asfalto);
     font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;
@@ -276,11 +317,13 @@
 <main class="wrap">
 
   <section class="apertura">
-    <div class="occhiello">Prototipo · dati dimostrativi</div>
-    <h1>Tutti i track day.<br><em>Una lista sola.</em></h1>
+    <div class="occhiello">Track day europa · calendario aggiornato</div>
+    <div class="logo-eroe">Paddock</div>
+    <div class="striscia-livrea"><span></span><span></span><span></span></div>
+    <h1>Meno tempo a cercare, <em>più tempo in pista.</em></h1>
     <p class="sottotitolo">
-      Date, organizzatori, prezzi e posti liberi dei circuiti europei in un unico posto.
-      Niente venti siti diversi, niente gruppi Facebook da spulciare.
+      Tutte le date, tutti gli organizzatori, un solo posto dove guardare.
+      Trovi la pista, guardi il prezzo, prenoti — senza girare venti siti diversi.
     </p>
     <div class="cifre">
       <div class="cifra"><b id="c-eventi">0</b><span>eventi</span></div>
@@ -326,6 +369,12 @@
   <div id="lista"></div>
 
 </main>
+
+<section class="fascia-foto">
+  <div class="wrap fascia-foto-contenuto">
+    <p>La pista non aspetta.<br>Trova la tua prossima data qui sopra.</p>
+  </div>
+</section>
 
 <div class="velo-dettaglio" id="velo-dettaglio">
   <div class="scheda-dettaglio">
@@ -750,7 +799,7 @@ async function caricaDatiVeri(){
     const quando = new Date(pacchetto.aggiornato)
       .toLocaleDateString("it-IT",{day:"2-digit",month:"long",year:"numeric"});
     q.textContent = "Calendario aggiornato al " + quando;
-    q.style.color = "var(--verde)";
+    q.style.color = "#5fd996";  // verde piu' chiaro: leggibile anche sul fondo scuro dell'eroe
   }catch(err){
     console.warn("eventi.json non caricato, resto sui dati dimostrativi:", err);
   }
