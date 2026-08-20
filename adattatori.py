@@ -22,7 +22,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from core import Evento, RegistroCircuiti, leggi_data, leggi_prezzo
-from core import _MESI
+from core import _MESI, _semplifica
 
 INTESTAZIONI = {
     # Ci presentiamo. Un bot che si nasconde è un bot che si fa bloccare.
@@ -339,3 +339,123 @@ def da_griglia_pulsanti(
             )
 
     return eventi, avvisi
+
+
+# --------------------------------------------------------------------------
+# E. SCHEDE CON LINK  (card Bootstrap: il terzo formato diffuso)
+# --------------------------------------------------------------------------
+
+# Voci che compaiono nel calendario ma non sono giornate in pista.
+_NON_EVENTI = {"buoni regalo", "buono regalo", "promozioni", "promozione",
+               "gift card", "voucher", "abbonamento"}
+
+
+def da_schede_link(
+    html: str,
+    registro: RegistroCircuiti,
+    organizzatore: str,
+    fonte_url: str,
+    selettore: str,
+    anno: int,
+    selettore_titolo: str = "h3",
+) -> tuple[list[Evento], list[str]]:
+    """
+    Legge un calendario fatto di schede cliccabili, dove il titolo contiene
+    giorno, mese e circuito tutti insieme:
+
+        31 AGOSTO | MUGELLO
+        24 SETTEMBRE | MISANO
+
+    Riconosce anche il semaforo della disponibilita' (verde/giallo/rosso)
+    quando c'e', e il prezzo "a partire da".
+
+    Le voci che non sono giornate in pista (buoni regalo, promozioni)
+    vengono scartate: nel calendario ci stanno, sul portale no.
+    """
+    zuppa = BeautifulSoup(html, "lxml")
+    eventi: list[Evento] = []
+    avvisi: list[str] = []
+
+    for scheda in zuppa.select(selettore):
+        titolo_nodo = scheda.select_one(selettore_titolo)
+        if not titolo_nodo:
+            continue
+        titolo = " ".join(titolo_nodo.get_text(" ", strip=True).split())
+
+        m = re.search(rf"\b({_NOMI_MESI})\b", titolo, re.IGNORECASE)
+        if not m:
+            continue
+
+        mese = _MESI[m.group(1).lower()]
+        giorni = [int(g) for g in re.findall(r"\d{1,2}", titolo[: m.start()])]
+        # dopo il mese resta "| MUGELLO" oppure "| MISANO Italia"
+        coda = titolo[m.end():].strip(" |.-–—")
+        grezzo_circuito = coda.split("|")[0].strip()
+
+        if not giorni or not grezzo_circuito:
+            avvisi.append(f"scheda non interpretabile: {titolo!r}")
+            continue
+
+        if _semplifica(grezzo_circuito) in _NON_EVENTI:
+            continue                                   # buoni regalo e simili
+
+        nome, paese = registro.risolvi(grezzo_circuito)
+        link = scheda.get("href") or (
+            scheda.find("a", href=True)["href"] if scheda.find("a", href=True) else None
+        )
+        if link:
+            link = link.split("?")[0]                  # via i parametri di tracciamento
+            if link.startswith("/"):
+                link = urlsplit(fonte_url)._replace(path=link, query="").geturl()
+
+        testo_scheda = scheda.get_text(" ", strip=True)
+        disponibilita = _semaforo(scheda)
+
+        # un intervallo tipo "03-31 DICEMBRE" non e' una giornata singola
+        if len(giorni) > 4:
+            avvisi.append(f"intervallo troppo largo, saltato: {titolo!r}")
+            continue
+
+        for giorno in giorni:
+            try:
+                quando = date(anno, mese, giorno)
+            except ValueError:
+                avvisi.append(f"data inesistente in {titolo!r}")
+                continue
+
+            eventi.append(
+                Evento(
+                    circuito=nome,
+                    paese=paese,
+                    data=quando,
+                    organizzatore=organizzatore,
+                    prezzo=leggi_prezzo(testo_scheda),
+                    disponibilita=disponibilita,
+                    url_iscrizione=link,
+                    fonte_url=fonte_url,
+                )
+            )
+
+    return eventi, avvisi
+
+
+def _semaforo(scheda) -> str | None:
+    """
+    Rosso Corsa (e altri) non pubblicano quanti posti restano: mostrano
+    un semaforo a tre luci. Restituiamo l'etichetta, non un numero.
+
+    Tradurre un colore in "5 posti su 40" sarebbe inventare un dato che
+    il lettore poi crede. Su un portale di prenotazioni un numero falso
+    e' peggio di nessun numero: chi si fida e trova tutto esaurito non
+    torna piu'.
+    """
+    for classe, etichetta in [("color1", "disponibile"),
+                              ("color2", "esaurimento"),
+                              ("color3", "esaurito")]:
+        if scheda.select_one(f".{classe}.active-color"):
+            return etichetta
+
+    testo = _semplifica(scheda.get_text(" ", strip=True))
+    if "lista di attesa" in testo or "esaurit" in testo:
+        return "esaurito"
+    return None

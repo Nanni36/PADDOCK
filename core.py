@@ -39,8 +39,9 @@ class Evento:
     fonte_url: str                   # da dove l'abbiamo preso (tracciabilità)
     paese: str = "IT"
     prezzo: float | None = None      # in euro, None se non pubblicato
-    posti_liberi: int | None = None
+    posti_liberi: int | None = None      # solo se l'organizzatore li pubblica
     posti_totali: int | None = None
+    disponibilita: str | None = None     # "disponibile" | "esaurimento" | "esaurito"
     livelli: list[str] = field(default_factory=list)   # Base / Intermedio / Avanzato
     url_iscrizione: str | None = None
     note: str | None = None
@@ -226,7 +227,8 @@ def deduplica(eventi: list[Evento]) -> list[Evento]:
 
 
 def _ricchezza(e: Evento) -> int:
-    campi = [e.prezzo, e.posti_liberi, e.posti_totali, e.url_iscrizione]
+    campi = [e.prezzo, e.posti_liberi, e.posti_totali,
+             e.disponibilita, e.url_iscrizione]
     return sum(1 for c in campi if c is not None) + len(e.livelli)
 
 

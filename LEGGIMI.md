@@ -9,7 +9,13 @@ che alimenta il sito.
 L'analogia: ogni organizzatore parla un dialetto diverso. Gli adattatori
 sono i traduttori. Il resto del sistema sente solo l'italiano.
 
-## Come si usa
+## Come si usa (il modo semplice)
+
+Doppio clic su **AGGIORNA.command**. Aggiorna il calendario e apre il sito.
+La prima volta il Mac potrebbe chiedere conferma: tasto destro sul file →
+Apri → Apri.
+
+## Come si usa (dal terminale)
 
 ```bash
 pip install requests beautifulsoup4 lxml
@@ -71,6 +77,7 @@ compare una volta sola, tenendo la versione con più informazioni.
 |---|---|
 | `tabella_html` | Calendario in una tabella con righe e colonne |
 | `griglia_pulsanti` | Calendario fatto di riquadri cliccabili (WordPress/Elementor) |
+| `schede_link` | Calendario a schede cliccabili, titolo tipo `31 AGOSTO | MUGELLO` |
 | `ics` | Chi pubblica con Google Calendar o un plugin eventi |
 | CSV manuale | Chi il calendario lo mette solo su Facebook |
 
@@ -93,6 +100,17 @@ messaggio chiaro.
 C'e' un interruttore `"permesso_accordato": True` per i siti che ti hanno
 dato il consenso esplicito. Usalo **solo** con una mail dell'organizzatore
 in mano, e conservala.
+
+## I posti liberi
+
+Molti organizzatori non pubblicano quanti posti restano: mostrano solo un
+semaforo verde/giallo/rosso. In quel caso il portale scrive *Disponibile*,
+*In esaurimento* o *Esaurito*, senza numeri.
+
+Non e' pigrizia: tradurre un colore in "5 posti su 40" significa inventare
+un dato che il lettore poi crede. Su un portale di prenotazioni un numero
+falso e' peggio di nessun numero — chi si fida e trova tutto esaurito non
+torna piu'.
 
 ## Due cose da fare prima di andare online
 

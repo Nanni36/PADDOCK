@@ -221,7 +221,7 @@
     <div class="cifre">
       <div class="cifra"><b id="c-eventi">0</b><span>eventi</span></div>
       <div class="cifra"><b id="c-circuiti">0</b><span>circuiti</span></div>
-      <div class="cifra"><b id="c-posti">0</b><span>posti liberi</span></div>
+      <div class="cifra"><b id="c-posti">0</b><span>ancora aperte</span></div>
       <div class="cifra"><b id="c-min">—</b><span>prezzo minimo</span></div>
     </div>
   </section>
@@ -244,7 +244,7 @@
       <select id="f-ordine">
         <option value="data">Data</option>
         <option value="prezzo">Prezzo</option>
-        <option value="posti">Posti liberi</option>
+        <option value="posti">Disponibilita'</option>
       </select>
     </div>
     <div class="campo">
@@ -365,7 +365,12 @@ function filtra(){
     return true;
   }).sort((a,b)=>{
     if(stato.ordine==="prezzo") return a.prezzo-b.prezzo;
-    if(stato.ordine==="posti") return b.posti-a.posti;
+    if(stato.ordine==="posti"){
+      const peso = x => x.disponibilita
+        ? ({disponibile:2, esaurimento:1, esaurito:0})[x.disponibilita] ?? 0
+        : (x.posti ?? 0) > 0 ? 2 : 0;
+      return peso(b)-peso(a);
+    }
     return a.data.localeCompare(b.data);
   });
 }
@@ -389,10 +394,23 @@ function disegna(){
 
   dati.forEach((e,i)=>{
     const d = formattaData(e.data);
-    const quota = e.posti/e.tot;
-    const classe = e.posti===0 ? "esaurita" : quota<0.2 ? "calda" : "";
-    const larghezza = e.posti===0 ? 100 : Math.round(quota*100);
-    const testoPosti = e.posti===0 ? "Esaurito" : e.posti+" posti su "+e.tot;
+    let classe, larghezza, testoPosti;
+    if (e.disponibilita){
+      // l'organizzatore non pubblica i numeri: mostriamo solo lo stato
+      const mappa = {
+        disponibile:["",100,"Disponibile"],
+        esaurimento:["calda",45,"In esaurimento"],
+        esaurito:["esaurita",100,"Esaurito"]
+      };
+      [classe,larghezza,testoPosti] = mappa[e.disponibilita] || ["",0,"—"];
+    } else if (e.posti != null && e.tot){
+      const quota = e.posti/e.tot;
+      classe = e.posti===0 ? "esaurita" : quota<0.2 ? "calda" : "";
+      larghezza = e.posti===0 ? 100 : Math.round(quota*100);
+      testoPosti = e.posti===0 ? "Esaurito" : e.posti+" posti su "+e.tot;
+    } else {
+      classe = ""; larghezza = 0; testoPosti = "—";
+    }
 
     const riga = document.createElement("div");
     riga.className = "riga";
@@ -412,7 +430,8 @@ function disegna(){
   $("#conteggio").textContent = dati.length + " date visibili";
   $("#c-eventi").textContent = dati.length;
   $("#c-circuiti").textContent = new Set(dati.map(e=>e.circuito)).size;
-  $("#c-posti").textContent = dati.reduce((s,e)=>s+e.posti,0);
+  $("#c-posti").textContent = dati.filter(e =>
+    e.disponibilita ? e.disponibilita !== "esaurito" : (e.posti ?? 0) > 0).length;
   $("#c-min").textContent = dati.length ? Math.min(...dati.map(e=>e.prezzo))+" €" : "—";
 }
 
@@ -437,8 +456,9 @@ async function caricaDatiVeri(){
       data: e.data,
       org: e.organizzatore || "—",
       prezzo: e.prezzo ?? 0,
-      posti: e.posti_liberi ?? 0,
-      tot: e.posti_totali ?? Math.max(e.posti_liberi ?? 0, 1),
+      posti: e.posti_liberi ?? null,
+      tot: e.posti_totali ?? null,
+      disponibilita: e.disponibilita ?? null,
       livelli: e.livelli && e.livelli.length ? e.livelli : ["Base","Intermedio","Avanzato"],
       url: e.url_iscrizione || null
     }));

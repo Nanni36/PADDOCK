@@ -51,6 +51,17 @@ FONTI = [
         "anno": 2026,
     },
     {
+        # Rosso Corsa (Osteria Grande, BO) — prove libere moto.
+        # Il loro robots.txt non vieta la lettura; il programma lo
+        # ricontrolla comunque a ogni giro.
+        "attiva": True,
+        "organizzatore": "Rosso Corsa",
+        "tipo": "schede_link",
+        "url": "https://www.rossocorsaonline.com/prove",
+        "selettore": "div.sectionContentItems a.pr",
+        "anno": 2026,
+    },
+    {
         "attiva": False,
         "organizzatore": "Nome Organizzatore",
         "tipo": "tabella_html",
@@ -85,6 +96,19 @@ def raccogli_fonte(fonte: dict, html: str | None = None) -> list:
             colonne=fonte["colonne"],
             anno_predefinito=fonte.get("anno", date.today().year),
         )
+    if tipo == "schede_link":
+        eventi, avvisi = adattatori.da_schede_link(
+            html=testo,
+            registro=REGISTRO,
+            organizzatore=fonte["organizzatore"],
+            fonte_url=fonte["url"],
+            selettore=fonte["selettore"],
+            anno=fonte.get("anno", date.today().year),
+            selettore_titolo=fonte.get("titolo", "h3"),
+        )
+        for a in avvisi:
+            print(f"        avviso: {a}")
+        return eventi
     if tipo == "griglia_pulsanti":
         eventi, avvisi = adattatori.da_griglia_pulsanti(
             html=testo,
