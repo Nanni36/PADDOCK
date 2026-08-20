@@ -504,7 +504,7 @@ def da_righe_prezzo_multiplo(
         if any(p in _semplifica(grezzo_circuito) for p in _PAROLE_NON_EVENTO_RIGHE):
             continue                                   # assicurazioni, buoni: non sono giornate
 
-        quando, nota = _leggi_data_riga(riga, anno)
+        quando, fine = _leggi_data_riga(riga, anno)
         if not quando:
             avvisi.append(f"data non letta per {grezzo_circuito!r}")
             continue
@@ -521,6 +521,8 @@ def da_righe_prezzo_multiplo(
         if link and link.startswith("/"):
             link = urlsplit(fonte_url)._replace(path=link, query="").geturl()
 
+        giorni_evento = (fine - quando).days + 1 if fine else 1
+
         eventi.append(
             Evento(
                 circuito=nome,
@@ -531,15 +533,21 @@ def da_righe_prezzo_multiplo(
                 disponibilita=disponibilita,
                 url_iscrizione=link,
                 fonte_url=fonte_url,
-                note=nota,
+                giorni=giorni_evento,
+                data_fine=fine,
             )
         )
 
     return eventi, avvisi
 
 
-def _leggi_data_riga(riga, anno: int) -> tuple[date | None, str | None]:
-    """Un giorno solo, o un intervallo 'dal ... al ...'."""
+def _leggi_data_riga(riga, anno: int) -> tuple[date | None, date | None]:
+    """
+    Un giorno solo, o un intervallo 'dal ... al ...'.
+    Restituisce (inizio, fine). fine e' None per un evento di un giorno solo:
+    e' il segnale che il resto del programma usa per sapere se e' un
+    pacchetto di piu' giorni, senza dover rileggere un testo.
+    """
     giorno_solo = riga.select_one(".text-day")
     mese_solo = riga.select_one(".text-month")
     if giorno_solo and mese_solo:
@@ -556,12 +564,10 @@ def _leggi_data_riga(riga, anno: int) -> tuple[date | None, str | None]:
             return None, None
         inizio = _costruisci(anno, mese_inizio, int(giorni_sm[0].get_text(strip=True)))
         mese_fine = _MESI.get(_semplifica(mesi_sm[1].get_text()))
-        fine_testo = ""
-        if mese_fine:
-            fine_testo = f" al {giorni_sm[1].get_text(strip=True)} {mesi_sm[1].get_text(strip=True)}"
-        nota = f"Evento di piu' giorni: dal {giorni_sm[0].get_text(strip=True)} " \
-               f"{mesi_sm[0].get_text(strip=True)}{fine_testo}" if inizio else None
-        return inizio, nota
+        fine = None
+        if mese_fine and inizio:
+            fine = _costruisci(anno, mese_fine, int(giorni_sm[1].get_text(strip=True)))
+        return inizio, fine
 
     return None, None
 

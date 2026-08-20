@@ -45,6 +45,8 @@ class Evento:
     livelli: list[str] = field(default_factory=list)   # Base / Intermedio / Avanzato
     url_iscrizione: str | None = None
     note: str | None = None
+    giorni: int = 1                      # 1 = giornata singola, >1 = pacchetto di piu' giorni
+    data_fine: date | None = None        # ultimo giorno, solo se giorni > 1
 
     # ---- chiave di identità -------------------------------------------------
     @property
@@ -60,6 +62,7 @@ class Evento:
     def a_dizionario(self) -> dict:
         d = asdict(self)
         d["data"] = self.data.isoformat()
+        d["data_fine"] = self.data_fine.isoformat() if self.data_fine else None
         return d
 
 

@@ -218,16 +218,51 @@ def main() -> int:
     problemi = []
 
     if args.prova:
-        fonti = [{
-            "attiva": True,
-            "organizzatore": "Organizzatore di Prova",
-            "tipo": "tabella_html",
-            "url": "file://prove/calendario.html",
-            "selettore": "table tbody tr",
-            "colonne": {"data": 0, "circuito": 1, "prezzo": 2, "posti": 3, "livelli": 4},
-        }]
-        campioni = {"Organizzatore di Prova":
-                    (BASE / "prove" / "calendario.html").read_text(encoding="utf-8")}
+        # una fonte di prova per ogni formato che il motore conosce,
+        # cosi' --prova mostra un sito completo senza toccare la rete
+        fonti = [
+            {
+                "attiva": True, "organizzatore": "Organizzatore di Prova",
+                "tipo": "tabella_html", "url": "file://prove/calendario.html",
+                "selettore": "table tbody tr",
+                "colonne": {"data": 0, "circuito": 1, "prezzo": 2, "posti": 3, "livelli": 4},
+            },
+            {
+                "attiva": True, "organizzatore": "Rosso Corsa",
+                "tipo": "schede_link", "url": "https://www.rossocorsaonline.com/prove",
+                "selettore": "div.sectionContentItems a.pr", "anno": 2026,
+            },
+            {
+                "attiva": True, "organizzatore": "Gully Racing",
+                "tipo": "righe_prezzo", "url": "https://www.gullyracing.it/calendario",
+                "selettore": "div.riga_calendario", "anno": 2026,
+            },
+            {
+                "attiva": True, "organizzatore": "Promo Racing",
+                "tipo": "griglia_disponibilita",
+                "url": "https://www.promoracing.it/it/calendario/moto",
+                "selettore": "a.event__item",
+            },
+            {
+                "attiva": True, "organizzatore": "Motart",
+                "tipo": "framer_schede", "url": "https://motart.it/attivit%C3%A0/track-day",
+                "selettore": ".framer-e09p2j", "selettore_data": ".framer-k4aiq0 p",
+                "selettore_circuito": ".framer-173r67d p",
+                "ancora_prenotazione": "#prenotazione-track-day", "anno": 2026,
+            },
+            {
+                "attiva": True, "organizzatore": "Giorgio Team Racing",
+                "tipo": "giorgioteam", "url": "https://www.giorgioteam.com/index.html",
+            },
+        ]
+        campioni = {
+            "Organizzatore di Prova": (BASE / "prove" / "calendario.html").read_text(encoding="utf-8"),
+            "Rosso Corsa": (BASE / "prove" / "rossocorsa.html").read_text(encoding="utf-8"),
+            "Gully Racing": (BASE / "prove" / "gullyracing.html").read_text(encoding="utf-8"),
+            "Promo Racing": (BASE / "prove" / "promoracing.html").read_text(encoding="utf-8"),
+            "Motart": (BASE / "prove" / "motart.html").read_text(encoding="utf-8"),
+            "Giorgio Team Racing": (BASE / "prove" / "giorgioteam.html").read_text(encoding="utf-8"),
+        }
     else:
         fonti = [f for f in FONTI if f.get("attiva")]
         campioni = {}
@@ -255,6 +290,14 @@ def main() -> int:
 
     puliti = deduplica(tutti)
     riepilogo = esporta(puliti, BASE / "docs" / "eventi.json")
+
+    # i contatti degli organizzatori li mantieni in dati/organizzatori.json:
+    # da li' vengono copiati cosi' come sono, il sito li legge da docs/
+    fonte_organizzatori = BASE / "dati" / "organizzatori.json"
+    if fonte_organizzatori.exists():
+        (BASE / "docs" / "organizzatori.json").write_text(
+            fonte_organizzatori.read_text(encoding="utf-8"), encoding="utf-8"
+        )
 
     print("\n--- riepilogo ---")
     print(f"  raccolti      {len(tutti)}")

@@ -1,0 +1,76 @@
+{
+  "Rosso Corsa": {
+    "sito": "https://www.rossocorsaonline.com",
+    "email": "info@rossocorsaonline.com",
+    "telefono_prenotazioni": "+39 335 6822261",
+    "telefono_prenotazioni_orario": "9:00-18:00, dal lunedi' al venerdi'",
+    "telefono_generale": "+39 051 6511712",
+    "whatsapp": null,
+    "pagamento_online": null,
+    "box_normale": null,
+    "box_esclusiva_piccolo": null,
+    "box_esclusiva_grande": null
+  },
+  "Gully Racing": {
+    "sito": "https://www.gullyracing.it",
+    "email": null,
+    "telefono_prenotazioni": "+39 342 171 0937",
+    "telefono_prenotazioni_orario": "11:00-13:00 e 16:30-18:30, solo feriali",
+    "telefono_generale": null,
+    "whatsapp": null,
+    "pagamento_online": true,
+    "box_normale": null,
+    "box_esclusiva_piccolo": null,
+    "box_esclusiva_grande": null
+  },
+  "Giorgio Team Racing": {
+    "sito": "https://www.giorgioteam.com",
+    "email": "giorgioteam.racing@giorgioteam.com",
+    "telefono_prenotazioni": null,
+    "telefono_prenotazioni_orario": null,
+    "telefono_generale": null,
+    "whatsapp": null,
+    "pagamento_online": false,
+    "note_pagamento": "Solo bonifico bancario, caparra 50% all'iscrizione",
+    "box_normale": 60,
+    "box_esclusiva_piccolo": 240,
+    "box_esclusiva_grande": null
+  },
+  "Warm Up Trackdays": {
+    "sito": "https://www.warmuptrackdays.it",
+    "email": "info@warmuptrackdays.it",
+    "telefono_prenotazioni": "+39 353 3781009",
+    "telefono_prenotazioni_orario": null,
+    "telefono_generale": null,
+    "whatsapp": "+39 353 3781009",
+    "pagamento_online": false,
+    "box_normale": null,
+    "box_esclusiva_piccolo": null,
+    "box_esclusiva_grande": null
+  },
+  "Promo Racing": {
+    "sito": "https://www.promoracing.it",
+    "email": null,
+    "telefono_prenotazioni": null,
+    "telefono_prenotazioni_orario": null,
+    "telefono_generale": null,
+    "whatsapp": null,
+    "pagamento_online": null,
+    "box_normale": null,
+    "box_esclusiva_piccolo": null,
+    "box_esclusiva_grande": null
+  },
+  "Motart": {
+    "sito": "https://motart.it",
+    "email": null,
+    "telefono_prenotazioni": null,
+    "telefono_prenotazioni_orario": null,
+    "telefono_generale": null,
+    "whatsapp": "+39 335 5740107",
+    "pagamento_online": false,
+    "note_pagamento": "Modulo di richiesta sul sito, non pagamento diretto",
+    "box_normale": null,
+    "box_esclusiva_piccolo": null,
+    "box_esclusiva_grande": null
+  }
+}

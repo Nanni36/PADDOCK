@@ -198,6 +198,66 @@
     .campo{flex:1 1 140px}
   }
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  /* ---- badge giorni multipli ---- */
+  .badge-giorni{display:inline-block;background:var(--bandiera);color:var(--asfalto);
+    font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;
+    padding:2px 6px;border-radius:2px;margin-left:6px;vertical-align:middle}
+  .riga{cursor:pointer}
+
+  /* ---- finestra di dettaglio ---- */
+  .velo-dettaglio{position:fixed;inset:0;background:rgba(35,38,43,.6);
+    display:none;align-items:flex-start;justify-content:center;
+    padding:40px 16px;overflow-y:auto;z-index:100}
+  .velo-dettaglio.aperto{display:flex}
+  .scheda-dettaglio{background:var(--cemento-hi);border:2px solid var(--asfalto);
+    border-radius:3px;max-width:640px;width:100%;padding:32px;position:relative}
+  .chiudi-dettaglio{position:absolute;top:14px;right:14px;background:none;border:none;
+    font-size:20px;cursor:pointer;color:var(--asfalto-soft);line-height:1;padding:8px}
+  .chiudi-dettaglio:hover{color:var(--cordolo)}
+
+  .dett-titolo{font-family:var(--display);font-weight:600;text-transform:uppercase;
+    font-size:26px;letter-spacing:.02em;margin-bottom:4px;padding-right:30px}
+  .dett-sub{font-family:var(--mono);font-size:13px;color:var(--asfalto-soft);margin-bottom:22px}
+  .dett-badge-giorni{display:inline-block;background:var(--bandiera);color:var(--asfalto);
+    font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    padding:3px 8px;border-radius:2px;margin-left:8px;vertical-align:middle}
+
+  .dett-griglia{display:grid;grid-template-columns:1fr 1fr;gap:16px;
+    padding:18px 0;margin-bottom:22px;border-top:1px solid var(--linea);
+    border-bottom:1px solid var(--linea)}
+  .dett-voce span{display:block;font-family:var(--mono);font-size:10px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--asfalto-soft);margin-bottom:4px}
+  .dett-voce b{font-family:var(--display);font-weight:600;font-size:17px}
+
+  .dett-sezione{margin-bottom:22px}
+  .dett-sezione:last-child{margin-bottom:0}
+  .dett-sezione h4{font-family:var(--display);font-weight:600;text-transform:uppercase;
+    font-size:13px;letter-spacing:.1em;margin-bottom:10px;color:var(--asfalto-soft)}
+  .dett-box-riga{display:flex;justify-content:space-between;align-items:center;
+    padding:8px 0;border-bottom:1px solid var(--linea);font-size:14px}
+  .dett-box-riga b{font-family:var(--mono)}
+
+  .dett-azioni{display:flex;flex-direction:column;gap:10px}
+  .dett-btn{display:flex;align-items:center;justify-content:center;gap:8px;
+    font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.06em;
+    text-transform:uppercase;padding:13px 20px;border-radius:2px;text-decoration:none;
+    border:none;cursor:pointer}
+  .dett-btn.primaria{background:var(--cordolo);color:#fff}
+  .dett-btn.primaria:hover{background:var(--asfalto)}
+  .dett-btn.secondaria{background:var(--asfalto);color:var(--cemento-hi)}
+  .dett-btn.secondaria:hover{background:var(--cordolo)}
+  .dett-btn.contorno{background:transparent;border:1px solid var(--asfalto);color:var(--asfalto)}
+  .dett-btn.contorno:hover{background:var(--asfalto);color:var(--cemento-hi)}
+  .dett-nota{font-family:var(--mono);font-size:12px;color:var(--asfalto-soft);
+    font-style:italic;margin-top:-2px}
+  .dett-onesto{font-family:var(--mono);font-size:12px;color:var(--asfalto-soft);
+    padding:12px;background:rgba(35,38,43,.05);border-radius:2px;line-height:1.6}
+
+  @media (max-width:600px){
+    .dett-griglia{grid-template-columns:1fr 1fr}
+    .scheda-dettaglio{padding:24px 20px}
+  }
 </style>
 </head>
 <body>
@@ -263,6 +323,13 @@
 
 </main>
 
+<div class="velo-dettaglio" id="velo-dettaglio">
+  <div class="scheda-dettaglio">
+    <button class="chiudi-dettaglio" id="chiudi-dettaglio" aria-label="Chiudi">✕</button>
+    <div id="dettaglio-corpo"></div>
+  </div>
+</div>
+
 <footer>
   <div class="wrap">
     <p class="nota">
@@ -306,6 +373,11 @@ const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno",
   "luglio","agosto","settembre","ottobre","novembre","dicembre"];
 const GIORNI = ["dom","lun","mar","mer","gio","ven","sab"];
 const LIVELLI = ["Base","Intermedio","Avanzato"];
+
+// contatti e prezzi box per organizzatore, caricati da organizzatori.json
+// (vuoto finche' i dati veri non arrivano: la demo non mostra dettagli
+// di prenotazione inventati)
+let ORGANIZZATORI = {};
 
 const stato = {cerca:"", circuito:"", mese:"", ordine:"data", livelli:new Set()};
 
@@ -412,11 +484,13 @@ function disegna(){
       classe = ""; larghezza = 0; testoPosti = "—";
     }
 
+    const badgeRiga = e.giorni > 1 ? `<span class="badge-giorni">${e.giorni}gg</span>` : "";
+
     const riga = document.createElement("div");
     riga.className = "riga";
     riga.innerHTML = `
       <div class="indice">${String(i+1).padStart(2,"0")}</div>
-      <div class="circuito"><b>${e.circuito}</b><span>${e.paese} · ${e.livelli.join(" / ")}</span></div>
+      <div class="circuito"><b>${e.circuito}${badgeRiga}</b><span>${e.paese} · ${e.livelli.join(" / ")}</span></div>
       <div class="data">${d.breve}<small>${d.lunga}</small></div>
       <div class="org">${e.org}</div>
       <div class="prezzo">${e.prezzo} €</div>
@@ -424,6 +498,10 @@ function disegna(){
         <div class="barra ${classe}"><i style="width:${larghezza}%"></i></div>
         <span>${testoPosti}</span>
       </div>`;
+    riga.addEventListener("click", ev => {
+      if (ev.target.closest("a")) return;   // il link "pagina iscrizione" resta un link normale
+      apriDettaglio(e);
+    });
     lista.appendChild(riga);
   });
 
@@ -435,6 +513,109 @@ function disegna(){
   $("#c-min").textContent = dati.length ? Math.min(...dati.map(e=>e.prezzo))+" €" : "—";
 }
 
+/* --------------------------------------------------------------
+   Finestra di dettaglio: cosa sapere e come prenotare.
+   Costruita solo con dati che l'evento e l'organizzatore hanno
+   davvero — mai un numero o una mail inventati.
+   -------------------------------------------------------------- */
+function testoDisponibilita(e){
+  const mappa = {disponibile:"Disponibile", esaurimento:"In esaurimento", esaurito:"Esaurito"};
+  if (e.disponibilita) return mappa[e.disponibilita] || "—";
+  if (e.posti != null) return e.posti===0 ? "Esaurito" : e.posti+(e.tot?"/"+e.tot:"");
+  return "—";
+}
+
+function apriDettaglio(e){
+  const org = ORGANIZZATORI[e.org] || {};
+  const d = new Date(e.data+"T12:00:00");
+  let dataTesto = `${GIORNI[d.getDay()]} ${d.getDate()} ${MESI[d.getMonth()]} ${d.getFullYear()}`;
+  let badgeGiorni = "";
+  if (e.giorni > 1 && e.dataFine){
+    const df = new Date(e.dataFine+"T12:00:00");
+    dataTesto = `dal ${d.getDate()} ${MESI[d.getMonth()]} al ${df.getDate()} ${MESI[df.getMonth()]} ${df.getFullYear()}`;
+    badgeGiorni = `<span class="dett-badge-giorni">${e.giorni} giorni</span>`;
+  }
+
+  // -- box, solo quelli che l'organizzatore pubblica --
+  const vociBox = [
+    ["Posto box", org.box_normale],
+    ["Box in esclusiva (piccolo)", org.box_esclusiva_piccolo],
+    ["Box in esclusiva (grande)", org.box_esclusiva_grande],
+  ].filter(([,prezzo]) => prezzo != null);
+  const boxHtml = vociBox.length ? `
+    <div class="dett-sezione"><h4>Box</h4>
+      ${vociBox.map(([nome,prezzo]) =>
+        `<div class="dett-box-riga"><span>${nome}</span><b>${prezzo} €</b></div>`).join("")}
+    </div>` : "";
+
+  // -- come prenotare --
+  const azioni = [];
+  if (org.pagamento_online === true){
+    const link = e.url || org.sito;
+    if (link) azioni.push(
+      `<a class="dett-btn primaria" href="${link}" target="_blank" rel="noopener">Vai al sito e paga con carta</a>`
+    );
+  } else {
+    if (org.email){
+      const oggetto = encodeURIComponent(`Richiesta info track day ${e.circuito} del ${d.getDate()} ${MESI[d.getMonth()]}`);
+      const corpo = encodeURIComponent(
+        `Buongiorno,\n\nvorrei avere informazioni per il track day del ${dataTesto} a ${e.circuito}.\n\nGrazie mille`
+      );
+      azioni.push(
+        `<a class="dett-btn primaria" href="mailto:${org.email}?subject=${oggetto}&body=${corpo}">Scrivi una mail (gia' pronta)</a>`
+      );
+    }
+    if (org.whatsapp){
+      const numero = org.whatsapp.replace(/[^\d]/g,"");
+      const testo = encodeURIComponent(
+        `Buongiorno, vorrei avere informazioni per il track day del ${dataTesto} a ${e.circuito}. Grazie!`
+      );
+      azioni.push(
+        `<a class="dett-btn secondaria" href="https://wa.me/${numero}?text=${testo}" target="_blank" rel="noopener">Scrivi su WhatsApp</a>`
+      );
+    }
+    if (org.telefono_prenotazioni){
+      azioni.push(`<div class="dett-box-riga"><span>Telefono prenotazioni</span><b>${org.telefono_prenotazioni}</b></div>`);
+      if (org.telefono_prenotazioni_orario){
+        azioni.push(`<div class="dett-nota">${org.telefono_prenotazioni_orario}</div>`);
+      }
+    }
+  }
+  if (org.sito){
+    azioni.push(`<a class="dett-btn contorno" href="${org.sito}" target="_blank" rel="noopener">Sito dell'organizzatore</a>`);
+  }
+  if (org.note_pagamento){
+    azioni.push(`<div class="dett-nota">${org.note_pagamento}</div>`);
+  }
+  if (!azioni.length){
+    azioni.push(`<div class="dett-onesto">Non ho ancora i contatti di ${e.org} in archivio.
+      Manda il link della loro pagina contatti e li aggiungo.</div>`);
+  }
+
+  $("#dettaglio-corpo").innerHTML = `
+    <div class="dett-titolo">${e.circuito}${badgeGiorni}</div>
+    <div class="dett-sub">${dataTesto} · ${e.org}</div>
+    <div class="dett-griglia">
+      <div class="dett-voce"><span>Prezzo</span><b>${e.prezzo ? e.prezzo+" €" : "—"}</b></div>
+      <div class="dett-voce"><span>Disponibilita'</span><b>${testoDisponibilita(e)}</b></div>
+      <div class="dett-voce"><span>Livelli</span><b>${e.livelli.join(" / ") || "—"}</b></div>
+      <div class="dett-voce"><span>Paese</span><b>${e.paese}</b></div>
+    </div>
+    ${boxHtml}
+    <div class="dett-sezione"><h4>Come prenotare</h4>
+      <div class="dett-azioni">${azioni.join("")}</div>
+    </div>
+  `;
+  $("#velo-dettaglio").classList.add("aperto");
+}
+
+function chiudiDettaglio(){
+  $("#velo-dettaglio").classList.remove("aperto");
+}
+$("#chiudi-dettaglio").onclick = chiudiDettaglio;
+$("#velo-dettaglio").onclick = ev => { if (ev.target.id === "velo-dettaglio") chiudiDettaglio(); };
+document.addEventListener("keydown", ev => { if (ev.key === "Escape") chiudiDettaglio(); });
+
 disegna();
 
 /* --------------------------------------------------------------
@@ -445,10 +626,19 @@ disegna();
    -------------------------------------------------------------- */
 async function caricaDatiVeri(){
   try{
-    const r = await fetch("eventi.json", {cache:"no-store"});
-    if(!r.ok) return;
-    const pacchetto = await r.json();
+    const rEventi = await fetch("eventi.json", {cache:"no-store"});
+    if(!rEventi.ok) return;
+    const pacchetto = await rEventi.json();
     if(!pacchetto.eventi || !pacchetto.eventi.length) return;
+
+    // organizzatori.json e' facoltativo: se manca o non carica, il
+    // dettaglio evento resta comunque utilizzabile, solo senza contatti
+    try{
+      const rOrg = await fetch("organizzatori.json", {cache:"no-store"});
+      if (rOrg.ok) ORGANIZZATORI = await rOrg.json();
+    }catch(err){
+      console.warn("organizzatori.json non caricato:", err);
+    }
 
     EVENTI = pacchetto.eventi.map(e => ({
       circuito: e.circuito,
@@ -460,7 +650,9 @@ async function caricaDatiVeri(){
       tot: e.posti_totali ?? null,
       disponibilita: e.disponibilita ?? null,
       livelli: e.livelli && e.livelli.length ? e.livelli : ["Base","Intermedio","Avanzato"],
-      url: e.url_iscrizione || null
+      url: e.url_iscrizione || null,
+      giorni: e.giorni || 1,
+      dataFine: e.data_fine || null
     }));
 
     costruisciFiltri();

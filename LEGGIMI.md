@@ -116,6 +116,46 @@ un dato che il lettore poi crede. Su un portale di prenotazioni un numero
 falso e' peggio di nessun numero — chi si fida e trova tutto esaurito non
 torna piu'.
 
+## Il dettaglio evento
+
+Cliccando su una data si apre una scheda con tutto quello che serve per
+prenotare, costruita solo con dati veri:
+
+- **prezzo, disponibilita', livelli**
+- **box**, se l'organizzatore pubblica un prezzo (posto normale, esclusiva
+  piccolo/grande) — presi da `dati/organizzatori.json`, non dall'evento
+- **come prenotare**: se l'organizzatore vende online, un bottone porta
+  dritto al pagamento; altrimenti una mail gia' pronta (oggetto e testo
+  compilati con la data e il circuito) o un messaggio WhatsApp pronto,
+  usando i contatti in `dati/organizzatori.json`
+- se non ho ancora i contatti di un organizzatore, la scheda lo dice
+  chiaramente invece di lasciare un bottone vuoto o inventare un numero
+
+Per aggiungere o correggere i contatti di un organizzatore, apri
+`dati/organizzatori.json` e modifica la voce corrispondente. I campi:
+
+| Campo | Cosa metterci |
+|---|---|
+| `email` | Se pubblicano una mail per le iscrizioni |
+| `telefono_prenotazioni` | Il numero da chiamare per prenotare (non quello generico) |
+| `whatsapp` | Solo se hanno un numero WhatsApp dedicato |
+| `pagamento_online` | `true` solo se hai visto un vero carrello/checkout sul sito |
+| `box_normale`, `box_esclusiva_piccolo`, `box_esclusiva_grande` | Prezzi in euro, solo quelli che esistono |
+
+Lascia `null` tutto cio' che non hai verificato. Un campo vuoto nella
+scheda e' onesto; un numero sbagliato manda qualcuno a chiamare il posto
+sbagliato.
+
+## I pacchetti di piu' giorni
+
+Un evento come Jerez o Barcellona, venduto come pacchetto di 2-3 giorni,
+porta un'etichetta gialla ("3 giorni") sia nella lista sia nel dettaglio,
+e la data mostrata e' l'intervallo completo ("dal 13 al 15 novembre"), non
+solo il primo giorno. Il dato viene dall'adattatore che legge le date
+"dal... al..." (Gully Racing per ora); se un altro organizzatore pubblica
+pacchetti multi-giorno in un formato diverso, va insegnato al suo
+adattatore lo stesso trucco.
+
 ## Quando il circuito non e' certo
 
 Il caso di Giorgio Team: la sua pagina non ha nessuna struttura che leghi
