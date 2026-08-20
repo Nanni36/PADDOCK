@@ -21,7 +21,7 @@ from urllib.robotparser import RobotFileParser
 import requests
 from bs4 import BeautifulSoup
 
-from core import Evento, RegistroCircuiti, leggi_data, leggi_prezzo
+from core import Evento, RegistroCircuiti, leggi_data, leggi_prezzo, _costruisci
 from core import _MESI, _semplifica
 
 INTESTAZIONI = {
@@ -458,4 +458,439 @@ def _semaforo(scheda) -> str | None:
     testo = _semplifica(scheda.get_text(" ", strip=True))
     if "lista di attesa" in testo or "esaurit" in testo:
         return "esaurito"
+    return None
+
+
+# --------------------------------------------------------------------------
+# F. RIGHE A PIU' PREZZI  (una giornata, piu' tariffe, un semaforo ciascuna)
+# --------------------------------------------------------------------------
+
+# Ogni fascia di prezzo ha un suo semaforo: rappresentano quote diverse
+# (intero, promozionale, scontato), non lo stesso posto contato due volte.
+# Prendiamo come prezzo/disponibilita' ufficiali quello della tariffa
+# "intera" — quella che chiunque puo' comprare, non riservata a soci o
+# categorie specifiche. Se manca, si scende la scala verso lo sconto.
+_PRIORITA_TARIFFA = ["intero", "scontato", "promozionale"]
+
+_PAROLE_NON_EVENTO_RIGHE = ("assicura", "buono", "buoni", "voucher", "gift")
+
+
+def da_righe_prezzo_multiplo(
+    html: str,
+    registro: RegistroCircuiti,
+    organizzatore: str,
+    fonte_url: str,
+    selettore_riga: str,
+    anno: int,
+) -> tuple[list[Evento], list[str]]:
+    """
+    Legge calendari dove ogni giornata mostra piu' tariffe (intero,
+    scontato, promozionale...), ciascuna con il proprio prezzo e il
+    proprio semaforo di disponibilita' — perche' spesso sono contingenti
+    separati (es. tariffa soci limitata) e non lo stesso posto.
+
+    Gestisce anche i pacchetti di piu' giorni ("dal 4 al 6 settembre"),
+    registrati sulla data di inizio con una nota sulla durata.
+    """
+    zuppa = BeautifulSoup(html, "lxml")
+    eventi: list[Evento] = []
+    avvisi: list[str] = []
+
+    for riga in zuppa.select(selettore_riga):
+        nodo_circuito = riga.select_one(".circuit-name")
+        if not nodo_circuito:
+            continue
+        grezzo_circuito = nodo_circuito.get_text(strip=True)
+        if any(p in _semplifica(grezzo_circuito) for p in _PAROLE_NON_EVENTO_RIGHE):
+            continue                                   # assicurazioni, buoni: non sono giornate
+
+        quando, nota = _leggi_data_riga(riga, anno)
+        if not quando:
+            avvisi.append(f"data non letta per {grezzo_circuito!r}")
+            continue
+
+        tariffe = _leggi_tariffe(riga)
+        if not tariffe:
+            avvisi.append(f"nessun prezzo trovato per {grezzo_circuito!r} il {quando}")
+            continue
+
+        etichetta, prezzo, disponibilita = _scegli_tariffa(tariffe)
+        nome, paese = registro.risolvi(grezzo_circuito)
+        link_nodo = riga.select_one("a[href*='/prodotto']")
+        link = link_nodo["href"] if link_nodo else None
+        if link and link.startswith("/"):
+            link = urlsplit(fonte_url)._replace(path=link, query="").geturl()
+
+        eventi.append(
+            Evento(
+                circuito=nome,
+                paese=paese,
+                data=quando,
+                organizzatore=organizzatore,
+                prezzo=prezzo,
+                disponibilita=disponibilita,
+                url_iscrizione=link,
+                fonte_url=fonte_url,
+                note=nota,
+            )
+        )
+
+    return eventi, avvisi
+
+
+def _leggi_data_riga(riga, anno: int) -> tuple[date | None, str | None]:
+    """Un giorno solo, o un intervallo 'dal ... al ...'."""
+    giorno_solo = riga.select_one(".text-day")
+    mese_solo = riga.select_one(".text-month")
+    if giorno_solo and mese_solo:
+        mese = _MESI.get(_semplifica(mese_solo.get_text()))
+        if mese:
+            return _costruisci(anno, mese, int(giorno_solo.get_text(strip=True))), None
+        return None, None
+
+    giorni_sm = riga.select(".text-day-sm")
+    mesi_sm = riga.select(".text-month-sm")
+    if len(giorni_sm) >= 2 and len(mesi_sm) >= 2:
+        mese_inizio = _MESI.get(_semplifica(mesi_sm[0].get_text()))
+        if not mese_inizio:
+            return None, None
+        inizio = _costruisci(anno, mese_inizio, int(giorni_sm[0].get_text(strip=True)))
+        mese_fine = _MESI.get(_semplifica(mesi_sm[1].get_text()))
+        fine_testo = ""
+        if mese_fine:
+            fine_testo = f" al {giorni_sm[1].get_text(strip=True)} {mesi_sm[1].get_text(strip=True)}"
+        nota = f"Evento di piu' giorni: dal {giorni_sm[0].get_text(strip=True)} " \
+               f"{mesi_sm[0].get_text(strip=True)}{fine_testo}" if inizio else None
+        return inizio, nota
+
+    return None, None
+
+
+def _leggi_tariffe(riga) -> list[tuple[str, float | None, str | None]]:
+    """Restituisce (etichetta, prezzo, disponibilita') per ogni fascia trovata."""
+    tariffe = []
+    for sotto_riga in riga.select(".flex-item.flex-product"):
+        etichetta_nodo = sotto_riga.select_one(".text-product")
+        if not etichetta_nodo:
+            continue
+        etichetta = etichetta_nodo.get_text(" ", strip=True).rstrip(":")
+
+        contenitore = sotto_riga.find_parent(
+            "div", class_=lambda c: c and "justify-content-between" in c
+        )
+        if not contenitore:
+            continue
+
+        prezzo_nodo = contenitore.select_one(".text-price")
+        prezzo = leggi_prezzo(prezzo_nodo.get_text()) if prezzo_nodo else None
+
+        disponibilita = None
+        for classe, etich in [("green", "disponibile"), ("yellow", "esaurimento"), ("red", "esaurito")]:
+            if contenitore.select_one(f".light.{classe}"):
+                disponibilita = etich
+                break
+
+        tariffe.append((etichetta, prezzo, disponibilita))
+    return tariffe
+
+
+def _scegli_tariffa(tariffe: list[tuple[str, float | None, str | None]]):
+    """
+    Sceglie la tariffa da mostrare come prezzo principale del portale.
+    Scarta i pacchetti multi-giorno facoltativi tipo "(SAB+DOM)": quelli
+    sono un extra opzionale, non la tariffa base della giornata.
+    """
+    candidate = [t for t in tariffe if "(" not in t[0]]
+    if not candidate:
+        candidate = tariffe
+
+    for chiave in _PRIORITA_TARIFFA:
+        for etichetta, prezzo, disp in candidate:
+            if chiave in _semplifica(etichetta):
+                return etichetta, prezzo, disp
+
+    return candidate[0]
+
+
+# --------------------------------------------------------------------------
+# G. GRIGLIA CON DISPONIBILITA' ESPLICITA  (l'anno sta nella classe del link)
+# --------------------------------------------------------------------------
+
+_STATO_TESTO = {
+    "disponibile": "disponibile",
+    "disponibilita limitata": "esaurimento",
+    "esaurito": "esaurito",
+}
+
+
+def da_griglia_disponibilita(
+    html: str,
+    registro: RegistroCircuiti,
+    organizzatore: str,
+    fonte_url: str,
+    selettore: str,
+    selettore_data: str = ".event__date",
+    selettore_circuito: str = ".event__type",
+    selettore_titolo: str = ".event__place",
+    selettore_stato: str = ".event__available",
+) -> tuple[list[Evento], list[str]]:
+    """
+    Legge calendari dove ogni scheda porta l'anno e il mese scritti in una
+    classe CSS (es. "mnt202608") e la disponibilita' come parola scritta
+    per intero ("Disponibile", "Disponibilita' limitata", "Esaurito")
+    invece che come colore. L'anno preso dalla classe e' un fatto, non
+    una supposizione: niente da verificare contro il giorno della
+    settimana come nella griglia a pulsanti.
+
+    Non pubblica prezzi in questa pagina: restano None, non inventati.
+    """
+    zuppa = BeautifulSoup(html, "lxml")
+    eventi: list[Evento] = []
+    avvisi: list[str] = []
+
+    for scheda in zuppa.select(selettore):
+        classi = " ".join(scheda.get("class", []))
+        m_mese = re.search(r"mnt(\d{4})(\d{2})", classi)
+        nodo_data = scheda.select_one(selettore_data)
+        if not m_mese or not nodo_data:
+            continue
+
+        m_giorno = re.search(r"\d{1,2}", nodo_data.get_text())
+        if not m_giorno:
+            avvisi.append(f"giorno non letto nella scheda: {nodo_data.get_text()!r}")
+            continue
+
+        anno, mese = int(m_mese.group(1)), int(m_mese.group(2))
+        quando = _costruisci(anno, mese, int(m_giorno.group()))
+        if not quando:
+            avvisi.append(f"data inesistente: {m_giorno.group()}/{mese}/{anno}")
+            continue
+
+        nodo_circuito = scheda.select_one(selettore_circuito)
+        if not nodo_circuito:
+            continue
+        nome, paese = registro.risolvi(nodo_circuito.get_text(strip=True))
+
+        nodo_stato = scheda.select_one(selettore_stato)
+        disponibilita = None
+        if nodo_stato:
+            disponibilita = _STATO_TESTO.get(_semplifica(nodo_stato.get_text()))
+
+        nodo_titolo = scheda.select_one(selettore_titolo)
+        titolo = nodo_titolo.get_text(strip=True) if nodo_titolo else ""
+        # "Prove moto" e' il turno generico: non aggiunge nulla come nota.
+        # Un titolo diverso (evento speciale, giornata a tema) merita di
+        # comparire, perche' cambia cosa il pilota trova quel giorno.
+        nota = titolo if titolo and _semplifica(titolo) != "prove moto" else None
+
+        link = scheda.get("href")
+        if link and link.startswith("/"):
+            link = urlsplit(fonte_url)._replace(path=link, query="", fragment="").geturl()
+
+        eventi.append(
+            Evento(
+                circuito=nome,
+                paese=paese,
+                data=quando,
+                organizzatore=organizzatore,
+                disponibilita=disponibilita,
+                url_iscrizione=link,
+                fonte_url=fonte_url,
+                note=nota,
+            )
+        )
+
+    return eventi, avvisi
+
+
+# --------------------------------------------------------------------------
+# H. SCHEDE CON GIORNO DELLA SETTIMANA  (siti Framer/Webflow: data e
+#    circuito in due elementi separati, nessun link per singola data)
+# --------------------------------------------------------------------------
+
+def da_schede_framer(
+    html: str,
+    registro: RegistroCircuiti,
+    organizzatore: str,
+    fonte_url: str,
+    selettore_scheda: str,
+    selettore_data: str,
+    selettore_circuito: str,
+    anno: int,
+    ancora_prenotazione: str | None = None,
+) -> tuple[list[Evento], list[str]]:
+    """
+    Legge calendari costruiti con siti tipo Framer o Webflow, dove ogni
+    scheda ha la data ("SAB 24 OTTOBRE") e il circuito ("MAGIONE") in
+    due elementi separati invece che nello stesso testo, e non c'e' un
+    link di iscrizione per ogni singola data — solo un modulo generico.
+
+    Salta le date segnate come annullate invece di pubblicarle. Verifica
+    il giorno della settimana contro l'anno configurato, come per la
+    griglia a pulsanti: qui l'anno va indovinato, quindi la verifica
+    conta.
+    """
+    zuppa = BeautifulSoup(html, "lxml")
+    eventi: list[Evento] = []
+    avvisi: list[str] = []
+
+    for scheda in zuppa.select(selettore_scheda):
+        nodo_data = scheda.select_one(selettore_data)
+        nodo_circuito = scheda.select_one(selettore_circuito)
+        if not nodo_data or not nodo_circuito:
+            continue
+
+        testo_data = " ".join(nodo_data.get_text(" ", strip=True).split())
+        if not testo_data:
+            continue
+
+        if "annullat" in _semplifica(testo_data):
+            avvisi.append(f"data annullata, saltata: {testo_data!r}")
+            continue
+
+        sigla = re.match(r"([a-zA-Z]{3})\.?\s+(\d{1,2})\s+([a-zA-Z]+)", testo_data)
+        if not sigla:
+            avvisi.append(f"data non interpretabile: {testo_data!r}")
+            continue
+
+        atteso = _GIORNI_SETTIMANA.get(sigla.group(1).lower())
+        mese = _MESI.get(_semplifica(sigla.group(3)))
+        if not mese:
+            avvisi.append(f"mese non riconosciuto in: {testo_data!r}")
+            continue
+
+        quando = _costruisci(anno, mese, int(sigla.group(2)))
+        if not quando:
+            avvisi.append(f"data inesistente: {testo_data!r}")
+            continue
+        if atteso is not None and quando.weekday() != atteso:
+            avvisi.append(
+                f"{testo_data!r}: il {quando} non e' {sigla.group(1).lower()} — "
+                f"controlla l'anno configurato ({anno})"
+            )
+
+        nome, paese = registro.risolvi(nodo_circuito.get_text(strip=True))
+
+        # niente pagina di dettaglio per singola data: il link porta al
+        # modulo di prenotazione generico, che e' comunque dove si arriva
+        link = f"{fonte_url}{ancora_prenotazione}" if ancora_prenotazione else fonte_url
+
+        eventi.append(
+            Evento(
+                circuito=nome,
+                paese=paese,
+                data=quando,
+                organizzatore=organizzatore,
+                url_iscrizione=link,
+                fonte_url=fonte_url,
+            )
+        )
+
+    return eventi, avvisi
+
+
+# --------------------------------------------------------------------------
+# I. GIORGIOTEAM  (pagina non strutturata: adattatore su misura)
+# --------------------------------------------------------------------------
+
+_PAROLE_CIRCUITO_FILLER = {
+    "logo", "pista", "autodromo", "di", "dell", "dell'umbria", "internazionale",
+}
+
+
+def da_pagina_giorgioteam(
+    html: str,
+    registro: RegistroCircuiti,
+    organizzatore: str,
+    fonte_url: str,
+) -> tuple[list[Evento], list[str]]:
+    """
+    Adattatore su misura per giorgioteam.com: la pagina non ha classi
+    che distinguono un evento vero da un avviso qualsiasi (assicurazione,
+    regole del circuito...) — sono tutti dentro lo stesso <div class="ombra">.
+
+    L'unico segnale affidabile e' il link al modulo di iscrizione, che
+    contiene la data per intero nell'indirizzo:
+        moduloiscrizione_02_11_2026.html
+    Quello si prende come fonte della data, non il testo scritto sopra,
+    che non ha l'anno.
+
+    Il circuito NON si puo' dedurre con sicurezza: le immagini dei loghi
+    stanno vicine agli eventi ma non sono legate a una data specifica in
+    nessun modo verificabile. Si prende la prima immagine trovata dopo
+    il blocco come indicazione, ma si segnala sempre di controllare —
+    e' una supposizione dichiarata, non un fatto.
+    """
+    zuppa = BeautifulSoup(html, "lxml")
+    eventi: list[Evento] = []
+    avvisi: list[str] = []
+
+    for blocco in zuppa.select("div.ombra"):
+        link_modulo = blocco.find(
+            "a", href=lambda h: h and "moduloiscrizione" in h
+        )
+        if not link_modulo:
+            continue                                       # avviso generico, non un evento
+
+        m = re.search(r"moduloiscrizione_(\d{2})_(\d{2})_(\d{4})", link_modulo["href"])
+        if not m:
+            avvisi.append(f"link al modulo senza data leggibile: {link_modulo['href']!r}")
+            continue
+        giorno, mese, anno = map(int, m.groups())
+        quando = _costruisci(anno, mese, giorno)
+        if not quando:
+            avvisi.append(f"data inesistente nel link: {link_modulo['href']!r}")
+            continue
+
+        testo = blocco.get_text(" ", strip=True)
+        importi = [float(x.replace(",", ".")) for x in re.findall(r"(\d{1,3}(?:,\d{2})?)\s*Euro", testo)]
+        prezzo = max(importi) if importi else None
+
+        grezzo_circuito = _cerca_circuito_vicino(blocco)
+        if grezzo_circuito:
+            nome, paese = registro.risolvi(grezzo_circuito)
+        else:
+            nome, paese = "Giorgio Team — circuito da verificare", "??"
+            avvisi.append(f"circuito non identificato per la data {quando}")
+
+        eventi.append(
+            Evento(
+                circuito=nome,
+                paese=paese,
+                data=quando,
+                organizzatore=organizzatore,
+                prezzo=prezzo,
+                url_iscrizione=link_modulo["href"],
+                fonte_url=fonte_url,
+                note="Controlla circuito e dettagli sul modulo di iscrizione",
+            )
+        )
+
+    return eventi, avvisi
+
+
+def _cerca_circuito_vicino(blocco) -> str | None:
+    """
+    Guarda gli elementi immediatamente successivi al blocco dell'evento
+    finche' non trova un'immagine con testo alternativo descrittivo, o
+    finche' non incontra il prossimo blocco evento (altro modulo di
+    iscrizione) — a quel punto si ferma, per non rubare il logo
+    dell'evento successivo.
+    """
+    nodo = blocco
+    for _ in range(25):
+        nodo = nodo.find_next(["img", "div"])
+        if nodo is None:
+            return None
+        if nodo.name == "div" and nodo.find(
+            "a", href=lambda h: h and "moduloiscrizione" in h
+        ):
+            return None                                     # e' gia' il prossimo evento
+        if nodo.name == "img" and nodo.get("alt"):
+            parole = [
+                p for p in _semplifica(nodo["alt"]).split()
+                if p not in _PAROLE_CIRCUITO_FILLER
+            ]
+            if parole:
+                return " ".join(parole).title()
     return None

@@ -79,6 +79,10 @@ compare una volta sola, tenendo la versione con più informazioni.
 | `griglia_pulsanti` | Calendario fatto di riquadri cliccabili (WordPress/Elementor) |
 | `schede_link` | Calendario a schede cliccabili, titolo tipo `31 AGOSTO | MUGELLO` |
 | `ics` | Chi pubblica con Google Calendar o un plugin eventi |
+| `righe_prezzo` | Una giornata, piu' tariffe (intero/scontato/promo), ognuna col suo semaforo |
+| `griglia_disponibilita` | Scheda con anno/mese nella classe CSS e disponibilita' scritta per intero |
+| `framer_schede` | Siti Framer/Webflow: data e circuito in elementi separati, un solo link generico |
+| `giorgioteam` | Su misura per un sito specifico senza struttura riconoscibile |
 | CSV manuale | Chi il calendario lo mette solo su Facebook |
 
 Il secondo e' il piu' comune sui siti italiani. Legge righe come
@@ -111,6 +115,17 @@ Non e' pigrizia: tradurre un colore in "5 posti su 40" significa inventare
 un dato che il lettore poi crede. Su un portale di prenotazioni un numero
 falso e' peggio di nessun numero — chi si fida e trova tutto esaurito non
 torna piu'.
+
+## Quando il circuito non e' certo
+
+Il caso di Giorgio Team: la sua pagina non ha nessuna struttura che leghi
+una data al circuito giusto. Il programma prende la prima immagine trovata
+subito dopo l'evento come indicazione, e aggiunge sempre una nota
+*"Controlla circuito e dettagli sul modulo di iscrizione"*.
+
+Non e' una scappatoia: e' la scelta onesta quando il dato non e'
+verificabile. Meglio un'indicazione dichiarata debole che una certezza
+finta. Controlla questi eventi a mano ogni tanto.
 
 ## Due cose da fare prima di andare online
 

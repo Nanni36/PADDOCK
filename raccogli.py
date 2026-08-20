@@ -62,6 +62,38 @@ FONTI = [
         "anno": 2026,
     },
     {
+        "attiva": True,
+        "organizzatore": "Gully Racing",
+        "tipo": "righe_prezzo",
+        "url": "https://www.gullyracing.it/calendario",
+        "selettore": "div.riga_calendario",
+        "anno": 2026,
+    },
+    {
+        "attiva": True,
+        "organizzatore": "Promo Racing",
+        "tipo": "griglia_disponibilita",
+        "url": "https://www.promoracing.it/it/calendario/moto",
+        "selettore": "a.event__item",
+    },
+    {
+        "attiva": True,
+        "organizzatore": "Motart",
+        "tipo": "framer_schede",
+        "url": "https://motart.it/attivit%C3%A0/track-day",
+        "selettore": ".framer-e09p2j",
+        "selettore_data": ".framer-k4aiq0 p",
+        "selettore_circuito": ".framer-173r67d p",
+        "ancora_prenotazione": "#prenotazione-track-day",
+        "anno": 2026,
+    },
+    {
+        "attiva": True,
+        "organizzatore": "Giorgio Team Racing",
+        "tipo": "giorgioteam",
+        "url": "https://www.giorgioteam.com/index.html",
+    },
+    {
         "attiva": False,
         "organizzatore": "Nome Organizzatore",
         "tipo": "tabella_html",
@@ -96,6 +128,54 @@ def raccogli_fonte(fonte: dict, html: str | None = None) -> list:
             colonne=fonte["colonne"],
             anno_predefinito=fonte.get("anno", date.today().year),
         )
+    if tipo == "griglia_disponibilita":
+        eventi, avvisi = adattatori.da_griglia_disponibilita(
+            html=testo,
+            registro=REGISTRO,
+            organizzatore=fonte["organizzatore"],
+            fonte_url=fonte["url"],
+            selettore=fonte["selettore"],
+        )
+        for a in avvisi:
+            print(f"        avviso: {a}")
+        return eventi
+    if tipo == "framer_schede":
+        eventi, avvisi = adattatori.da_schede_framer(
+            html=testo,
+            registro=REGISTRO,
+            organizzatore=fonte["organizzatore"],
+            fonte_url=fonte["url"],
+            selettore_scheda=fonte["selettore"],
+            selettore_data=fonte["selettore_data"],
+            selettore_circuito=fonte["selettore_circuito"],
+            anno=fonte.get("anno", date.today().year),
+            ancora_prenotazione=fonte.get("ancora_prenotazione"),
+        )
+        for a in avvisi:
+            print(f"        avviso: {a}")
+        return eventi
+    if tipo == "giorgioteam":
+        eventi, avvisi = adattatori.da_pagina_giorgioteam(
+            html=testo,
+            registro=REGISTRO,
+            organizzatore=fonte["organizzatore"],
+            fonte_url=fonte["url"],
+        )
+        for a in avvisi:
+            print(f"        avviso: {a}")
+        return eventi
+    if tipo == "righe_prezzo":
+        eventi, avvisi = adattatori.da_righe_prezzo_multiplo(
+            html=testo,
+            registro=REGISTRO,
+            organizzatore=fonte["organizzatore"],
+            fonte_url=fonte["url"],
+            selettore_riga=fonte["selettore"],
+            anno=fonte.get("anno", date.today().year),
+        )
+        for a in avvisi:
+            print(f"        avviso: {a}")
+        return eventi
     if tipo == "schede_link":
         eventi, avvisi = adattatori.da_schede_link(
             html=testo,
