@@ -372,6 +372,7 @@ let EVENTI = [
 const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno",
   "luglio","agosto","settembre","ottobre","novembre","dicembre"];
 const GIORNI = ["dom","lun","mar","mer","gio","ven","sab"];
+const GIORNI_INTERI = ["domenica","lunedì","martedì","mercoledì","giovedì","venerdì","sabato"];
 const LIVELLI = ["Base","Intermedio","Avanzato"];
 
 // contatti e prezzi box per organizzatore, caricati da organizzatori.json
@@ -494,7 +495,7 @@ function disegna(){
     riga.className = "riga";
     riga.innerHTML = `
       <div class="indice">${String(i+1).padStart(2,"0")}</div>
-      <div class="circuito"><b>${e.circuito}${badgeRiga}</b><span>${e.paese} · ${e.livelli.join(" / ")}</span></div>
+      <div class="circuito"><b>${e.circuito}${badgeRiga}</b><span>${e.paese}${e.note ? " · "+e.note : ""}</span></div>
       <div class="data">${d.breve}<small>${d.lunga}</small></div>
       <div class="org">${e.org}</div>
       <div class="prezzo">${testoPrezzo(e)}</div>
@@ -546,7 +547,25 @@ function apriDettaglio(e){
   let badgeGiorni = "";
   if (e.giorni > 1 && e.dataFine){
     const df = new Date(e.dataFine+"T12:00:00");
-    dataTesto = `dal ${d.getDate()} ${MESI[d.getMonth()]} al ${df.getDate()} ${MESI[df.getMonth()]} ${df.getFullYear()}`;
+
+    // elenca ogni singolo giorno con nome della settimana e numero,
+    // invece di un generico "dal... al..." — utile per organizzare
+    // ferie/trasferta sapendo esattamente quali giorni sono coinvolti
+    const elenco = [];
+    for (let cursore = new Date(d); cursore <= df; cursore.setDate(cursore.getDate()+1)){
+      const stessoMeseDellUltimo = cursore.getMonth() === df.getMonth()
+        && cursore.getFullYear() === df.getFullYear();
+      elenco.push(
+        stessoMeseDellUltimo
+          ? `${GIORNI_INTERI[cursore.getDay()]} ${cursore.getDate()}`
+          : `${GIORNI_INTERI[cursore.getDay()]} ${cursore.getDate()} ${MESI[cursore.getMonth()]}`
+      );
+    }
+    const ultimoGiorno = elenco.pop();
+    dataTesto = elenco.length
+      ? `${elenco.join(", ")} e ${ultimoGiorno} ${MESI[df.getMonth()]} ${df.getFullYear()}`
+      : `${ultimoGiorno} ${MESI[df.getMonth()]} ${df.getFullYear()}`;
+
     badgeGiorni = `<span class="dett-badge-giorni">${e.giorni} giorni</span>`;
   }
 
@@ -612,16 +631,25 @@ function apriDettaglio(e){
       Manda il link della loro pagina contatti e li aggiungo.</div>`);
   }
 
+  const notaHtml = e.note
+    ? `<div class="dett-sezione"><h4>Da sapere</h4><div class="dett-nota">${e.note}</div></div>`
+    : "";
+  const livelliHtml = e.livelli.length
+    ? `<div class="dett-nota" style="margin-top:8px">Livelli ammessi: ${e.livelli.join(", ")}</div>`
+    : "";
+
   $("#dettaglio-corpo").innerHTML = `
     <div class="dett-titolo">${e.circuito}${badgeGiorni}</div>
     <div class="dett-sub">${dataTesto} · ${e.org}</div>
     <div class="dett-griglia">
       <div class="dett-voce"><span>Prezzo</span><b>${testoPrezzo(e)}</b></div>
       <div class="dett-voce"><span>Disponibilita'</span><b>${testoDisponibilita(e)}</b></div>
-      <div class="dett-voce"><span>Livelli</span><b>${e.livelli.join(" / ") || "—"}</b></div>
+      <div class="dett-voce"><span>Durata</span><b>${e.giorni} ${e.giorni===1 ? "giorno" : "giorni"}</b></div>
       <div class="dett-voce"><span>Paese</span><b>${e.paese}</b></div>
     </div>
+    ${livelliHtml}
     ${boxHtml}
+    ${notaHtml}
     <div class="dett-sezione"><h4>Come prenotare</h4>
       <div class="dett-azioni">${azioni.join("")}</div>
     </div>
@@ -669,10 +697,11 @@ async function caricaDatiVeri(){
       posti: e.posti_liberi ?? null,
       tot: e.posti_totali ?? null,
       disponibilita: e.disponibilita ?? null,
-      livelli: e.livelli && e.livelli.length ? e.livelli : ["Base","Intermedio","Avanzato"],
+      livelli: e.livelli || [],
       url: e.url_iscrizione || null,
       giorni: e.giorni || 1,
-      dataFine: e.data_fine || null
+      dataFine: e.data_fine || null,
+      note: e.note || null
     }));
 
     costruisciFiltri();

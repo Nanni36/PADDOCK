@@ -1070,6 +1070,10 @@ def da_pagina_eventi_ticket(
                 organizzatore=organizzatore,
                 prezzo=prezzo,
                 disponibilita=disponibilita,
+                # niente pagina per singolo evento su questo sito (solo
+                # login generico): la pagina del calendario resta il link
+                # piu' utile e onesto che si puo' dare
+                url_iscrizione=fonte_url,
                 fonte_url=fonte_url,
                 giorni=giorni_evento,
                 data_fine=fine if giorni_evento > 1 else None,
