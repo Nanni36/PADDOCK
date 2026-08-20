@@ -203,6 +203,10 @@
   .badge-giorni{display:inline-block;background:var(--bandiera);color:var(--asfalto);
     font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;
     padding:2px 6px;border-radius:2px;margin-left:6px;vertical-align:middle}
+  .data-multi{display:flex;flex-direction:column;gap:2px;font-family:var(--mono);
+    font-size:11px;font-weight:500;line-height:1.3}
+  .data-multi span:first-child{font-weight:700;color:var(--asfalto)}
+  .data-multi span:last-child{color:var(--cordolo)}
   .riga{cursor:pointer}
 
   /* ---- finestra di dettaglio ---- */
@@ -460,6 +464,31 @@ function formattaData(iso){
   };
 }
 
+function elencoGiorniEvento(e){
+  // un Date per ogni giorno da e.data a e.dataFine incluso — solo per
+  // eventi di piu' giorni. Usata sia nella riga della lista sia nel
+  // dettaglio, cosi' raccontano sempre la stessa cosa.
+  if (!(e.giorni > 1) || !e.dataFine) return null;
+  const inizio = new Date(e.data+"T12:00:00");
+  const fine = new Date(e.dataFine+"T12:00:00");
+  const elenco = [];
+  for (let cursore = new Date(inizio); cursore <= fine; cursore.setDate(cursore.getDate()+1)){
+    elenco.push(new Date(cursore));
+  }
+  return elenco;
+}
+
+function quantoManca(e){
+  const oggi = new Date(); oggi.setHours(0,0,0,0);
+  const quando = new Date(e.data+"T00:00:00");
+  const giorni = Math.round((quando-oggi)/86400000);
+  if (giorni <= 0) return "oggi";
+  if (giorni === 1) return "domani";
+  if (giorni < 30) return `tra ${giorni} giorni`;
+  const mesi = Math.round(giorni/30);
+  return mesi === 1 ? "tra circa un mese" : `tra circa ${mesi} mesi`;
+}
+
 function disegna(){
   const dati = filtra();
   lista.innerHTML = "";
@@ -491,12 +520,18 @@ function disegna(){
 
     const badgeRiga = e.giorni > 1 ? `<span class="badge-giorni">${e.giorni}gg</span>` : "";
 
+    const giorniElenco = elencoGiorniEvento(e);
+    const cellaData = giorniElenco
+      ? `<div class="data-multi">${giorniElenco.map(g =>
+          `<span>${GIORNI[g.getDay()]} ${String(g.getDate()).padStart(2,"0")}</span>`).join("")}</div>`
+      : `${d.breve}<small>${d.lunga}</small>`;
+
     const riga = document.createElement("div");
     riga.className = "riga";
     riga.innerHTML = `
       <div class="indice">${String(i+1).padStart(2,"0")}</div>
-      <div class="circuito"><b>${e.circuito}${badgeRiga}</b><span>${e.paese}${e.note ? " · "+e.note : ""}</span></div>
-      <div class="data">${d.breve}<small>${d.lunga}</small></div>
+      <div class="circuito"><b>${e.circuito}${badgeRiga}</b><span>${e.paese} · ${quantoManca(e)}</span></div>
+      <div class="data">${cellaData}</div>
       <div class="org">${e.org}</div>
       <div class="prezzo">${testoPrezzo(e)}</div>
       <div class="posti">
@@ -545,27 +580,23 @@ function apriDettaglio(e){
   const d = new Date(e.data+"T12:00:00");
   let dataTesto = `${GIORNI[d.getDay()]} ${d.getDate()} ${MESI[d.getMonth()]} ${d.getFullYear()}`;
   let badgeGiorni = "";
-  if (e.giorni > 1 && e.dataFine){
-    const df = new Date(e.dataFine+"T12:00:00");
 
+  const giorniElenco = elencoGiorniEvento(e);
+  if (giorniElenco){
+    const df = new Date(e.dataFine+"T12:00:00");
     // elenca ogni singolo giorno con nome della settimana e numero,
     // invece di un generico "dal... al..." — utile per organizzare
     // ferie/trasferta sapendo esattamente quali giorni sono coinvolti
-    const elenco = [];
-    for (let cursore = new Date(d); cursore <= df; cursore.setDate(cursore.getDate()+1)){
-      const stessoMeseDellUltimo = cursore.getMonth() === df.getMonth()
-        && cursore.getFullYear() === df.getFullYear();
-      elenco.push(
-        stessoMeseDellUltimo
-          ? `${GIORNI_INTERI[cursore.getDay()]} ${cursore.getDate()}`
-          : `${GIORNI_INTERI[cursore.getDay()]} ${cursore.getDate()} ${MESI[cursore.getMonth()]}`
-      );
-    }
-    const ultimoGiorno = elenco.pop();
-    dataTesto = elenco.length
-      ? `${elenco.join(", ")} e ${ultimoGiorno} ${MESI[df.getMonth()]} ${df.getFullYear()}`
+    const etichette = giorniElenco.map(g => {
+      const stessoMeseDellUltimo = g.getMonth() === df.getMonth() && g.getFullYear() === df.getFullYear();
+      return stessoMeseDellUltimo
+        ? `${GIORNI_INTERI[g.getDay()]} ${g.getDate()}`
+        : `${GIORNI_INTERI[g.getDay()]} ${g.getDate()} ${MESI[g.getMonth()]}`;
+    });
+    const ultimoGiorno = etichette.pop();
+    dataTesto = etichette.length
+      ? `${etichette.join(", ")} e ${ultimoGiorno} ${MESI[df.getMonth()]} ${df.getFullYear()}`
       : `${ultimoGiorno} ${MESI[df.getMonth()]} ${df.getFullYear()}`;
-
     badgeGiorni = `<span class="dett-badge-giorni">${e.giorni} giorni</span>`;
   }
 
@@ -637,6 +668,13 @@ function apriDettaglio(e){
   const livelliHtml = e.livelli.length
     ? `<div class="dett-nota" style="margin-top:8px">Livelli ammessi: ${e.livelli.join(", ")}</div>`
     : "";
+  const prezzoIgnotoHtml = (e.prezzo == null && !eventoEsaurito(e))
+    ? `<div class="dett-nota" style="margin-top:8px">${
+        e.url
+          ? "Il prezzo e' pubblicato sulla pagina di questo evento, non qui: apri il link qui sotto per vederlo."
+          : "Prezzo non pubblicato dall'organizzatore: scrivi o chiama per saperlo."
+      }</div>`
+    : "";
 
   $("#dettaglio-corpo").innerHTML = `
     <div class="dett-titolo">${e.circuito}${badgeGiorni}</div>
@@ -648,6 +686,7 @@ function apriDettaglio(e){
       <div class="dett-voce"><span>Paese</span><b>${e.paese}</b></div>
     </div>
     ${livelliHtml}
+    ${prezzoIgnotoHtml}
     ${boxHtml}
     ${notaHtml}
     <div class="dett-sezione"><h4>Come prenotare</h4>

@@ -50,12 +50,13 @@
   },
   "Promo Racing": {
     "sito": "https://www.promoracing.it",
-    "email": null,
+    "email": "info@promoracing.it",
     "telefono_prenotazioni": null,
     "telefono_prenotazioni_orario": null,
     "telefono_generale": null,
     "whatsapp": null,
-    "pagamento_online": null,
+    "pagamento_online": true,
+    "note_pagamento": "Il prezzo e i box sono pubblicati sulla pagina della singola data, non su quella del calendario generale — il sito impedisce l'accesso automatico a quella pagina, quindi il programma non riesce a leggerli da solo. Apri il link per vederli.",
     "box_normale": null,
     "box_esclusiva_piccolo": null,
     "box_esclusiva_grande": null
