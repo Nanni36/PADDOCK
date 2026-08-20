@@ -436,7 +436,11 @@ function filtra(){
     }
     return true;
   }).sort((a,b)=>{
-    if(stato.ordine==="prezzo") return a.prezzo-b.prezzo;
+    if(stato.ordine==="prezzo"){
+      // gli eventi senza prezzo pubblicato vanno in fondo, non confusi con "gratis"
+      const pa = a.prezzo ?? Infinity, pb = b.prezzo ?? Infinity;
+      return pa-pb;
+    }
     if(stato.ordine==="posti"){
       const peso = x => x.disponibilita
         ? ({disponibile:2, esaurimento:1, esaurito:0})[x.disponibilita] ?? 0
@@ -493,7 +497,7 @@ function disegna(){
       <div class="circuito"><b>${e.circuito}${badgeRiga}</b><span>${e.paese} · ${e.livelli.join(" / ")}</span></div>
       <div class="data">${d.breve}<small>${d.lunga}</small></div>
       <div class="org">${e.org}</div>
-      <div class="prezzo">${e.prezzo} €</div>
+      <div class="prezzo">${testoPrezzo(e)}</div>
       <div class="posti">
         <div class="barra ${classe}"><i style="width:${larghezza}%"></i></div>
         <span>${testoPosti}</span>
@@ -510,7 +514,8 @@ function disegna(){
   $("#c-circuiti").textContent = new Set(dati.map(e=>e.circuito)).size;
   $("#c-posti").textContent = dati.filter(e =>
     e.disponibilita ? e.disponibilita !== "esaurito" : (e.posti ?? 0) > 0).length;
-  $("#c-min").textContent = dati.length ? Math.min(...dati.map(e=>e.prezzo))+" €" : "—";
+  const prezziNoti = dati.map(e=>e.prezzo).filter(p => p != null);
+  $("#c-min").textContent = prezziNoti.length ? Math.min(...prezziNoti)+" €" : "—";
 }
 
 /* --------------------------------------------------------------
@@ -523,6 +528,15 @@ function testoDisponibilita(e){
   if (e.disponibilita) return mappa[e.disponibilita] || "—";
   if (e.posti != null) return e.posti===0 ? "Esaurito" : e.posti+(e.tot?"/"+e.tot:"");
   return "—";
+}
+
+function eventoEsaurito(e){
+  if (e.disponibilita) return e.disponibilita === "esaurito";
+  return e.posti === 0;
+}
+
+function testoPrezzo(e){
+  return eventoEsaurito(e) ? "Esaurito" : (e.prezzo ? e.prezzo+" €" : "—");
 }
 
 function apriDettaglio(e){
@@ -550,12 +564,18 @@ function apriDettaglio(e){
 
   // -- come prenotare --
   const azioni = [];
-  if (org.pagamento_online === true){
-    const link = e.url || org.sito;
-    if (link) azioni.push(
-      `<a class="dett-btn primaria" href="${link}" target="_blank" rel="noopener">Vai al sito e paga con carta</a>`
-    );
-  } else {
+
+  // il link diretto a QUESTA data conta sempre, che si paghi online o no:
+  // e' comunque la pagina piu' precisa da guardare per quella giornata
+  if (e.url){
+    const testoLink = org.pagamento_online === true
+      ? "Vai al sito e paga con carta"
+      : "Vedi la pagina di questo evento";
+    const classe = org.pagamento_online === true ? "primaria" : "secondaria";
+    azioni.push(`<a class="dett-btn ${classe}" href="${e.url}" target="_blank" rel="noopener">${testoLink}</a>`);
+  }
+
+  if (org.pagamento_online !== true){
     if (org.email){
       const oggetto = encodeURIComponent(`Richiesta info track day ${e.circuito} del ${d.getDate()} ${MESI[d.getMonth()]}`);
       const corpo = encodeURIComponent(
@@ -581,7 +601,7 @@ function apriDettaglio(e){
       }
     }
   }
-  if (org.sito){
+  if (org.sito && org.sito !== e.url){
     azioni.push(`<a class="dett-btn contorno" href="${org.sito}" target="_blank" rel="noopener">Sito dell'organizzatore</a>`);
   }
   if (org.note_pagamento){
@@ -596,7 +616,7 @@ function apriDettaglio(e){
     <div class="dett-titolo">${e.circuito}${badgeGiorni}</div>
     <div class="dett-sub">${dataTesto} · ${e.org}</div>
     <div class="dett-griglia">
-      <div class="dett-voce"><span>Prezzo</span><b>${e.prezzo ? e.prezzo+" €" : "—"}</b></div>
+      <div class="dett-voce"><span>Prezzo</span><b>${testoPrezzo(e)}</b></div>
       <div class="dett-voce"><span>Disponibilita'</span><b>${testoDisponibilita(e)}</b></div>
       <div class="dett-voce"><span>Livelli</span><b>${e.livelli.join(" / ") || "—"}</b></div>
       <div class="dett-voce"><span>Paese</span><b>${e.paese}</b></div>
@@ -645,7 +665,7 @@ async function caricaDatiVeri(){
       paese: e.paese || "IT",
       data: e.data,
       org: e.organizzatore || "—",
-      prezzo: e.prezzo ?? 0,
+      prezzo: e.prezzo ?? null,
       posti: e.posti_liberi ?? null,
       tot: e.posti_totali ?? null,
       disponibilita: e.disponibilita ?? null,

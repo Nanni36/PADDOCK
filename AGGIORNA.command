@@ -42,6 +42,7 @@ if curl -sfL "https://github.com/$REPO/archive/refs/heads/main.tar.gz" \
         [ -f "$SORGENTE/$f" ] && cp "$SORGENTE/$f" "$CARTELLA/$f"
     done
     [ -f "$SORGENTE/dati/circuiti.json" ] && cp "$SORGENTE/dati/circuiti.json" "$CARTELLA/dati/"
+    [ -f "$SORGENTE/dati/organizzatori.json" ] && cp "$SORGENTE/dati/organizzatori.json" "$CARTELLA/dati/"
     [ -f "$SORGENTE/docs/index.html" ]    && cp "$SORGENTE/docs/index.html"    "$CARTELLA/docs/"
 
     # manuali.csv NON si tocca mai: le date scritte a mano sono tue

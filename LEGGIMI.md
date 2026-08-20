@@ -116,6 +116,28 @@ un dato che il lettore poi crede. Su un portale di prenotazioni un numero
 falso e' peggio di nessun numero — chi si fida e trova tutto esaurito non
 torna piu'.
 
+## Quando una fonte legge zero eventi
+
+Ogni volta che il programma scarica davvero una pagina (non in `--prova`),
+salva una copia in `debug/<organizzatore>.html` — cosi' com'e' arrivata,
+prima che l'adattatore provi a leggerla.
+
+Se una fonte legge 0 eventi, il programma te lo ricorda subito con il
+percorso esatto. Apri quel file (doppio clic, si apre nel browser) e
+confrontalo con quello che vedi tu navigando il sito vero:
+
+- **Se il file di debug assomiglia a quello che vedi tu**, ma il
+  programma non trova niente lo stesso, il problema e' nel selettore:
+  mandami il file e lo sistemo.
+- **Se il file di debug e' diverso, vuoto, o piu' corto** di quello che
+  vedi tu, il sito sta trattando il programma diversamente da una
+  persona vera — capita, alcuni siti filtrano in base a chi si connette.
+  In questo caso serve una soluzione diversa (a volte non c'e', e quella
+  fonte resta da aggiornare a mano).
+
+La cartella `debug/` resta solo sul tuo Mac: non serve caricarla su
+GitHub, e il programma la riscrive ad ogni lancio.
+
 ## Il dettaglio evento
 
 Cliccando su una data si apre una scheda con tutto quello che serve per

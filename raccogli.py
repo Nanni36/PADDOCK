@@ -12,6 +12,7 @@ Niente altro.
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 import traceback
 from datetime import date
@@ -112,11 +113,30 @@ FONTI = [
 
 # ==========================================================================
 
+def _nome_file_debug(organizzatore: str) -> str:
+    """'Giorgio Team Racing' -> 'giorgio-team-racing.html' — solo per salvare
+    la pagina scaricata, cosi' si puo' ispezionare senza rilanciare nulla."""
+    pulito = re.sub(r"[^a-z0-9]+", "-", organizzatore.lower()).strip("-")
+    return f"{pulito}.html"
+
+
 def raccogli_fonte(fonte: dict, html: str | None = None) -> list:
     tipo = fonte["tipo"]
+    scaricato_ora = html is None
     testo = html if html is not None else adattatori.scarica(
         fonte["url"], ignora_robots=fonte.get("permesso_accordato", False)
     )
+
+    if scaricato_ora:
+        # traccia sempre l'ultima pagina ricevuta davvero: se una fonte
+        # legge 0 eventi, questo file dice se il programma ha visto
+        # qualcosa di diverso da quello che si vede nel browser, senza
+        # dover richiedere l'HTML da capo ogni volta
+        cartella_debug = BASE / "debug"
+        cartella_debug.mkdir(exist_ok=True)
+        (cartella_debug / _nome_file_debug(fonte["organizzatore"])).write_text(
+            testo, encoding="utf-8"
+        )
 
     if tipo == "tabella_html":
         return adattatori.da_tabella_html(
@@ -278,6 +298,10 @@ def main() -> int:
             eventi = raccogli_fonte(fonte, campioni.get(nome))
             tutti.extend(eventi)
             print(f"  ok    {nome:<34} {len(eventi):>3} eventi")
+            if not eventi and not args.prova:
+                print(f"        pagina scaricata salvata in "
+                      f"debug/{_nome_file_debug(nome)} — aprila per vedere "
+                      "cosa ha ricevuto davvero il programma")
         except Exception as e:                      # una fonte rotta non ferma le altre
             problemi.append((nome, e))
             print(f"  ERR   {nome:<34} {type(e).__name__}: {e}")
