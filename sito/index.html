@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PADDOCK — Tutti i track day d'Europa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --asfalto:#23262b;
+    --asfalto-soft:#3a3f47;
+    --cemento:#e4e5e3;
+    --cemento-hi:#f2f2f0;
+    --cordolo:#c8232c;
+    --bandiera:#f2c230;
+    --verde:#2f8f5b;
+    --linea:rgba(35,38,43,.14);
+    --display:'Oswald',system-ui,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--cemento);
+    color:var(--asfalto);
+    font-family:var(--body);
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+  /* ---------- TESTATA ---------- */
+  header{
+    border-bottom:2px solid var(--asfalto);
+    background:var(--cemento-hi);
+    position:sticky;top:0;z-index:20;
+  }
+  .bar{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+  .marchio{display:flex;align-items:baseline;gap:10px}
+  .marchio b{
+    font-family:var(--display);font-weight:700;font-size:26px;
+    letter-spacing:.14em;text-transform:uppercase;
+  }
+  .marchio span{
+    font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+    color:var(--asfalto-soft);text-transform:uppercase;
+  }
+  .stato{
+    font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--asfalto-soft);
+    display:flex;align-items:center;gap:8px;
+  }
+  .spia{width:8px;height:8px;border-radius:50%;background:var(--verde);
+    box-shadow:0 0 0 3px rgba(47,143,91,.2)}
+
+  /* ---------- APERTURA ---------- */
+  .apertura{padding:64px 0 40px;border-bottom:1px solid var(--linea)}
+  .occhiello{
+    font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--cordolo);margin-bottom:18px;
+  }
+  h1{
+    font-family:var(--display);font-weight:600;text-transform:uppercase;
+    font-size:clamp(38px,7vw,76px);line-height:.94;letter-spacing:-.01em;
+    max-width:14ch;
+  }
+  h1 em{font-style:normal;color:var(--cordolo)}
+  .sottotitolo{
+    margin-top:22px;max-width:52ch;font-size:16px;line-height:1.6;
+    color:var(--asfalto-soft);
+  }
+  .cifre{display:flex;gap:36px;margin-top:36px;flex-wrap:wrap}
+  .cifra b{
+    display:block;font-family:var(--mono);font-weight:600;font-size:30px;
+    letter-spacing:-.02em;
+  }
+  .cifra span{
+    font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--asfalto-soft);
+  }
+
+  /* ---------- FILTRI ---------- */
+  .filtri{
+    padding:22px 0;border-bottom:1px solid var(--linea);
+    display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;
+  }
+  .campo{display:flex;flex-direction:column;gap:6px}
+  .campo label{
+    font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--asfalto-soft);
+  }
+  select,input[type=search]{
+    font-family:var(--body);font-size:14px;color:var(--asfalto);
+    background:var(--cemento-hi);border:1px solid var(--linea);
+    padding:9px 12px;min-width:172px;border-radius:2px;
+  }
+  select:focus-visible,input:focus-visible,button:focus-visible{
+    outline:2px solid var(--cordolo);outline-offset:2px;
+  }
+  .gruppi{display:flex;gap:6px}
+  .chip{
+    font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+    text-transform:uppercase;padding:9px 13px;border-radius:2px;
+    border:1px solid var(--linea);background:transparent;cursor:pointer;
+    color:var(--asfalto-soft);transition:.15s;
+  }
+  .chip[aria-pressed=true]{
+    background:var(--asfalto);color:var(--cemento-hi);border-color:var(--asfalto);
+  }
+  .azzera{
+    margin-left:auto;background:none;border:none;cursor:pointer;
+    font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--cordolo);
+    text-decoration:underline;text-underline-offset:4px;padding:9px 0;
+  }
+
+  /* ---------- TORRE TEMPI ---------- */
+  .intestazione-tabella{
+    display:grid;grid-template-columns:52px 1fr 128px 128px 96px 128px;
+    gap:14px;padding:16px 0 10px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--asfalto-soft);
+    border-bottom:2px solid var(--asfalto);
+  }
+  .riga{
+    display:grid;grid-template-columns:52px 1fr 128px 128px 96px 128px;
+    gap:14px;align-items:center;padding:18px 0;
+    border-bottom:1px solid var(--linea);position:relative;
+    transition:background .15s;
+  }
+  .riga::before{
+    content:"";position:absolute;left:-24px;top:0;bottom:0;width:6px;
+    background:repeating-linear-gradient(180deg,
+      var(--cordolo) 0 14px,var(--cemento-hi) 14px 28px);
+    opacity:0;transition:opacity .15s;
+  }
+  .riga:hover{background:rgba(255,255,255,.5)}
+  .riga:hover::before{opacity:1}
+  .indice{
+    font-family:var(--mono);font-size:13px;color:var(--asfalto-soft);
+  }
+  .circuito b{
+    display:block;font-family:var(--display);font-weight:600;font-size:19px;
+    text-transform:uppercase;letter-spacing:.02em;line-height:1.15;
+  }
+  .circuito span{
+    font-family:var(--mono);font-size:11px;color:var(--asfalto-soft);
+  }
+  .data{font-family:var(--mono);font-size:14px;font-weight:500}
+  .data small{display:block;font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--asfalto-soft);margin-top:3px}
+  .org{font-size:13px;color:var(--asfalto-soft);line-height:1.35}
+  .prezzo{font-family:var(--mono);font-size:16px;font-weight:600}
+  .posti{display:flex;flex-direction:column;gap:6px}
+  .barra{height:4px;background:rgba(35,38,43,.12);border-radius:2px;overflow:hidden}
+  .barra i{display:block;height:100%;background:var(--verde)}
+  .barra.calda i{background:var(--bandiera)}
+  .barra.esaurita i{background:var(--cordolo)}
+  .posti span{font-family:var(--mono);font-size:11px;color:var(--asfalto-soft)}
+
+  .vuoto{
+    padding:72px 0;text-align:center;
+  }
+  .vuoto b{
+    display:block;font-family:var(--display);font-weight:600;font-size:24px;
+    text-transform:uppercase;margin-bottom:10px;
+  }
+  .vuoto p{color:var(--asfalto-soft);font-size:15px}
+
+  footer{
+    margin-top:56px;border-top:2px solid var(--asfalto);
+    background:var(--asfalto);color:var(--cemento);padding:36px 0 48px;
+  }
+  footer .nota{
+    font-family:var(--mono);font-size:12px;line-height:1.7;
+    color:rgba(228,229,227,.72);max-width:64ch;
+  }
+  footer .nota b{color:var(--bandiera)}
+
+  @media (max-width:860px){
+    .intestazione-tabella{display:none}
+    .riga{
+      grid-template-columns:1fr auto;
+      grid-template-areas:"circuito data" "org prezzo" "posti posti";
+      gap:8px 14px;
+    }
+    .indice{display:none}
+    .circuito{grid-area:circuito}
+    .data{grid-area:data;text-align:right}
+    .org{grid-area:org}
+    .prezzo{grid-area:prezzo;text-align:right}
+    .posti{grid-area:posti;margin-top:6px}
+    .riga::before{left:-16px}
+    .azzera{margin-left:0}
+    select,input[type=search]{min-width:0;width:100%}
+    .campo{flex:1 1 140px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div class="marchio"><b>Paddock</b><span>track day europa</span></div>
+    <div class="stato"><i class="spia"></i><span id="conteggio">—</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="apertura">
+    <div class="occhiello">Prototipo · dati dimostrativi</div>
+    <h1>Tutti i track day.<br><em>Una lista sola.</em></h1>
+    <p class="sottotitolo">
+      Date, organizzatori, prezzi e posti liberi dei circuiti europei in un unico posto.
+      Niente venti siti diversi, niente gruppi Facebook da spulciare.
+    </p>
+    <div class="cifre">
+      <div class="cifra"><b id="c-eventi">0</b><span>eventi</span></div>
+      <div class="cifra"><b id="c-circuiti">0</b><span>circuiti</span></div>
+      <div class="cifra"><b id="c-posti">0</b><span>posti liberi</span></div>
+      <div class="cifra"><b id="c-min">—</b><span>prezzo minimo</span></div>
+    </div>
+  </section>
+
+  <section class="filtri">
+    <div class="campo">
+      <label for="f-cerca">Cerca</label>
+      <input type="search" id="f-cerca" placeholder="Circuito o organizzatore">
+    </div>
+    <div class="campo">
+      <label for="f-circuito">Circuito</label>
+      <select id="f-circuito"><option value="">Tutti</option></select>
+    </div>
+    <div class="campo">
+      <label for="f-mese">Mese</label>
+      <select id="f-mese"><option value="">Tutti</option></select>
+    </div>
+    <div class="campo">
+      <label for="f-ordine">Ordina per</label>
+      <select id="f-ordine">
+        <option value="data">Data</option>
+        <option value="prezzo">Prezzo</option>
+        <option value="posti">Posti liberi</option>
+      </select>
+    </div>
+    <div class="campo">
+      <label>Livello</label>
+      <div class="gruppi" id="f-livelli"></div>
+    </div>
+    <button class="azzera" id="azzera">Azzera filtri</button>
+  </section>
+
+  <div class="intestazione-tabella">
+    <div>Pos</div><div>Circuito</div><div>Data</div>
+    <div>Organizzatore</div><div>Prezzo</div><div>Disponibilità</div>
+  </div>
+
+  <div id="lista"></div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="nota">
+      <b>Nota tecnica.</b> Questo è il prototipo funzionante dell'interfaccia.
+      I dati sono dimostrativi e servono solo a far vedere il prodotto:
+      vanno sostituiti con eventi reali, raccolti dai siti degli organizzatori.
+      Il passo successivo è il collegamento con i calendari veri e il modulo di prenotazione.
+    </p>
+  </div>
+</footer>
+
+<script>
+let EVENTI = [
+  {circuito:"Misano World Circuit", paese:"IT", data:"2026-09-04", org:"Trackday Italia", prezzo:250, posti:14, tot:60, livelli:["Avanzato","Intermedio"]},
+  {circuito:"Autodromo di Magione", paese:"IT", data:"2026-09-06", org:"Umbria Motor Events", prezzo:130, posti:31, tot:45, livelli:["Base","Intermedio"]},
+  {circuito:"Mugello Circuit", paese:"IT", data:"2026-09-11", org:"Toscana Racing", prezzo:320, posti:3, tot:55, livelli:["Avanzato"]},
+  {circuito:"Cremona Circuit", paese:"IT", data:"2026-09-14", org:"Nord Trackdays", prezzo:145, posti:22, tot:50, livelli:["Base","Intermedio"]},
+  {circuito:"Automotodrom Grobnik", paese:"HR", data:"2026-09-18", org:"Adriatic Track", prezzo:180, posti:26, tot:60, livelli:["Intermedio","Avanzato"]},
+  {circuito:"Autodromo di Franciacorta", paese:"IT", data:"2026-09-21", org:"Nord Trackdays", prezzo:120, posti:38, tot:48, livelli:["Base"]},
+  {circuito:"Autodromo di Vallelunga", paese:"IT", data:"2026-09-25", org:"Lazio Track Events", prezzo:210, posti:11, tot:55, livelli:["Intermedio","Avanzato"]},
+  {circuito:"Misano World Circuit", paese:"IT", data:"2026-09-29", org:"Riviera Trackdays", prezzo:265, posti:0, tot:60, livelli:["Avanzato"]},
+  {circuito:"Autodromo di Adria", paese:"IT", data:"2026-10-02", org:"Delta Racing Days", prezzo:135, posti:29, tot:45, livelli:["Base","Intermedio"]},
+  {circuito:"Autodromo di Varano", paese:"IT", data:"2026-10-05", org:"Emilia Track", prezzo:125, posti:19, tot:40, livelli:["Base"]},
+  {circuito:"Red Bull Ring", paese:"AT", data:"2026-10-09", org:"Alpen Trackdays", prezzo:390, posti:8, tot:70, livelli:["Avanzato"]},
+  {circuito:"Autodrom Most", paese:"CZ", data:"2026-10-12", org:"Bohemia Track", prezzo:160, posti:34, tot:65, livelli:["Intermedio"]},
+  {circuito:"Autodromo di Magione", paese:"IT", data:"2026-10-16", org:"Trackday Italia", prezzo:135, posti:25, tot:45, livelli:["Base","Intermedio","Avanzato"]},
+  {circuito:"Mugello Circuit", paese:"IT", data:"2026-10-20", org:"Toscana Racing", prezzo:340, posti:6, tot:55, livelli:["Avanzato"]},
+  {circuito:"Automotodrom Grobnik", paese:"HR", data:"2026-10-24", org:"Adriatic Track", prezzo:175, posti:41, tot:60, livelli:["Base","Intermedio"]},
+  {circuito:"Cremona Circuit", paese:"IT", data:"2026-10-28", org:"Nord Trackdays", prezzo:150, posti:2, tot:50, livelli:["Intermedio"]},
+  {circuito:"Circuit de Barcelona", paese:"ES", data:"2026-11-04", org:"Iberia Trackdays", prezzo:295, posti:23, tot:80, livelli:["Intermedio","Avanzato"]},
+  {circuito:"Autodromo di Vallelunga", paese:"IT", data:"2026-11-08", org:"Lazio Track Events", prezzo:195, posti:17, tot:55, livelli:["Base","Intermedio"]},
+  {circuito:"Circuito de Almería", paese:"ES", data:"2026-11-14", org:"Sur Racing", prezzo:165, posti:36, tot:50, livelli:["Base","Intermedio"]},
+  {circuito:"Misano World Circuit", paese:"IT", data:"2026-11-18", org:"Riviera Trackdays", prezzo:240, posti:9, tot:60, livelli:["Avanzato"]},
+  {circuito:"Circuito de Jerez", paese:"ES", data:"2026-11-22", org:"Sur Racing", prezzo:230, posti:44, tot:75, livelli:["Intermedio","Avanzato"]},
+  {circuito:"Autodromo di Adria", paese:"IT", data:"2026-11-27", org:"Delta Racing Days", prezzo:115, posti:33, tot:45, livelli:["Base"]},
+  {circuito:"Circuito de Almería", paese:"ES", data:"2026-12-05", org:"Iberia Trackdays", prezzo:180, posti:28, tot:50, livelli:["Intermedio"]},
+  {circuito:"Circuito de Jerez", paese:"ES", data:"2026-12-12", org:"Sur Racing", prezzo:245, posti:52, tot:75, livelli:["Base","Intermedio","Avanzato"]},
+];
+
+const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno",
+  "luglio","agosto","settembre","ottobre","novembre","dicembre"];
+const GIORNI = ["dom","lun","mar","mer","gio","ven","sab"];
+const LIVELLI = ["Base","Intermedio","Avanzato"];
+
+const stato = {cerca:"", circuito:"", mese:"", ordine:"data", livelli:new Set()};
+
+const $ = s => document.querySelector(s);
+const lista = $("#lista");
+
+/* --- popolamento filtri --- */
+function costruisciFiltri(){
+$("#f-circuito").innerHTML = '<option value="">Tutti</option>';
+$("#f-mese").innerHTML = '<option value="">Tutti</option>';
+[...new Set(EVENTI.map(e=>e.circuito))].sort().forEach(c=>{
+  const o=document.createElement("option"); o.value=c; o.textContent=c;
+  $("#f-circuito").appendChild(o);
+});
+[...new Set(EVENTI.map(e=>e.data.slice(0,7)))].sort().forEach(m=>{
+  const o=document.createElement("option"); o.value=m;
+  const [a,ms]=m.split("-");
+  o.textContent = MESI[+ms-1][0].toUpperCase()+MESI[+ms-1].slice(1)+" "+a;
+  $("#f-mese").appendChild(o);
+});
+}
+costruisciFiltri();
+
+LIVELLI.forEach(l=>{
+  const b=document.createElement("button");
+  b.className="chip"; b.type="button"; b.textContent=l;
+  b.setAttribute("aria-pressed","false");
+  b.onclick=()=>{
+    if(stato.livelli.has(l)){stato.livelli.delete(l);b.setAttribute("aria-pressed","false");}
+    else{stato.livelli.add(l);b.setAttribute("aria-pressed","true");}
+    disegna();
+  };
+  $("#f-livelli").appendChild(b);
+});
+
+/* --- eventi interfaccia --- */
+$("#f-cerca").oninput = e => {stato.cerca=e.target.value.toLowerCase(); disegna();};
+$("#f-circuito").onchange = e => {stato.circuito=e.target.value; disegna();};
+$("#f-mese").onchange = e => {stato.mese=e.target.value; disegna();};
+$("#f-ordine").onchange = e => {stato.ordine=e.target.value; disegna();};
+$("#azzera").onclick = () => {
+  stato.cerca=""; stato.circuito=""; stato.mese=""; stato.ordine="data"; stato.livelli.clear();
+  $("#f-cerca").value=""; $("#f-circuito").value=""; $("#f-mese").value=""; $("#f-ordine").value="data";
+  document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed","false"));
+  disegna();
+};
+
+function filtra(){
+  return EVENTI.filter(e=>{
+    if(stato.circuito && e.circuito!==stato.circuito) return false;
+    if(stato.mese && !e.data.startsWith(stato.mese)) return false;
+    if(stato.livelli.size && ![...stato.livelli].some(l=>e.livelli.includes(l))) return false;
+    if(stato.cerca){
+      const testo = (e.circuito+" "+e.org).toLowerCase();
+      if(!testo.includes(stato.cerca)) return false;
+    }
+    return true;
+  }).sort((a,b)=>{
+    if(stato.ordine==="prezzo") return a.prezzo-b.prezzo;
+    if(stato.ordine==="posti") return b.posti-a.posti;
+    return a.data.localeCompare(b.data);
+  });
+}
+
+function formattaData(iso){
+  const d = new Date(iso+"T12:00:00");
+  return {
+    breve: String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0"),
+    lunga: GIORNI[d.getDay()]+" "+MESI[d.getMonth()].slice(0,3)+" "+d.getFullYear()
+  };
+}
+
+function disegna(){
+  const dati = filtra();
+  lista.innerHTML = "";
+
+  if(!dati.length){
+    lista.innerHTML = `<div class="vuoto"><b>Nessuna data trovata</b>
+      <p>Allarga i filtri o azzerali per rivedere tutto il calendario.</p></div>`;
+  }
+
+  dati.forEach((e,i)=>{
+    const d = formattaData(e.data);
+    const quota = e.posti/e.tot;
+    const classe = e.posti===0 ? "esaurita" : quota<0.2 ? "calda" : "";
+    const larghezza = e.posti===0 ? 100 : Math.round(quota*100);
+    const testoPosti = e.posti===0 ? "Esaurito" : e.posti+" posti su "+e.tot;
+
+    const riga = document.createElement("div");
+    riga.className = "riga";
+    riga.innerHTML = `
+      <div class="indice">${String(i+1).padStart(2,"0")}</div>
+      <div class="circuito"><b>${e.circuito}</b><span>${e.paese} · ${e.livelli.join(" / ")}</span></div>
+      <div class="data">${d.breve}<small>${d.lunga}</small></div>
+      <div class="org">${e.org}</div>
+      <div class="prezzo">${e.prezzo} €</div>
+      <div class="posti">
+        <div class="barra ${classe}"><i style="width:${larghezza}%"></i></div>
+        <span>${testoPosti}</span>
+      </div>`;
+    lista.appendChild(riga);
+  });
+
+  $("#conteggio").textContent = dati.length + " date visibili";
+  $("#c-eventi").textContent = dati.length;
+  $("#c-circuiti").textContent = new Set(dati.map(e=>e.circuito)).size;
+  $("#c-posti").textContent = dati.reduce((s,e)=>s+e.posti,0);
+  $("#c-min").textContent = dati.length ? Math.min(...dati.map(e=>e.prezzo))+" €" : "—";
+}
+
+disegna();
+
+/* --------------------------------------------------------------
+   Dati veri. Se sito/eventi.json esiste (prodotto da raccogli.py)
+   sostituisce i dati dimostrativi. Se non c'e', la pagina resta
+   utilizzabile con la demo: un prototipo non deve mai mostrare
+   una schermata bianca.
+   -------------------------------------------------------------- */
+async function caricaDatiVeri(){
+  try{
+    const r = await fetch("eventi.json", {cache:"no-store"});
+    if(!r.ok) return;
+    const pacchetto = await r.json();
+    if(!pacchetto.eventi || !pacchetto.eventi.length) return;
+
+    EVENTI = pacchetto.eventi.map(e => ({
+      circuito: e.circuito,
+      paese: e.paese || "IT",
+      data: e.data,
+      org: e.organizzatore || "—",
+      prezzo: e.prezzo ?? 0,
+      posti: e.posti_liberi ?? 0,
+      tot: e.posti_totali ?? Math.max(e.posti_liberi ?? 0, 1),
+      livelli: e.livelli && e.livelli.length ? e.livelli : ["Base","Intermedio","Avanzato"],
+      url: e.url_iscrizione || null
+    }));
+
+    costruisciFiltri();
+    disegna();
+
+    const q = document.querySelector(".occhiello");
+    const quando = new Date(pacchetto.aggiornato)
+      .toLocaleDateString("it-IT",{day:"2-digit",month:"long",year:"numeric"});
+    q.textContent = "Calendario aggiornato al " + quando;
+    q.style.color = "var(--verde)";
+  }catch(err){
+    console.warn("eventi.json non caricato, resto sui dati dimostrativi:", err);
+  }
+}
+caricaDatiVeri();
+</script>
+</body>
+</html>
