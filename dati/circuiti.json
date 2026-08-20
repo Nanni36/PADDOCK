@@ -161,7 +161,8 @@
   "paese": "CZ",
   "alias": [
    "Brno",
-   "Masarykuv okruh"
+   "Masarykuv okruh",
+   "Brünn"
   ]
  },
  {
@@ -304,6 +305,14 @@
   "paese": "ES",
   "alias": [
    "Cartagena"
+  ]
+ },
+ {
+  "nome": "Circuito Monteblanco",
+  "paese": "ES",
+  "alias": [
+   "Monteblanco",
+   "Huelva"
   ]
  }
 ]

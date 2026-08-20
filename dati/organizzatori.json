@@ -72,5 +72,18 @@
     "box_normale": null,
     "box_esclusiva_piccolo": null,
     "box_esclusiva_grande": null
+  },
+  "Rehm Race Days": {
+    "sito": "https://www.rehmracedays.com/it/",
+    "email": "info@rehmracedays.de",
+    "telefono_prenotazioni": "+49 7391 755 80 67",
+    "telefono_prenotazioni_orario": null,
+    "telefono_generale": null,
+    "whatsapp": null,
+    "pagamento_online": true,
+    "note_pagamento": "Serve creare un account sul sito prima di poter acquistare",
+    "box_normale": null,
+    "box_esclusiva_piccolo": null,
+    "box_esclusiva_grande": null
   }
 }

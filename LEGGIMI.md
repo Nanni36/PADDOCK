@@ -80,6 +80,7 @@ compare una volta sola, tenendo la versione con più informazioni.
 | `schede_link` | Calendario a schede cliccabili, titolo tipo `31 AGOSTO | MUGELLO` |
 | `ics` | Chi pubblica con Google Calendar o un plugin eventi |
 | `righe_prezzo` | Una giornata, piu' tariffe (intero/scontato/promo), ognuna col suo semaforo |
+| `eventi_ticket` | Weekend di gara con piu' biglietti (giorno singolo/weekend parziale/completo); legge il TESTO della pagina, non le classi CSS |
 | `griglia_disponibilita` | Scheda con anno/mese nella classe CSS e disponibilita' scritta per intero |
 | `framer_schede` | Siti Framer/Webflow: data e circuito in elementi separati, un solo link generico |
 | `giorgioteam` | Su misura per un sito specifico senza struttura riconoscibile |

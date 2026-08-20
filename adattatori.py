@@ -956,3 +956,133 @@ def _cerca_circuito_vicino(blocco) -> str | None:
             if parole:
                 return " ".join(parole).title()
     return None
+
+
+# --------------------------------------------------------------------------
+# L. WEEKEND DI GARA CON PIU' BIGLIETTI  (Rehm Race Days e simili)
+# --------------------------------------------------------------------------
+#
+# Questo adattatore non usa selettori CSS: lavora sul TESTO della pagina.
+# Il motivo e' che il sito e' un modulo di acquisto biglietti complesso
+# (piu' tariffe, opzioni annidate, JavaScript) dove i nomi delle classi
+# contano poco e cambiano spesso, mentre le parole chiave della pagina
+# ("Event", "Tickets:", il formato tedesco di data e prezzo) sono la
+# parte piu' stabile — sono testo scritto da una persona, non markup
+# generato da un framework.
+#
+# Un limite dichiarato: se il sito cambia la LINGUA dell'interfaccia o
+# la struttura delle frasi, questo adattatore si rompe comunque. E' un
+# compromesso, non una soluzione definitiva.
+
+_PATTERN_EVENTO_TICKET = re.compile(
+    r"Event\s*\n+\s*(\d{2}\.\d{2}\.\d{4})\s*-\s*(\d{2}\.\d{2}\.\d{4})\s*\n+\s*([^\n]+)"
+)
+_PATTERN_PREZZO_EU = re.compile(r"(\d{1,3}(?:\.\d{3})*,\d{2})\s*€")
+_SUFFISSO_EDIZIONE = re.compile(r"\s+(I{1,3}|IV|V)\s*$")
+
+
+def da_pagina_eventi_ticket(
+    html: str,
+    registro: RegistroCircuiti,
+    organizzatore: str,
+    fonte_url: str,
+) -> tuple[list[Evento], list[str]]:
+    """
+    Legge calendari organizzati come 'weekend di gara', dove ogni weekend
+    puo' avere piu' biglietti in vendita (un giorno solo, un weekend
+    parziale, il pacchetto completo). Pubblica UN evento per weekend,
+    con il prezzo del biglietto piu' caro trovato (che rappresenta quasi
+    sempre il pacchetto completo) — cosi' il calendario mostra una riga
+    per weekend invece di due o tre per le combinazioni acquistabili.
+
+    La nota sull'evento lo dice esplicitamente quando esistono anche
+    opzioni piu' economiche, cosi' chi legge sa che il prezzo mostrato
+    e' quello del pacchetto pieno, non l'unico disponibile.
+    """
+    testo = BeautifulSoup(html, "lxml").get_text("\n")
+    eventi: list[Evento] = []
+    avvisi: list[str] = []
+
+    blocchi = list(_PATTERN_EVENTO_TICKET.finditer(testo))
+    if not blocchi:
+        avvisi.append(
+            "nessun blocco 'Event' trovato con il pattern atteso: "
+            "il sito potrebbe aver cambiato struttura o lingua, controlla a mano"
+        )
+        return eventi, avvisi
+
+    for indice, m in enumerate(blocchi):
+        inizio_testo, fine_testo, nome_grezzo = m.groups()
+        nome_grezzo = " ".join(nome_grezzo.split())
+        fine_blocco = blocchi[indice + 1].start() if indice + 1 < len(blocchi) else len(testo)
+        sezione = testo[m.end():fine_blocco]
+
+        inizio = _leggi_ddmmyyyy(inizio_testo)
+        fine = _leggi_ddmmyyyy(fine_testo)
+        if not inizio:
+            avvisi.append(f"data non letta per {nome_grezzo!r}: {inizio_testo!r}")
+            continue
+
+        # i numeri prima di "Tickets:" sono regole (decibel, orari), non prezzi
+        indice_tickets = sezione.find("Tickets:")
+        area_prezzi = sezione[indice_tickets:] if indice_tickets != -1 else sezione
+
+        prezzi_trovati = list(_PATTERN_PREZZO_EU.finditer(area_prezzi))
+        if not prezzi_trovati:
+            # gli eventi gia' passati o troppo vicini smettono di vendere
+            # biglietti: niente prezzo li' e' normale, non un guasto
+            if (fine or inizio) < date.today():
+                continue
+            avvisi.append(f"nessun prezzo trovato per {nome_grezzo!r}, evento futuro")
+            continue
+
+        migliore = max(
+            prezzi_trovati,
+            key=lambda pm: float(pm.group(1).replace(".", "").replace(",", "."))
+        )
+        prezzo = float(migliore.group(1).replace(".", "").replace(",", "."))
+        piu_di_un_biglietto = len(prezzi_trovati) > 1
+
+        intorno = area_prezzi[migliore.end(): migliore.end() + 250]
+        if re.search(r"warteliste|lista d.?attesa", intorno, re.IGNORECASE):
+            disponibilita = "esaurito"
+        elif re.search(r"nur wenige|wenige.{0,20}verf", intorno, re.IGNORECASE):
+            disponibilita = "esaurimento"
+        else:
+            disponibilita = "disponibile"
+
+        nome_circuito = _SUFFISSO_EDIZIONE.sub("", nome_grezzo).strip()
+        nome, paese = registro.risolvi(nome_circuito)
+        giorni_evento = (fine - inizio).days + 1 if fine and fine > inizio else 1
+
+        nota = None
+        if nome_grezzo != nome_circuito:
+            nota = f"Edizione: {nome_grezzo}"
+        if piu_di_un_biglietto:
+            extra = "prezzo del pacchetto completo; esistono anche opzioni per meno giorni, a prezzo minore"
+            nota = f"{nota} — {extra}" if nota else extra.capitalize()
+
+        eventi.append(
+            Evento(
+                circuito=nome,
+                paese=paese,
+                data=inizio,
+                organizzatore=organizzatore,
+                prezzo=prezzo,
+                disponibilita=disponibilita,
+                fonte_url=fonte_url,
+                giorni=giorni_evento,
+                data_fine=fine if giorni_evento > 1 else None,
+                note=nota,
+            )
+        )
+
+    return eventi, avvisi
+
+
+def _leggi_ddmmyyyy(testo: str) -> date | None:
+    m = re.match(r"(\d{2})\.(\d{2})\.(\d{4})", testo.strip())
+    if not m:
+        return None
+    giorno, mese, anno = map(int, m.groups())
+    return _costruisci(anno, mese, giorno)

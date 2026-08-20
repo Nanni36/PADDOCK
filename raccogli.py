@@ -95,6 +95,12 @@ FONTI = [
         "url": "https://www.giorgioteam.com/index.html",
     },
     {
+        "attiva": True,
+        "organizzatore": "Rehm Race Days",
+        "tipo": "eventi_ticket",
+        "url": "https://www.rehmracedays.com/it/rehm-race-calendario/",
+    },
+    {
         "attiva": False,
         "organizzatore": "Nome Organizzatore",
         "tipo": "tabella_html",
@@ -176,6 +182,16 @@ def raccogli_fonte(fonte: dict, html: str | None = None) -> list:
         return eventi
     if tipo == "giorgioteam":
         eventi, avvisi = adattatori.da_pagina_giorgioteam(
+            html=testo,
+            registro=REGISTRO,
+            organizzatore=fonte["organizzatore"],
+            fonte_url=fonte["url"],
+        )
+        for a in avvisi:
+            print(f"        avviso: {a}")
+        return eventi
+    if tipo == "eventi_ticket":
+        eventi, avvisi = adattatori.da_pagina_eventi_ticket(
             html=testo,
             registro=REGISTRO,
             organizzatore=fonte["organizzatore"],
