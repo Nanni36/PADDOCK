@@ -1,0 +1,38 @@
+name: Aggiorna calendario
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  raccogli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installa le librerie
+        run: pip install requests beautifulsoup4 lxml
+
+      - name: Raccogli i calendari
+        continue-on-error: true
+        run: python raccogli.py
+
+      - name: Pubblica se qualcosa e' cambiato
+        run: |
+          if [[ -n $(git status --porcelain docs/eventi.json) ]]; then
+            git config user.name  "Paddock Bot"
+            git config user.email "actions@github.com"
+            git add docs/eventi.json
+            git commit -m "Calendario aggiornato $(date +%F)"
+            git push
+          else
+            echo "Nessuna data nuova."
+          fi
