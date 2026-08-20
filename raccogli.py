@@ -150,7 +150,7 @@ def main() -> int:
         print(f"  ok    {'inserimenti manuali':<34} {len(manuali):>3} eventi")
 
     puliti = deduplica(tutti)
-    riepilogo = esporta(puliti, BASE / "sito" / "eventi.json")
+    riepilogo = esporta(puliti, BASE / "docs" / "eventi.json")
 
     print("\n--- riepilogo ---")
     print(f"  raccolti      {len(tutti)}")
