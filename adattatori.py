@@ -286,8 +286,14 @@ def da_griglia_pulsanti(
     zuppa = BeautifulSoup(html, "lxml")
     eventi: list[Evento] = []
     avvisi: list[str] = []
+    trovati = zuppa.select(selettore)
+    if not trovati:
+        avvisi.append(
+            f"il selettore {selettore!r} non ha trovato nessuna riga: "
+            "il sito potrebbe aver cambiato struttura, controlla a mano"
+        )
 
-    for nodo in zuppa.select(selettore):
+    for nodo in trovati:
         testo = " ".join(nodo.get_text(" ", strip=True).split())
         if not testo:
             continue
@@ -375,8 +381,14 @@ def da_schede_link(
     zuppa = BeautifulSoup(html, "lxml")
     eventi: list[Evento] = []
     avvisi: list[str] = []
+    trovati = zuppa.select(selettore)
+    if not trovati:
+        avvisi.append(
+            f"il selettore {selettore!r} non ha trovato nessuna scheda: "
+            "il sito potrebbe aver cambiato struttura, controlla a mano"
+        )
 
-    for scheda in zuppa.select(selettore):
+    for scheda in trovati:
         titolo_nodo = scheda.select_one(selettore_titolo)
         if not titolo_nodo:
             continue
@@ -495,8 +507,14 @@ def da_righe_prezzo_multiplo(
     zuppa = BeautifulSoup(html, "lxml")
     eventi: list[Evento] = []
     avvisi: list[str] = []
+    trovati = zuppa.select(selettore_riga)
+    if not trovati:
+        avvisi.append(
+            f"il selettore {selettore_riga!r} non ha trovato nessuna riga: "
+            "il sito potrebbe aver cambiato struttura, controlla a mano"
+        )
 
-    for riga in zuppa.select(selettore_riga):
+    for riga in trovati:
         nodo_circuito = riga.select_one(".circuit-name")
         if not nodo_circuito:
             continue
@@ -653,8 +671,14 @@ def da_griglia_disponibilita(
     zuppa = BeautifulSoup(html, "lxml")
     eventi: list[Evento] = []
     avvisi: list[str] = []
+    trovati = zuppa.select(selettore)
+    if not trovati:
+        avvisi.append(
+            f"il selettore {selettore!r} non ha trovato nessuna scheda: "
+            "il sito potrebbe aver cambiato struttura, controlla a mano"
+        )
 
-    for scheda in zuppa.select(selettore):
+    for scheda in trovati:
         classi = " ".join(scheda.get("class", []))
         m_mese = re.search(r"mnt(\d{4})(\d{2})", classi)
         nodo_data = scheda.select_one(selettore_data)
@@ -739,8 +763,15 @@ def da_schede_framer(
     zuppa = BeautifulSoup(html, "lxml")
     eventi: list[Evento] = []
     avvisi: list[str] = []
+    trovati = zuppa.select(selettore_scheda)
+    if not trovati:
+        avvisi.append(
+            f"il selettore {selettore_scheda!r} non ha trovato nessuna scheda: "
+            "i siti Framer cambiano le classi ad ogni pubblicazione, "
+            "controlla il selettore con l'ispettore del browser"
+        )
 
-    for scheda in zuppa.select(selettore_scheda):
+    for scheda in trovati:
         nodo_data = scheda.select_one(selettore_data)
         nodo_circuito = scheda.select_one(selettore_circuito)
         if not nodo_data or not nodo_circuito:
@@ -830,8 +861,14 @@ def da_pagina_giorgioteam(
     zuppa = BeautifulSoup(html, "lxml")
     eventi: list[Evento] = []
     avvisi: list[str] = []
+    blocchi_ombra = zuppa.select("div.ombra")
+    if not blocchi_ombra:
+        avvisi.append(
+            "nessun div.ombra trovato: il sito potrebbe aver cambiato "
+            "struttura, controlla a mano"
+        )
 
-    for blocco in zuppa.select("div.ombra"):
+    for blocco in blocchi_ombra:
         link_modulo = blocco.find(
             "a", href=lambda h: h and "moduloiscrizione" in h
         )
