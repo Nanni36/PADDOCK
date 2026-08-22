@@ -1,39 +1,7 @@
 {
-  "aggiornato": "2026-08-21T05:00:05",
-  "totale": 51,
+  "aggiornato": "2026-08-22T04:19:07",
+  "totale": 49,
   "eventi": [
-    {
-      "circuito": "Mugello Circuit",
-      "data": "2026-08-21",
-      "organizzatore": "Promo Racing",
-      "fonte_url": "https://www.promoracing.it/it/calendario/moto",
-      "paese": "IT",
-      "prezzo": null,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": "esaurito",
-      "livelli": [],
-      "url_iscrizione": "https://www.promoracing.it/it/calendario/moto.643/prove-moto#21",
-      "note": null,
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
-      "circuito": "Red Bull Ring",
-      "data": "2026-08-21",
-      "organizzatore": "Rehm Race Days",
-      "fonte_url": "https://www.rehmracedays.com/it/rehm-race-calendario/",
-      "paese": "AT",
-      "prezzo": 1190.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": "esaurimento",
-      "livelli": [],
-      "url_iscrizione": "https://www.rehmracedays.com/it/rehm-race-calendario/",
-      "note": null,
-      "giorni": 3,
-      "data_fine": "2026-08-23"
-    },
     {
       "circuito": "Mugello Circuit",
       "data": "2026-08-22",
