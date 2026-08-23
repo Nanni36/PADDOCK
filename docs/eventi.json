@@ -1,23 +1,7 @@
 {
-  "aggiornato": "2026-08-22T04:19:07",
-  "totale": 49,
+  "aggiornato": "2026-08-23T04:55:49",
+  "totale": 48,
   "eventi": [
-    {
-      "circuito": "Mugello Circuit",
-      "data": "2026-08-22",
-      "organizzatore": "Promo Racing",
-      "fonte_url": "https://www.promoracing.it/it/calendario/moto",
-      "paese": "IT",
-      "prezzo": null,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": "esaurito",
-      "livelli": [],
-      "url_iscrizione": "https://www.promoracing.it/it/calendario/moto.643/prove-moto#22",
-      "note": null,
-      "giorni": 1,
-      "data_fine": null
-    },
     {
       "circuito": "Mugello Circuit",
       "data": "2026-08-23",
@@ -123,7 +107,7 @@
       "prezzo": 920.0,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "disponibile",
+      "disponibilita": "esaurimento",
       "livelli": [],
       "url_iscrizione": "https://www.gullyracing.it/prodotto?id=177",
       "note": null,
@@ -187,7 +171,7 @@
       "prezzo": 199.0,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "disponibile",
+      "disponibilita": "esaurimento",
       "livelli": [],
       "url_iscrizione": "https://www.gullyracing.it/prodotto?id=203",
       "note": null,
