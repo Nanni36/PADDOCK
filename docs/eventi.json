@@ -1,23 +1,7 @@
 {
-  "aggiornato": "2026-08-23T04:55:49",
-  "totale": 48,
+  "aggiornato": "2026-08-24T05:24:25",
+  "totale": 47,
   "eventi": [
-    {
-      "circuito": "Mugello Circuit",
-      "data": "2026-08-23",
-      "organizzatore": "Promo Racing",
-      "fonte_url": "https://www.promoracing.it/it/calendario/moto",
-      "paese": "IT",
-      "prezzo": null,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": "esaurito",
-      "livelli": [],
-      "url_iscrizione": "https://www.promoracing.it/it/calendario/moto.643/prove-moto#23",
-      "note": null,
-      "giorni": 1,
-      "data_fine": null
-    },
     {
       "circuito": "Cremona Circuit",
       "data": "2026-08-29",
