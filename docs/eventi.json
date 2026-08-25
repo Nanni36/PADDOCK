@@ -1,6 +1,6 @@
 {
-  "aggiornato": "2026-08-24T05:24:25",
-  "totale": 47,
+  "aggiornato": "2026-08-25T04:59:56",
+  "totale": 46,
   "eventi": [
     {
       "circuito": "Cremona Circuit",
@@ -721,22 +721,6 @@
       "note": null,
       "giorni": 3,
       "data_fine": "2027-03-03"
-    },
-    {
-      "circuito": "Circuito de Portimao",
-      "data": "2027-03-12",
-      "organizzatore": "Rehm Race Days",
-      "fonte_url": "https://www.rehmracedays.com/it/rehm-race-calendario/",
-      "paese": "PT",
-      "prezzo": 890.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": "esaurito",
-      "livelli": [],
-      "url_iscrizione": "https://www.rehmracedays.com/it/rehm-race-calendario/",
-      "note": "Edizione: Portimao I",
-      "giorni": 3,
-      "data_fine": "2027-03-14"
     },
     {
       "circuito": "Automotodrom Grobnik",
