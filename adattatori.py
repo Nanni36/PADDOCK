@@ -22,7 +22,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from core import Evento, RegistroCircuiti, leggi_data, leggi_prezzo, _costruisci
-from core import _MESI, _semplifica
+from core import _MESI, _semplifica, normalizza_organizzatore
 
 INTESTAZIONI = {
     # Ci presentiamo. Un bot che si nasconde è un bot che si fa bloccare.
@@ -1090,3 +1090,724 @@ def _leggi_ddmmyyyy(testo: str) -> date | None:
         return None
     giorno, mese, anno = map(int, m.groups())
     return _costruisci(anno, mese, giorno)
+
+
+# --------------------------------------------------------------------------
+# M. WOOCOMMERCE CON DATA NELLO SLUG  (Eleven Riding Life e simili)
+# --------------------------------------------------------------------------
+#
+# Su questi siti l'informazione piu' affidabile non e' nel markup ma
+# nell'indirizzo del prodotto:
+#     /prodotto/track-day-circuito-di-magione-30-agosto-2026/
+# Circuito e data sono li' dentro, gia' puliti. Le classi CSS dei temi
+# WordPress cambiano ad ogni aggiornamento del tema; lo slug no, perche'
+# e' un indirizzo pubblico che il sito non puo' cambiare senza rompere
+# i propri link.
+
+_PATTERN_SLUG_TRACKDAY = re.compile(
+    r"/prodotto/track-day-(.+?)-(\d{1,2})-([a-z]+)-(\d{4})/?$", re.IGNORECASE
+)
+
+
+def da_woocommerce_slug(
+    html: str,
+    registro: RegistroCircuiti,
+    organizzatore: str,
+    fonte_url: str,
+) -> tuple[list[Evento], list[str]]:
+    """
+    Legge i track day da un sito WooCommerce dove ogni giornata e' un
+    prodotto con circuito e data nell'indirizzo.
+
+    Prezzo e disponibilita' si leggono dalla scheda che contiene il link:
+    il prezzo dal testo ("a partire da 129 €"), la disponibilita' dal
+    nome del file del semaforo (verde/giallo/rosso).
+    """
+    zuppa = BeautifulSoup(html, "lxml")
+    eventi: list[Evento] = []
+    avvisi: list[str] = []
+
+    link_trovati = zuppa.select("a[href*='/prodotto/track-day-']")
+    if not link_trovati:
+        avvisi.append(
+            "nessun link a /prodotto/track-day-... trovato: il sito potrebbe "
+            "aver cambiato la struttura degli indirizzi, controlla a mano"
+        )
+        return eventi, avvisi
+
+    visti = set()
+    for link in link_trovati:
+        href = link["href"].split("?")[0]
+        m = _PATTERN_SLUG_TRACKDAY.search(href)
+        if not m:
+            continue
+
+        grezzo_circuito, giorno, mese_testo, anno = m.groups()
+        mese = _MESI.get(_semplifica(mese_testo))
+        if not mese:
+            avvisi.append(f"mese non riconosciuto nell'indirizzo: {href!r}")
+            continue
+
+        quando = _costruisci(int(anno), mese, int(giorno))
+        if not quando:
+            avvisi.append(f"data inesistente nell'indirizzo: {href!r}")
+            continue
+
+        chiave = (href, quando)
+        if chiave in visti:
+            continue                       # lo stesso prodotto linkato piu' volte
+        visti.add(chiave)
+
+        nome, paese = registro.risolvi(grezzo_circuito.replace("-", " "))
+        scheda = _scheda_contenitore(link)
+        testo_scheda = scheda.get_text(" ", strip=True) if scheda else ""
+
+        eventi.append(
+            Evento(
+                circuito=nome,
+                paese=paese,
+                data=quando,
+                organizzatore=organizzatore,
+                prezzo=leggi_prezzo(testo_scheda),
+                disponibilita=_semaforo_immagine(scheda),
+                url_iscrizione=href if href.startswith("http")
+                               else urlsplit(fonte_url)._replace(path=href, query="").geturl(),
+                fonte_url=fonte_url,
+            )
+        )
+
+    return eventi, avvisi
+
+
+def _scheda_contenitore(link):
+    """Risale di qualche livello per trovare il riquadro che contiene
+    prezzo e semaforo insieme al link."""
+    nodo = link
+    for _ in range(5):
+        nodo = nodo.parent
+        if nodo is None:
+            return link
+        if nodo.find("img", src=lambda s: s and "semaforo" in s.lower()):
+            return nodo
+        if "€" in nodo.get_text():
+            return nodo
+    return link
+
+
+def _semaforo_immagine(scheda) -> str | None:
+    """Il semaforo qui e' un'immagine: semaforo_verde.svg, _giallo, _rosso."""
+    if not scheda:
+        return None
+    img = scheda.find("img", src=lambda s: s and "semaforo" in s.lower())
+    if not img:
+        return None
+    src = img["src"].lower()
+    if "verde" in src:
+        return "disponibile"
+    if "giall" in src or "arancio" in src:
+        return "esaurimento"
+    if "ross" in src:
+        return "esaurito"
+    return None
+
+
+# --------------------------------------------------------------------------
+# N. CALENDARIO RAGGRUPPATO PER CIRCUITO  (Portami in Pista e simili)
+# --------------------------------------------------------------------------
+#
+# Struttura: un titolo per circuito, e sotto una riga per mese con i
+# giorni come singoli link di prenotazione:
+#     Cremona Circuit
+#       Aprile  24 - 25   195-219€
+#       Maggio  4 - 18 - 25   185-195€
+#
+# Quando il prezzo e' un intervallo ("195-219€") significa che le
+# giornate di quel mese costano diversamente, ma la pagina non dice
+# quale giorno costa quanto. In quel caso si pubblica il prezzo piu'
+# basso e lo si dichiara nella nota: meglio "a partire da" dichiarato
+# che un numero preciso attribuito alla giornata sbagliata.
+
+_PATTERN_INTERVALLO_PREZZO = re.compile(r"(\d{2,4})\s*[-–]\s*(\d{2,4})\s*€")
+
+
+def da_calendario_per_circuito(
+    html: str,
+    registro: RegistroCircuiti,
+    organizzatore: str,
+    fonte_url: str,
+    anno: int,
+    selettore_titolo: str = "h3",
+    selettore_link_giorno: str = "a[href*='eventId=']",
+) -> tuple[list[Evento], list[str]]:
+    zuppa = BeautifulSoup(html, "lxml")
+    eventi: list[Evento] = []
+    avvisi: list[str] = []
+
+    titoli = [t for t in zuppa.select(selettore_titolo) if t.get_text(strip=True)]
+    if not titoli:
+        avvisi.append(
+            f"nessun titolo {selettore_titolo!r} trovato: il sito potrebbe "
+            "aver cambiato struttura, controlla a mano"
+        )
+        return eventi, avvisi
+
+    for indice, titolo in enumerate(titoli):
+        grezzo_circuito = titolo.get_text(" ", strip=True)
+        nome, paese = registro.risolvi(grezzo_circuito)
+
+        # tutti gli elementi tra questo titolo e il prossimo
+        fine = titoli[indice + 1] if indice + 1 < len(titoli) else None
+        blocco = []
+        for elemento in titolo.next_elements:
+            if fine is not None and elemento is fine:
+                break
+            if getattr(elemento, "name", None) == "li":
+                blocco.append(elemento)
+
+        for riga in blocco:
+            testo = " ".join(riga.get_text(" ", strip=True).split())
+            m_mese = re.search(rf"\b({_NOMI_MESI})\b", testo, re.IGNORECASE)
+            if not m_mese:
+                continue
+            mese = _MESI[m_mese.group(1).lower()]
+
+            prezzo, nota_prezzo = _prezzo_da_riga(testo)
+
+            for link_giorno in riga.select(selettore_link_giorno):
+                etichetta = link_giorno.get_text(strip=True)
+                if not etichetta.isdigit():
+                    continue
+                quando = _costruisci(anno, mese, int(etichetta))
+                if not quando:
+                    avvisi.append(f"data inesistente: {etichetta}/{mese}/{anno} ({nome})")
+                    continue
+
+                href = link_giorno["href"]
+                if href.startswith("/"):
+                    href = urlsplit(fonte_url)._replace(path=href, query="").geturl()
+
+                eventi.append(
+                    Evento(
+                        circuito=nome,
+                        paese=paese,
+                        data=quando,
+                        organizzatore=organizzatore,
+                        prezzo=prezzo,
+                        url_iscrizione=link_giorno["href"] if link_giorno["href"].startswith("http") else href,
+                        fonte_url=fonte_url,
+                        note=nota_prezzo,
+                    )
+                )
+
+    return eventi, avvisi
+
+
+def _prezzo_da_riga(testo: str) -> tuple[float | None, str | None]:
+    """Un prezzo solo, oppure un intervallo che vale per piu' giornate."""
+    m = _PATTERN_INTERVALLO_PREZZO.search(testo)
+    if m:
+        basso, alto = float(m.group(1)), float(m.group(2))
+        return basso, (f"Prezzo a partire da {basso:.0f}€ (fino a {alto:.0f}€ "
+                       "a seconda della giornata: il sito non specifica quale)")
+    return leggi_prezzo(testo), None
+
+
+# --------------------------------------------------------------------------
+# O. CALENDARIO DEL CIRCUITO  (il circuito pubblica CHI affitta la pista)
+# --------------------------------------------------------------------------
+#
+# Fonte di tipo diverso dalle altre: qui il circuito e' fisso e a cambiare
+# e' l'organizzatore. Serve a due cose:
+#   1. coprire organizzatori che non abbiamo ancora come fonte propria
+#   2. incrociare i dati di quelli che abbiamo gia'
+# I doppioni si risolvono da soli grazie a normalizza_organizzatore().
+#
+# Non ci sono prezzi: il circuito rimanda all'organizzatore. Restano None.
+
+_PATTERN_DETTAGLIO_EVENTO = re.compile(
+    r"/details/(\d{4})-(\d{2})-(\d{2})/\d+-(.+?)-\d+/?$"
+)
+
+
+def da_calendario_circuito(
+    html: str,
+    registro: RegistroCircuiti,
+    circuito: str,
+    fonte_url: str,
+    selettore_link: str = "a[href*='/details/']",
+) -> tuple[list[Evento], list[str]]:
+    """
+    Legge il calendario di un circuito che elenca le giornate affittate ai
+    vari organizzatori. Data e nome dell'organizzatore stanno nell'indirizzo
+    della pagina di dettaglio:
+        /details/2026-08-31/1786-rossocorsa-1
+    """
+    zuppa = BeautifulSoup(html, "lxml")
+    eventi: list[Evento] = []
+    avvisi: list[str] = []
+    nome_circuito, paese = registro.risolvi(circuito)
+
+    link_trovati = zuppa.select(selettore_link)
+    if not link_trovati:
+        avvisi.append(
+            f"nessun link {selettore_link!r} trovato: il sito potrebbe aver "
+            "cambiato struttura, controlla a mano"
+        )
+        return eventi, avvisi
+
+    visti = set()
+    for link in link_trovati:
+        href = link["href"].split("?")[0]
+        m = _PATTERN_DETTAGLIO_EVENTO.search(href)
+        if not m:
+            continue
+
+        anno, mese, giorno, slug = m.groups()
+        quando = _costruisci(int(anno), int(mese), int(giorno))
+        if not quando:
+            avvisi.append(f"data inesistente nell'indirizzo: {href!r}")
+            continue
+
+        # il testo del link e' il nome scritto per esteso; lo slug e' il
+        # ripiego quando il link e' solo un'icona
+        etichetta = link.get_text(" ", strip=True)
+        grezzo = etichetta if len(etichetta) > 2 else slug.replace("-", " ")
+        organizzatore = normalizza_organizzatore(grezzo)
+
+        chiave = (quando, _semplifica(organizzatore))
+        if chiave in visti:
+            continue
+        visti.add(chiave)
+
+        if href.startswith("/"):
+            href = urlsplit(fonte_url)._replace(path=href, query="").geturl()
+
+        eventi.append(
+            Evento(
+                circuito=nome_circuito,
+                paese=paese,
+                data=quando,
+                organizzatore=organizzatore,
+                url_iscrizione=href,
+                fonte_url=fonte_url,
+                note="Data dal calendario del circuito: prezzo e iscrizione "
+                     "vanno chiesti all'organizzatore",
+            )
+        )
+
+    return eventi, avvisi
+
+
+# --------------------------------------------------------------------------
+# P. CALENDARIO PER MESE CON GIORNO ATTACCATO  (Vallelunga)
+# --------------------------------------------------------------------------
+#
+# Titolo del mese, e sotto voci dove giorno e sigla del giorno della
+# settimana sono attaccati al resto del testo: "26DOM3 gruppi APRILIA".
+# Il prezzo non e' per singola data: il sito pubblica un listino generale
+# (feriale / prefestivo-festivo). Non lo attribuiamo alla giornata — va
+# nella nota, cosi' resta un fatto e non un'attribuzione inventata.
+
+_PATTERN_GIORNO_ATTACCATO = re.compile(
+    r"^\s*(\d{1,2})\s*(lun|mar|mer|gio|ven|sab|dom)(.*)", re.IGNORECASE
+)
+
+
+def da_calendario_mese_compatto(
+    html: str,
+    registro: RegistroCircuiti,
+    organizzatore: str,
+    circuito: str,
+    fonte_url: str,
+    anno: int,
+    nota_prezzi: str | None = None,
+    selettore_mese: str = "h3",
+) -> tuple[list[Evento], list[str]]:
+    zuppa = BeautifulSoup(html, "lxml")
+    eventi: list[Evento] = []
+    avvisi: list[str] = []
+    nome_circuito, paese = registro.risolvi(circuito)
+
+    intestazioni = [h for h in zuppa.select(selettore_mese)
+                    if _MESI.get(_semplifica(h.get_text()))]
+    if not intestazioni:
+        avvisi.append(
+            f"nessun titolo di mese trovato con {selettore_mese!r}: "
+            "il sito potrebbe aver cambiato struttura, controlla a mano"
+        )
+        return eventi, avvisi
+
+    for indice, intestazione in enumerate(intestazioni):
+        mese = _MESI[_semplifica(intestazione.get_text())]
+        fine = intestazioni[indice + 1] if indice + 1 < len(intestazioni) else None
+
+        # raccoglie gli elementi che stanno fra questa intestazione e la
+        # prossima, camminando in avanti nel documento
+        blocco = []
+        for elemento in intestazione.next_elements:
+            if fine is not None and elemento is fine:
+                break
+            if getattr(elemento, "name", None) in ("a", "li", "p"):
+                blocco.append(elemento)
+
+        for elemento in blocco:
+            testo = " ".join(elemento.get_text(" ", strip=True).split())
+            m = _PATTERN_GIORNO_ATTACCATO.match(testo)
+            if not m:
+                continue
+
+            giorno, sigla, descrizione = m.groups()
+            quando = _costruisci(anno, mese, int(giorno))
+            if not quando:
+                avvisi.append(f"data inesistente: {giorno}/{mese}/{anno}")
+                continue
+
+            atteso = _GIORNI_SETTIMANA.get(sigla.lower())
+            if atteso is not None and quando.weekday() != atteso:
+                avvisi.append(
+                    f"{testo[:40]!r}: il {quando} non e' {sigla.lower()} — "
+                    f"controlla l'anno configurato ({anno})"
+                )
+                continue
+
+            descrizione = descrizione.strip(" -–—")
+            note = [n for n in (descrizione or None, nota_prezzi) if n]
+
+            eventi.append(
+                Evento(
+                    circuito=nome_circuito,
+                    paese=paese,
+                    data=quando,
+                    organizzatore=organizzatore,
+                    url_iscrizione=fonte_url,
+                    fonte_url=fonte_url,
+                    note=" — ".join(note) if note else None,
+                )
+            )
+
+    # la stessa data puo' comparire in piu' elementi annidati
+    unici, visti = [], set()
+    for e in eventi:
+        if e.data in visti:
+            continue
+        visti.add(e.data)
+        unici.append(e)
+    return unici, avvisi
+
+
+# --------------------------------------------------------------------------
+# Q. AGENDA EVENTI DEL CIRCUITO  (Tazio Nuvolari: auto e moto insieme)
+# --------------------------------------------------------------------------
+
+_PATTERN_AGENDA = re.compile(
+    rf"\b(lun|mar|mer|gio|ven|sab|dom)\s*(\d{{1,2}})\s*"
+    rf"(gen|feb|mar|apr|mag|giu|lug|ago|set|ott|nov|dic)\b",
+    re.IGNORECASE,
+)
+
+
+def da_agenda_circuito(
+    html: str,
+    registro: RegistroCircuiti,
+    organizzatore: str,
+    circuito: str,
+    fonte_url: str,
+    anno: int,
+    solo_moto: bool = True,
+) -> tuple[list[Evento], list[str]]:
+    """
+    Agenda che mescola giornate auto e moto. Con solo_moto attivo si
+    pubblicano solo quelle moto: un portale di track day moto che mostra
+    una giornata auto manda il pilota a sbattere contro un cancello.
+    """
+    zuppa = BeautifulSoup(html, "lxml")
+    eventi: list[Evento] = []
+    avvisi: list[str] = []
+    nome_circuito, paese = registro.risolvi(circuito)
+
+    schede = zuppa.select("a[href*='/events/']")
+    if not schede:
+        avvisi.append(
+            "nessun link a /events/ trovato: il sito potrebbe aver cambiato "
+            "struttura, controlla a mano"
+        )
+        return eventi, avvisi
+
+    visti = set()
+    for scheda in schede:
+        contenitore = scheda.parent or scheda
+        testo = " ".join(contenitore.get_text(" ", strip=True).split())
+
+        m = _PATTERN_AGENDA.search(testo)
+        if not m:
+            continue
+
+        sigla, giorno, mese_sigla = m.groups()
+        mese = _MESI.get(_semplifica(mese_sigla))
+        if not mese:
+            continue
+
+        quando = _costruisci(anno, mese, int(giorno))
+        if not quando:
+            avvisi.append(f"data inesistente in: {testo[:50]!r}")
+            continue
+
+        atteso = _GIORNI_SETTIMANA.get(sigla.lower())
+        if atteso is not None and quando.weekday() != atteso:
+            avvisi.append(
+                f"{testo[:40]!r}: il {quando} non e' {sigla.lower()} — "
+                f"controlla l'anno configurato ({anno})"
+            )
+            continue
+
+        semplificato = _semplifica(testo)
+        e_moto = "moto" in semplificato
+        e_auto = "auto" in semplificato or "kart" in semplificato
+        if solo_moto and not e_moto:
+            continue
+        if solo_moto and e_auto and not e_moto:
+            continue
+
+        href = scheda["href"]
+        if (quando, href) in visti:
+            continue
+        visti.add((quando, href))
+
+        # il titolo e' il testo dopo l'orario di fine
+        titolo = re.split(r"\d{1,2}:\d{2}", testo)[-1].strip()
+
+        eventi.append(
+            Evento(
+                circuito=nome_circuito,
+                paese=paese,
+                data=quando,
+                organizzatore=organizzatore,
+                url_iscrizione=href,
+                fonte_url=fonte_url,
+                note=titolo[:120] if titolo else None,
+            )
+        )
+
+    return eventi, avvisi
+
+
+# --------------------------------------------------------------------------
+# R. SPEER RACING  (elenco eventi con prezzi, disponibilita' e box)
+# --------------------------------------------------------------------------
+#
+# Ogni evento compare due volte nella pagina: una scheda principale
+# (con circuito, limite dB e prezzo) e una scheda "On-site services"
+# con i costi di box e trasporto. Le uniamo: la seconda porta proprio
+# i prezzi dei box, che quasi nessun altro organizzatore pubblica.
+
+_MESI_INGLESI = {
+    "jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6,
+    "jul": 7, "aug": 8, "sep": 9, "sept": 9, "oct": 10, "nov": 11, "dec": 12,
+}
+
+_PATTERN_DATA_SPEER = re.compile(
+    r"(\d{1,2})\.\s*(?:-\s*(\d{1,2})\.\s*)?"
+    r"(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Sep|Oct|Nov|Dec)\s+(\d{4})",
+    re.IGNORECASE,
+)
+_PATTERN_PREZZO_SPEER = re.compile(r"€\s*([\d.]+)")
+
+
+def _prezzo_speer(testo: str) -> float | None:
+    """'€ 1.028.97' -> 1028.97 — le ultime due cifre sono i centesimi."""
+    m = _PATTERN_PREZZO_SPEER.search(testo)
+    if not m:
+        return None
+    pezzi = m.group(1).rstrip(".").split(".")
+    if len(pezzi) == 1:
+        return float(pezzi[0])
+    return float("".join(pezzi[:-1]) + "." + pezzi[-1])
+
+
+def da_elenco_speer(
+    html: str,
+    registro: RegistroCircuiti,
+    organizzatore: str,
+    fonte_url: str,
+) -> tuple[list[Evento], list[str]]:
+    testo = BeautifulSoup(html, "lxml").get_text("\n")
+    eventi: list[Evento] = []
+    avvisi: list[str] = []
+
+    tagli = list(_PATTERN_DATA_SPEER.finditer(testo))
+    if not tagli:
+        avvisi.append(
+            "nessuna data trovata nel formato atteso: il sito potrebbe aver "
+            "cambiato struttura o lingua, controlla a mano"
+        )
+        return eventi, avvisi
+
+    blocchi = []
+    for i, m in enumerate(tagli):
+        fine = tagli[i + 1].start() if i + 1 < len(tagli) else len(testo)
+        blocchi.append((m, testo[m.end():fine]))
+
+    for indice, (m, corpo) in enumerate(blocchi):
+        if "On-site services" in corpo:
+            continue                       # e' la scheda dei servizi, non l'evento
+
+        giorno, giorno_fine, mese_testo, anno = m.groups()
+        mese = _MESI_INGLESI.get(mese_testo.lower())
+        if not mese:
+            continue
+
+        inizio = _costruisci(int(anno), mese, int(giorno))
+        if not inizio:
+            avvisi.append(f"data inesistente: {giorno}/{mese}/{anno}")
+            continue
+        fine = _costruisci(int(anno), mese, int(giorno_fine)) if giorno_fine else None
+
+        righe = [r.strip() for r in corpo.split("\n") if r.strip()]
+        if not righe:
+            continue
+        titolo = righe[0]
+
+        # il circuito e' la riga con il tracciato: "Mugello - Full Circuit"
+        grezzo_circuito = None
+        for riga in righe[:8]:
+            if re.search(r"-\s*(full circuit|idm|\d\.\d)", riga, re.IGNORECASE):
+                grezzo_circuito = re.split(r"\s*-\s*", riga)[0]
+                break
+        if not grezzo_circuito:
+            grezzo_circuito = re.split(r"\s+\d|\s+-\s+", titolo)[0]
+
+        nome, paese = registro.risolvi(grezzo_circuito)
+
+        if re.search(r"waiting\s*list", corpo, re.IGNORECASE):
+            disponibilita = "esaurito"
+        elif re.search(r"few places", corpo, re.IGNORECASE):
+            disponibilita = "esaurimento"
+        elif re.search(r"\bavailable\b", corpo, re.IGNORECASE):
+            disponibilita = "disponibile"
+        else:
+            disponibilita = None
+
+        # la scheda successiva, se e' quella dei servizi, porta i box
+        note = []
+        if indice + 1 < len(blocchi) and "On-site services" in blocchi[indice + 1][1]:
+            servizi = blocchi[indice + 1][1]
+            for etichetta, chiave in [("Posto box", r"pitbox\s*place"), ("Box intero", r"^pitbox\b")]:
+                mm = re.search(chiave + r"\s*\n\s*€\s*([\d.]+)", servizi,
+                               re.IGNORECASE | re.MULTILINE)
+                if mm:
+                    valore = _prezzo_speer("€ " + mm.group(1))
+                    if valore:
+                        note.append(f"{etichetta} {valore:.0f}€")
+
+        link = None
+        for a in BeautifulSoup(html, "lxml").select("a[href*='/booking/event/']"):
+            link = a["href"]
+            break
+
+        eventi.append(
+            Evento(
+                circuito=nome,
+                paese=paese,
+                data=inizio,
+                organizzatore=organizzatore,
+                prezzo=_prezzo_speer(corpo),
+                disponibilita=disponibilita,
+                url_iscrizione=fonte_url,
+                fonte_url=fonte_url,
+                giorni=(fine - inizio).days + 1 if fine and fine > inizio else 1,
+                data_fine=fine if fine and fine > inizio else None,
+                note=" — ".join([titolo] + note) if note else titolo,
+            )
+        )
+
+    return eventi, avvisi
+
+
+# --------------------------------------------------------------------------
+# S. GASSS  (weekend con circuito e date nel titolo)
+# --------------------------------------------------------------------------
+
+_PATTERN_GASSS = re.compile(
+    r"(\d{2})\.([A-Za-z]{3})\.(\d{4})\s*-\s*(\d{2})\.([A-Za-z]{3})\.(\d{4})"
+)
+
+
+def da_elenco_gasss(
+    html: str,
+    registro: RegistroCircuiti,
+    organizzatore: str,
+    fonte_url: str,
+) -> tuple[list[Evento], list[str]]:
+    """
+    Ogni evento e' un weekend: '05.Set.2026 - 07.Set.2026' e sotto il
+    titolo 'Cremona 05.09.-07.09.2026'. Il circuito e' la parte del
+    titolo prima della data.
+    """
+    zuppa = BeautifulSoup(html, "lxml")
+    eventi: list[Evento] = []
+    avvisi: list[str] = []
+
+    link_evento = zuppa.select("a[href*='/event/']")
+    if not link_evento:
+        avvisi.append(
+            "nessun link a /event/ trovato: il sito potrebbe aver cambiato "
+            "struttura, controlla a mano"
+        )
+        return eventi, avvisi
+
+    visti = set()
+    for link in link_evento:
+        titolo = link.get_text(" ", strip=True)
+        if not titolo:
+            continue
+
+        contenitore = link.parent
+        for _ in range(3):
+            if contenitore is None:
+                break
+            if _PATTERN_GASSS.search(contenitore.get_text(" ", strip=True)):
+                break
+            contenitore = contenitore.parent
+        if contenitore is None:
+            continue
+
+        m = _PATTERN_GASSS.search(" ".join(contenitore.get_text(" ", strip=True).split()))
+        if not m:
+            continue
+
+        g1, m1, a1, g2, m2, a2 = m.groups()
+        mese1 = _MESI.get(_semplifica(m1))
+        mese2 = _MESI.get(_semplifica(m2))
+        if not mese1:
+            avvisi.append(f"mese non riconosciuto: {m1!r}")
+            continue
+
+        inizio = _costruisci(int(a1), mese1, int(g1))
+        fine = _costruisci(int(a2), mese2, int(g2)) if mese2 else None
+        if not inizio:
+            continue
+
+        grezzo_circuito = re.split(r"\s*\d", titolo)[0].strip()
+        if not grezzo_circuito:
+            continue
+        nome, paese = registro.risolvi(grezzo_circuito)
+
+        href = link["href"]
+        if (inizio, nome) in visti:
+            continue
+        visti.add((inizio, nome))
+
+        eventi.append(
+            Evento(
+                circuito=nome,
+                paese=paese,
+                data=inizio,
+                organizzatore=organizzatore,
+                url_iscrizione=href,
+                fonte_url=fonte_url,
+                giorni=(fine - inizio).days + 1 if fine and fine > inizio else 1,
+                data_fine=fine if fine and fine > inizio else None,
+            )
+        )
+
+    return eventi, avvisi

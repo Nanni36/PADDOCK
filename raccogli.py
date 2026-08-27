@@ -101,6 +101,58 @@ FONTI = [
         "url": "https://www.rehmracedays.com/it/rehm-race-calendario/",
     },
     {
+        "attiva": True,
+        "organizzatore": "Eleven Riding Life",
+        "tipo": "woocommerce_slug",
+        "url": "https://www.elevenridinglife.com/track-days/",
+    },
+    {
+        "attiva": True,
+        "organizzatore": "Portami in Pista",
+        "tipo": "calendario_per_circuito",
+        "url": "https://www.portamiinpista.it/TrackDays/",
+        "anno": 2026,
+    },
+    {
+        # Il Mugello pubblica CHI affitta la pista ogni giornata: serve a
+        # scoprire organizzatori nuovi e a incrociare quelli gia' presenti.
+        "attiva": True,
+        "organizzatore": "Mugello Circuit (calendario)",
+        "tipo": "calendario_circuito",
+        "circuito": "Mugello Circuit",
+        "url": "https://mugellocircuit.com/it/eventi/prove-libere-moto",
+    },
+    {
+        "attiva": True,
+        "organizzatore": "Vallelunga (circuito)",
+        "tipo": "mese_compatto",
+        "circuito": "Autodromo di Vallelunga",
+        "url": "https://motorsport.vallelunga.it/pl-moto-2/",
+        "anno": 2026,
+        "nota_prezzi": "Listino: feriale 180\u20ac, prefestivo/festivo 210\u20ac, box 230\u20ac",
+    },
+    {
+        # Agenda che mescola auto e moto: l'adattatore pubblica solo le moto
+        "attiva": True,
+        "organizzatore": "Tazio Nuvolari (circuito)",
+        "tipo": "agenda_circuito",
+        "circuito": "Tazio Nuvolari",
+        "url": "https://shop.circuitotazionuvolari.it/",
+        "anno": 2026,
+    },
+    {
+        "attiva": True,
+        "organizzatore": "Speer Racing",
+        "tipo": "speer",
+        "url": "https://www.speer-racing.de/en/",
+    },
+    {
+        "attiva": True,
+        "organizzatore": "Gasss",
+        "tipo": "gasss",
+        "url": "https://www.gasss.eu/it/eventi/",
+    },
+    {
         "attiva": False,
         "organizzatore": "Nome Organizzatore",
         "tipo": "tabella_html",
@@ -186,6 +238,65 @@ def raccogli_fonte(fonte: dict, html: str | None = None) -> list:
             registro=REGISTRO,
             organizzatore=fonte["organizzatore"],
             fonte_url=fonte["url"],
+        )
+        for a in avvisi:
+            print(f"        avviso: {a}")
+        return eventi
+    if tipo == "speer":
+        eventi, avvisi = adattatori.da_elenco_speer(
+            html=testo, registro=REGISTRO,
+            organizzatore=fonte["organizzatore"], fonte_url=fonte["url"])
+        for a in avvisi:
+            print(f"        avviso: {a}")
+        return eventi
+    if tipo == "gasss":
+        eventi, avvisi = adattatori.da_elenco_gasss(
+            html=testo, registro=REGISTRO,
+            organizzatore=fonte["organizzatore"], fonte_url=fonte["url"])
+        for a in avvisi:
+            print(f"        avviso: {a}")
+        return eventi
+    if tipo == "mese_compatto":
+        eventi, avvisi = adattatori.da_calendario_mese_compatto(
+            html=testo, registro=REGISTRO,
+            organizzatore=fonte["organizzatore"], circuito=fonte["circuito"],
+            fonte_url=fonte["url"], anno=fonte.get("anno", date.today().year),
+            nota_prezzi=fonte.get("nota_prezzi"),
+        )
+        for a in avvisi:
+            print(f"        avviso: {a}")
+        return eventi
+    if tipo == "agenda_circuito":
+        eventi, avvisi = adattatori.da_agenda_circuito(
+            html=testo, registro=REGISTRO,
+            organizzatore=fonte["organizzatore"], circuito=fonte["circuito"],
+            fonte_url=fonte["url"], anno=fonte.get("anno", date.today().year),
+        )
+        for a in avvisi:
+            print(f"        avviso: {a}")
+        return eventi
+    if tipo == "calendario_circuito":
+        eventi, avvisi = adattatori.da_calendario_circuito(
+            html=testo, registro=REGISTRO,
+            circuito=fonte["circuito"], fonte_url=fonte["url"],
+        )
+        for a in avvisi:
+            print(f"        avviso: {a}")
+        return eventi
+    if tipo == "woocommerce_slug":
+        eventi, avvisi = adattatori.da_woocommerce_slug(
+            html=testo, registro=REGISTRO,
+            organizzatore=fonte["organizzatore"], fonte_url=fonte["url"],
+        )
+        for a in avvisi:
+            print(f"        avviso: {a}")
+        return eventi
+    if tipo == "calendario_per_circuito":
+        eventi, avvisi = adattatori.da_calendario_per_circuito(
+            html=testo, registro=REGISTRO,
+            organizzatore=fonte["organizzatore"], fonte_url=fonte["url"],
+            anno=fonte.get("anno", date.today().year),
+            selettore_titolo=fonte.get("titolo", "h3"),
         )
         for a in avvisi:
             print(f"        avviso: {a}")

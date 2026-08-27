@@ -57,7 +57,8 @@ class Evento:
         turni lo stesso giorno sullo stesso circuito, per il pilota è
         comunque una sola giornata prenotabile.
         """
-        return (self.circuito, self.data, _semplifica(self.organizzatore))
+        return (self.circuito, self.data,
+                _semplifica(normalizza_organizzatore(self.organizzatore)))
 
     def a_dizionario(self) -> dict:
         d = asdict(self)
@@ -260,3 +261,48 @@ def esporta(eventi: list[Evento], percorso: Path, solo_futuri: bool = True) -> d
         "circuiti": len({e.circuito for e in selezionati}),
         "organizzatori": len({e.organizzatore for e in selezionati}),
     }
+
+
+# --------------------------------------------------------------------------
+# NOMI DEGLI ORGANIZZATORI
+# --------------------------------------------------------------------------
+#
+# I calendari dei circuiti scrivono i nomi degli organizzatori a modo loro
+# ("Rossocorsa") mentre il sito dell'organizzatore stesso usa un'altra
+# forma ("Rosso Corsa"). Senza normalizzazione lo stesso identico track day
+# comparirebbe due volte sul portale.
+
+_ALIAS_ORGANIZZATORI = {
+    "rossocorsa": "Rosso Corsa",
+    "rosso corsa": "Rosso Corsa",
+    "promo racing": "Promo Racing",
+    "promoracing": "Promo Racing",
+    "gully racing": "Gully Racing",
+    "gullyracing": "Gully Racing",
+    "warm up trackdays": "Warm Up Trackdays",
+    "warmup trackdays": "Warm Up Trackdays",
+    "warm up": "Warm Up Trackdays",
+    "eleven riding life": "Eleven Riding Life",
+    "portami in pista": "Portami in Pista",
+    "rehm race days": "Rehm Race Days",
+    "rehm racedays": "Rehm Race Days",
+    "giorgio team racing": "Giorgio Team Racing",
+    "giorgioteam": "Giorgio Team Racing",
+    "giorgio team": "Giorgio Team Racing",
+    "motart": "Motart",
+    "speer racing": "Speer Racing",
+    "speerracing": "Speer Racing",
+    "gasss": "Gasss",
+    "eleven riding life": "Eleven Riding Life",
+}
+
+
+def normalizza_organizzatore(nome: str) -> str:
+    """
+    Riporta il nome di un organizzatore alla forma canonica, cosi' che lo
+    stesso evento trovato su due fonti diverse venga riconosciuto come uno
+    solo. Se il nome non e' fra quelli noti si restituisce ripulito ma
+    invariato: e' un organizzatore nuovo, non un errore.
+    """
+    pulito = " ".join(nome.split())
+    return _ALIAS_ORGANIZZATORI.get(_semplifica(pulito), pulito)
