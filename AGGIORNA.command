@@ -43,7 +43,11 @@ if curl -sfL "https://github.com/$REPO/archive/refs/heads/main.tar.gz" \
     done
     [ -f "$SORGENTE/dati/circuiti.json" ] && cp "$SORGENTE/dati/circuiti.json" "$CARTELLA/dati/"
     [ -f "$SORGENTE/dati/organizzatori.json" ] && cp "$SORGENTE/dati/organizzatori.json" "$CARTELLA/dati/"
-    [ -f "$SORGENTE/docs/index.html" ]    && cp "$SORGENTE/docs/index.html"    "$CARTELLA/docs/"
+    [ -f "$SORGENTE/dati/aziende.json" ] && cp "$SORGENTE/dati/aziende.json" "$CARTELLA/dati/"
+    # tutte le pagine e il foglio di stile del sito
+    for pagina in "$SORGENTE"/docs/*.html "$SORGENTE"/docs/*.css; do
+        [ -f "$pagina" ] && cp "$pagina" "$CARTELLA/docs/"
+    done
     # immagini del sito (sfondi, foto): copia tutto quello che trova, non
     # solo nomi fissi, cosi' funziona anche quando se ne aggiungono di nuove
     for immagine in "$SORGENTE"/docs/*.jpg "$SORGENTE"/docs/*.jpeg "$SORGENTE"/docs/*.png; do

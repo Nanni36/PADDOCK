@@ -444,11 +444,12 @@ def main() -> int:
 
     # i contatti degli organizzatori li mantieni in dati/organizzatori.json:
     # da li' vengono copiati cosi' come sono, il sito li legge da docs/
-    fonte_organizzatori = BASE / "dati" / "organizzatori.json"
-    if fonte_organizzatori.exists():
-        (BASE / "docs" / "organizzatori.json").write_text(
-            fonte_organizzatori.read_text(encoding="utf-8"), encoding="utf-8"
-        )
+    for nome_file in ("organizzatori.json", "aziende.json"):
+        sorgente = BASE / "dati" / nome_file
+        if sorgente.exists():
+            (BASE / "docs" / nome_file).write_text(
+                sorgente.read_text(encoding="utf-8"), encoding="utf-8"
+            )
 
     print("\n--- riepilogo ---")
     print(f"  raccolti      {len(tutti)}")

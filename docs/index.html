@@ -3,825 +3,167 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PADDOCK — Tutti i track day d'Europa</title>
+<title>Paddock — tutti i track day in un posto solo</title>
+<meta name="description" content="Le date dei track day di tutti gli organizzatori italiani ed europei, raccolte in un unico calendario.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stile.css">
 <style>
-  :root{
-    --asfalto:#23262b;
-    --asfalto-soft:#3a3f47;
-    --cemento:#e4e5e3;
-    --cemento-hi:#f2f2f0;
-    --cordolo:#c8232c;
-    --bandiera:#f2c230;
-    --verde:#2f8f5b;
-    --linea:rgba(35,38,43,.14);
-    --display:'Oswald',system-ui,sans-serif;
-    --mono:'IBM Plex Mono',ui-monospace,monospace;
-    --body:'Inter',system-ui,sans-serif;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{
-    background:var(--cemento);
-    color:var(--asfalto);
-    font-family:var(--body);
-    -webkit-font-smoothing:antialiased;
-  }
-  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  .eroe{position:relative;min-height:min(78vh,660px);display:flex;align-items:flex-end;
+    overflow:hidden;border-bottom:var(--bordo)}
+  .eroe-foto{position:absolute;inset:0;
+    background:var(--asfalto) url('sfondo-hero.jpg') center 38% / cover no-repeat}
+  .eroe-velo{position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(21,24,28,.42) 0%,rgba(21,24,28,.55) 45%,var(--asfalto) 100%)}
+  .eroe-contenuto{position:relative;padding:0 0 52px;width:100%}
+  .eroe h1{margin-top:16px;max-width:11ch}
+  .eroe h1 em{font-style:normal;color:var(--bandiera)}
+  .eroe .testo-lungo{margin-top:20px;color:rgba(232,233,230,.82);max-width:48ch}
+  .eroe-azioni{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
 
-  /* ---------- TESTATA ---------- */
-  header{
-    border-bottom:2px solid var(--asfalto);
-    background:var(--cemento-hi);
-    position:sticky;top:0;z-index:20;
-  }
-  .bar{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
-  .marchio{display:flex;align-items:baseline;gap:10px}
-  .marchio b{
-    font-family:var(--display);font-weight:700;font-size:24px;
-    letter-spacing:.02em;text-transform:uppercase;
-    transform:skewX(-8deg);display:inline-block;
-    border-left:4px solid var(--cordolo);padding-left:8px;
-  }
-  .marchio span{
-    font-family:var(--mono);font-size:11px;letter-spacing:.1em;
-    color:var(--asfalto-soft);text-transform:uppercase;
-  }
-  .stato{
-    font-family:var(--mono);font-size:11px;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--asfalto-soft);
-    display:flex;align-items:center;gap:8px;
-  }
-  .spia{width:8px;height:8px;border-radius:50%;background:var(--verde);
-    box-shadow:0 0 0 3px rgba(47,143,91,.2)}
+  .cifre{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    border-bottom:var(--bordo)}
+  .cifra{padding:26px 0 26px 22px;border-left:var(--bordo)}
+  .cifra:first-child{border-left:none;padding-left:0}
+  .cifra b{display:block;font-family:var(--mono);font-weight:600;font-size:34px;
+    line-height:1;letter-spacing:-.02em}
+  .cifra span{display:block;margin-top:8px;font-family:var(--mono);font-size:10px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--cemento-basso)}
 
-  /* ---------- APERTURA / EROE FOTOGRAFICO ---------- */
-  .apertura{
-    position:relative;overflow:hidden;
-    padding:88px 0 44px;
-    border-bottom:2px solid var(--asfalto);
-    background:
-      linear-gradient(180deg, rgba(35,38,43,.45) 0%, rgba(35,38,43,.88) 100%),
-      var(--asfalto) url('sfondo-hero.jpg') center 35% / cover no-repeat;
-    background-blend-mode:normal;
-    color:var(--cemento-hi);
-  }
-  /* finche' non c'e' una foto, questo gradiente resta comunque un fondo
-     dignitoso: la foto si aggiunge sopra senza dover toccare il resto */
-  .occhiello{
-    font-family:var(--mono);font-size:11px;letter-spacing:.18em;
-    text-transform:uppercase;color:var(--bandiera);margin-bottom:18px;
-  }
-  .logo-eroe{
-    font-family:var(--display);font-weight:700;text-transform:uppercase;
-    font-size:clamp(52px,11vw,104px);line-height:.9;letter-spacing:-.01em;
-    color:var(--cemento-hi);
-    transform:skewX(-6deg);display:inline-block;
-    text-shadow:0 2px 18px rgba(0,0,0,.35);
-  }
-  .firma-eroe{display:flex;align-items:center;gap:12px;margin-top:20px}
-  .firma-eroe .by{font-family:var(--mono);font-size:11px;letter-spacing:.2em;
-    text-transform:uppercase;color:rgba(228,229,227,.65)}
-  .firma-eroe img{height:52px;width:auto;display:block;
-    filter:drop-shadow(0 2px 10px rgba(0,0,0,.45))}
-  @media (max-width:600px){ .firma-eroe img{height:40px} }
-  h1{
-    font-family:var(--display);font-weight:600;text-transform:uppercase;
-    font-size:clamp(26px,4vw,38px);line-height:1.1;letter-spacing:-.01em;
-    max-width:20ch;margin-top:22px;color:var(--cemento-hi);
-  }
-  h1 em{font-style:normal;color:var(--bandiera)}
-  .sottotitolo{
-    margin-top:14px;max-width:52ch;font-size:16px;line-height:1.6;
-    color:rgba(228,229,227,.82);
-  }
-  .cifre{display:flex;gap:36px;margin-top:36px;flex-wrap:wrap}
-  .cifra b{
-    display:block;font-family:var(--mono);font-weight:600;font-size:30px;
-    letter-spacing:-.02em;color:var(--cemento-hi);
-  }
-  .cifra span{
-    font-family:var(--mono);font-size:10px;letter-spacing:.14em;
-    text-transform:uppercase;color:rgba(228,229,227,.65);
-  }
+  .presentazione{padding:76px 0 12px;display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:56px}
+  .presentazione .testo-lungo p + p{margin-top:18px}
 
-  /* ---------- FILTRI ---------- */
-  .filtri{
-    padding:22px 0;border-bottom:1px solid var(--linea);
-    display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;
-  }
-  .campo{display:flex;flex-direction:column;gap:6px}
-  .campo label{
-    font-family:var(--mono);font-size:10px;letter-spacing:.14em;
-    text-transform:uppercase;color:var(--asfalto-soft);
-  }
-  select,input[type=search]{
-    font-family:var(--body);font-size:14px;color:var(--asfalto);
-    background:var(--cemento-hi);border:1px solid var(--linea);
-    padding:9px 12px;min-width:172px;border-radius:2px;
-  }
-  select:focus-visible,input:focus-visible,button:focus-visible{
-    outline:2px solid var(--cordolo);outline-offset:2px;
-  }
-  .gruppi{display:flex;gap:6px}
-  .chip{
-    font-family:var(--mono);font-size:11px;letter-spacing:.06em;
-    text-transform:uppercase;padding:9px 13px;border-radius:2px;
-    border:1px solid var(--linea);background:transparent;cursor:pointer;
-    color:var(--asfalto-soft);transition:.15s;
-  }
-  .chip[aria-pressed=true]{
-    background:var(--asfalto);color:var(--cemento-hi);border-color:var(--asfalto);
-  }
-  .azzera{
-    margin-left:auto;background:none;border:none;cursor:pointer;
-    font-family:var(--mono);font-size:11px;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--cordolo);
-    text-decoration:underline;text-underline-offset:4px;padding:9px 0;
-  }
-
-  /* ---------- TORRE TEMPI ---------- */
-  .intestazione-tabella{
-    display:grid;grid-template-columns:52px 1fr 128px 128px 96px 128px;
-    gap:14px;padding:16px 0 10px;
-    font-family:var(--mono);font-size:10px;letter-spacing:.14em;
-    text-transform:uppercase;color:var(--asfalto-soft);
-    border-bottom:2px solid var(--asfalto);
-  }
-  .riga{
-    display:grid;grid-template-columns:52px 1fr 128px 128px 96px 128px;
-    gap:14px;align-items:center;padding:18px 0;
-    border-bottom:1px solid var(--linea);position:relative;
-    transition:background .15s;
-  }
-  .riga::before{
-    content:"";position:absolute;left:-24px;top:0;bottom:0;width:6px;
-    background:repeating-linear-gradient(180deg,
-      var(--cordolo) 0 14px,var(--cemento-hi) 14px 28px);
-    opacity:0;transition:opacity .15s;
-  }
-  .riga:hover{background:rgba(255,255,255,.5)}
-  .riga:hover::before{opacity:1}
-  .indice{
-    font-family:var(--mono);font-size:13px;color:var(--asfalto-soft);
-  }
-  .circuito b{
-    display:block;font-family:var(--display);font-weight:600;font-size:19px;
-    text-transform:uppercase;letter-spacing:.02em;line-height:1.15;
-  }
-  .circuito span{
-    font-family:var(--mono);font-size:11px;color:var(--asfalto-soft);
-  }
-  .data{font-family:var(--mono);font-size:14px;font-weight:500}
-  .data small{display:block;font-size:10px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--asfalto-soft);margin-top:3px}
-  .org{font-size:13px;color:var(--asfalto-soft);line-height:1.35}
-  .prezzo{font-family:var(--mono);font-size:16px;font-weight:600}
-  .posti{display:flex;flex-direction:column;gap:6px}
-  .barra{height:4px;background:rgba(35,38,43,.12);border-radius:2px;overflow:hidden}
-  .barra i{display:block;height:100%;background:var(--verde)}
-  .barra.calda i{background:var(--bandiera)}
-  .barra.esaurita i{background:var(--cordolo)}
-  .posti span{font-family:var(--mono);font-size:11px;color:var(--asfalto-soft)}
-
-  .vuoto{
-    padding:72px 0;text-align:center;
-  }
-  .vuoto b{
-    display:block;font-family:var(--display);font-weight:600;font-size:24px;
-    text-transform:uppercase;margin-bottom:10px;
-  }
-  .vuoto p{color:var(--asfalto-soft);font-size:15px}
-
-  footer{
-    margin-top:56px;border-top:2px solid var(--asfalto);
-    background:var(--asfalto);color:var(--cemento);padding:36px 0 48px;
-  }
-  footer .nota{
-    font-family:var(--mono);font-size:12px;line-height:1.7;
-    color:rgba(228,229,227,.72);max-width:64ch;
-  }
-  footer .nota b{color:var(--bandiera)}
+  .sezioni{margin-top:64px;display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;
+    background:var(--carbonio-alto);border:var(--bordo)}
+  .scheda-sezione{background:var(--asfalto);padding:34px 30px 30px;text-decoration:none;
+    display:flex;flex-direction:column;gap:12px;transition:background .2s}
+  .scheda-sezione:hover{background:var(--carbonio)}
+  .scheda-sezione .numero{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+    color:var(--cordolo)}
+  .scheda-sezione p{color:var(--cemento-basso);font-size:15px}
+  .scheda-sezione .vai{margin-top:auto;padding-top:18px;font-family:var(--mono);
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cemento)}
 
   @media (max-width:860px){
-    .intestazione-tabella{display:none}
-    .riga{
-      grid-template-columns:1fr auto;
-      grid-template-areas:"circuito data" "org prezzo" "posti posti";
-      gap:8px 14px;
-    }
-    .indice{display:none}
-    .circuito{grid-area:circuito}
-    .data{grid-area:data;text-align:right}
-    .org{grid-area:org}
-    .prezzo{grid-area:prezzo;text-align:right}
-    .posti{grid-area:posti;margin-top:6px}
-    .riga::before{left:-16px}
-    .azzera{margin-left:0}
-    select,input[type=search]{min-width:0;width:100%}
-    .campo{flex:1 1 140px}
-  }
-  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
-
-  /* ---- fascia fotografica secondaria, prima del footer ---- */
-  .fascia-foto{
-    position:relative;min-height:200px;display:flex;align-items:center;
-    overflow:hidden;
-    background:
-      linear-gradient(180deg, rgba(35,38,43,.6) 0%, rgba(35,38,43,.8) 100%),
-      var(--asfalto) url('sfondo-secondario.jpg') center 55% / cover no-repeat;
-    border-top:2px solid var(--asfalto);
-  }
-  .fascia-foto-contenuto{padding:32px 0}
-  .fascia-foto p{
-    font-family:var(--display);font-weight:600;text-transform:uppercase;
-    font-size:clamp(19px,3.2vw,30px);line-height:1.3;color:var(--cemento-hi);
-    max-width:18ch;text-shadow:0 2px 14px rgba(0,0,0,.4);
-  }
-
-  /* ---- badge giorni multipli ---- */
-  .badge-giorni{display:inline-block;background:var(--bandiera);color:var(--asfalto);
-    font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;
-    padding:2px 6px;border-radius:2px;margin-left:6px;vertical-align:middle}
-  .data-multi{display:flex;flex-direction:column;gap:2px;font-family:var(--mono);
-    font-size:11px;font-weight:500;line-height:1.3}
-  .data-multi span:first-child{font-weight:700;color:var(--asfalto)}
-  .data-multi span:last-child{color:var(--cordolo)}
-  .riga{cursor:pointer}
-
-  /* ---- finestra di dettaglio ---- */
-  .velo-dettaglio{position:fixed;inset:0;background:rgba(35,38,43,.6);
-    display:none;align-items:flex-start;justify-content:center;
-    padding:40px 16px;overflow-y:auto;z-index:100}
-  .velo-dettaglio.aperto{display:flex}
-  .scheda-dettaglio{background:var(--cemento-hi);border:2px solid var(--asfalto);
-    border-radius:3px;max-width:640px;width:100%;padding:32px;position:relative}
-  .chiudi-dettaglio{position:absolute;top:14px;right:14px;background:none;border:none;
-    font-size:20px;cursor:pointer;color:var(--asfalto-soft);line-height:1;padding:8px}
-  .chiudi-dettaglio:hover{color:var(--cordolo)}
-
-  .dett-titolo{font-family:var(--display);font-weight:600;text-transform:uppercase;
-    font-size:26px;letter-spacing:.02em;margin-bottom:4px;padding-right:30px}
-  .dett-sub{font-family:var(--mono);font-size:13px;color:var(--asfalto-soft);margin-bottom:22px}
-  .dett-badge-giorni{display:inline-block;background:var(--bandiera);color:var(--asfalto);
-    font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
-    padding:3px 8px;border-radius:2px;margin-left:8px;vertical-align:middle}
-
-  .dett-griglia{display:grid;grid-template-columns:1fr 1fr;gap:16px;
-    padding:18px 0;margin-bottom:22px;border-top:1px solid var(--linea);
-    border-bottom:1px solid var(--linea)}
-  .dett-voce span{display:block;font-family:var(--mono);font-size:10px;
-    letter-spacing:.12em;text-transform:uppercase;color:var(--asfalto-soft);margin-bottom:4px}
-  .dett-voce b{font-family:var(--display);font-weight:600;font-size:17px}
-
-  .dett-sezione{margin-bottom:22px}
-  .dett-sezione:last-child{margin-bottom:0}
-  .dett-sezione h4{font-family:var(--display);font-weight:600;text-transform:uppercase;
-    font-size:13px;letter-spacing:.1em;margin-bottom:10px;color:var(--asfalto-soft)}
-  .dett-box-riga{display:flex;justify-content:space-between;align-items:center;
-    padding:8px 0;border-bottom:1px solid var(--linea);font-size:14px}
-  .dett-box-riga b{font-family:var(--mono)}
-
-  .dett-azioni{display:flex;flex-direction:column;gap:10px}
-  .dett-btn{display:flex;align-items:center;justify-content:center;gap:8px;
-    font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.06em;
-    text-transform:uppercase;padding:13px 20px;border-radius:2px;text-decoration:none;
-    border:none;cursor:pointer}
-  .dett-btn.primaria{background:var(--cordolo);color:#fff}
-  .dett-btn.primaria:hover{background:var(--asfalto)}
-  .dett-btn.secondaria{background:var(--asfalto);color:var(--cemento-hi)}
-  .dett-btn.secondaria:hover{background:var(--cordolo)}
-  .dett-btn.contorno{background:transparent;border:1px solid var(--asfalto);color:var(--asfalto)}
-  .dett-btn.contorno:hover{background:var(--asfalto);color:var(--cemento-hi)}
-  .dett-nota{font-family:var(--mono);font-size:12px;color:var(--asfalto-soft);
-    font-style:italic;margin-top:-2px}
-  .dett-onesto{font-family:var(--mono);font-size:12px;color:var(--asfalto-soft);
-    padding:12px;background:rgba(35,38,43,.05);border-radius:2px;line-height:1.6}
-
-  @media (max-width:600px){
-    .dett-griglia{grid-template-columns:1fr 1fr}
-    .scheda-dettaglio{padding:24px 20px}
+    .presentazione{grid-template-columns:1fr;gap:26px;padding-top:52px}
+    .cifra{padding:20px 0 20px 16px}
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="wrap bar">
-    <div class="marchio"><b>Paddock</b><span>track day europa</span></div>
-    <div class="stato"><i class="spia"></i><span id="conteggio">—</span></div>
+<header class="testata">
+  <div class="wrap testata-riga">
+    <a class="marchio" href="index.html"><span class="tacca"></span><b>Paddock</b></a>
+    <nav class="navigazione">
+      <a href="index.html" aria-current="page">Home</a>
+      <a href="calendario.html">Calendario</a>
+      <a href="servizi.html">Servizi</a>
+    </nav>
   </div>
 </header>
+<div class="settori"><span class="acceso"></span><span></span><span></span></div>
 
-<section class="apertura">
-  <div class="wrap">
-    <div class="occhiello">Track day europa · calendario aggiornato</div>
-    <div class="logo-eroe">Paddock</div>
-    <div class="firma-eroe">
-      <span class="by">by</span>
-      <img src="logo-nanni36.png" alt="Nanni36">
-    </div>
-    <h1>Meno tempo a cercare, <em>più tempo in pista.</em></h1>
-    <p class="sottotitolo">
-      Tutte le date, tutti gli organizzatori, un solo posto dove guardare.
-    </p>
-    <div class="cifre">
-      <div class="cifra"><b id="c-eventi">0</b><span>eventi</span></div>
-      <div class="cifra"><b id="c-circuiti">0</b><span>circuiti</span></div>
-      <div class="cifra"><b id="c-posti">0</b><span>ancora aperte</span></div>
+<section class="eroe">
+  <div class="eroe-foto"></div>
+  <div class="eroe-velo"></div>
+  <div class="wrap eroe-contenuto">
+    <div class="occhiello">Track day · Italia ed Europa</div>
+    <h1>Meno tempo a cercare,<br><em>più tempo in pista.</em></h1>
+    <p class="testo-lungo">Tutte le date, tutti gli organizzatori, un solo posto dove guardare.</p>
+    <div class="eroe-azioni">
+      <a class="bottone pieno" href="calendario.html">Vedi il calendario</a>
+      <a class="bottone" href="servizi.html">Servizi per la pista</a>
     </div>
   </div>
 </section>
 
 <main class="wrap">
 
-  <section class="filtri">
-    <div class="campo">
-      <label for="f-cerca">Cerca</label>
-      <input type="search" id="f-cerca" placeholder="Circuito o organizzatore">
-    </div>
-    <div class="campo">
-      <label for="f-circuito">Circuito</label>
-      <select id="f-circuito"><option value="">Tutti</option></select>
-    </div>
-    <div class="campo">
-      <label for="f-mese">Mese</label>
-      <select id="f-mese"><option value="">Tutti</option></select>
-    </div>
-    <div class="campo">
-      <label for="f-ordine">Ordina per</label>
-      <select id="f-ordine">
-        <option value="data">Data</option>
-        <option value="prezzo">Prezzo</option>
-        <option value="posti">Disponibilita'</option>
-      </select>
-    </div>
-    <div class="campo">
-      <label>Livello</label>
-      <div class="gruppi" id="f-livelli"></div>
-    </div>
-    <button class="azzera" id="azzera">Azzera filtri</button>
-  </section>
-
-  <div class="intestazione-tabella">
-    <div>Pos</div><div>Circuito</div><div>Data</div>
-    <div>Organizzatore</div><div>Prezzo</div><div>Disponibilità</div>
+  <div class="cifre">
+    <div class="cifra"><b id="c-eventi">—</b><span>date in calendario</span></div>
+    <div class="cifra"><b id="c-circuiti">—</b><span>circuiti</span></div>
+    <div class="cifra"><b id="c-organizzatori">—</b><span>organizzatori</span></div>
+    <div class="cifra"><b id="c-aperte">—</b><span>ancora aperte</span></div>
   </div>
 
-  <div id="lista"></div>
+  <section class="presentazione">
+    <h2>Perché<br>esiste</h2>
+    <div class="testo-lungo">
+      <p>Per trovare una data in pista oggi devi girare fra i siti di venti
+         organizzatori diversi, i calendari dei circuiti e i gruppi Facebook.
+         Ognuno pubblica come gli pare: chi una tabella, chi un'immagine,
+         chi solo un numero di telefono.</p>
+      <p>Paddock legge quei calendari e li mette tutti nello stesso formato:
+         data, circuito, prezzo quando c'è, e come si prenota. Le date arrivano
+         dalle fonti originali degli organizzatori — quello che loro non
+         pubblicano, qui non viene inventato.</p>
+      <p><!-- Scrivi qui la tua descrizione: chi sei, perché l'hai fatto,
+              dove vuoi arrivare. Questo paragrafo è tuo. --></p>
+    </div>
+  </section>
+
+  <div class="sezioni">
+    <a class="scheda-sezione" href="calendario.html">
+      <span class="numero">01</span>
+      <h3>Calendario</h3>
+      <p>Tutte le date raccolte dagli organizzatori, con prezzi, disponibilità
+         e il modo per prenotare.</p>
+      <span class="vai">Apri il calendario &rarr;</span>
+    </a>
+    <a class="scheda-sezione" href="servizi.html">
+      <span class="numero">02</span>
+      <h3>Servizi</h3>
+      <p>Gommisti, ricambi, trasporto moto, sospensioni: chi ti serve prima,
+         durante e dopo la giornata.</p>
+      <span class="vai">Vedi i servizi &rarr;</span>
+    </a>
+  </div>
 
 </main>
 
-<section class="fascia-foto">
-  <div class="wrap fascia-foto-contenuto">
-    <p>La pista non aspetta.<br>Trova la tua prossima data qui sopra.</p>
-  </div>
-</section>
-
-<div class="velo-dettaglio" id="velo-dettaglio">
-  <div class="scheda-dettaglio">
-    <button class="chiudi-dettaglio" id="chiudi-dettaglio" aria-label="Chiudi">✕</button>
-    <div id="dettaglio-corpo"></div>
-  </div>
-</div>
-
-<footer>
-  <div class="wrap">
-    <p class="nota">
-      <b>Nota tecnica.</b> Questo è il prototipo funzionante dell'interfaccia.
-      I dati sono dimostrativi e servono solo a far vedere il prodotto:
-      vanno sostituiti con eventi reali, raccolti dai siti degli organizzatori.
-      Il passo successivo è il collegamento con i calendari veri e il modulo di prenotazione.
+<footer class="piede">
+  <div class="wrap piede-riga">
+    <div class="piede-firma">
+      <span class="by">by</span>
+      <img src="logo-nanni36.png" alt="Nanni36">
+    </div>
+    <p class="piede-note">
+      Le date arrivano dai siti degli organizzatori e possono cambiare.
+      Prima di partire conferma sempre sulla loro pagina.
+      <span id="aggiornato"></span>
     </p>
   </div>
 </footer>
 
 <script>
-let EVENTI = [
-  {circuito:"Misano World Circuit", paese:"IT", data:"2026-09-04", org:"Trackday Italia", prezzo:250, posti:14, tot:60, livelli:["Avanzato","Intermedio"]},
-  {circuito:"Autodromo di Magione", paese:"IT", data:"2026-09-06", org:"Umbria Motor Events", prezzo:130, posti:31, tot:45, livelli:["Base","Intermedio"]},
-  {circuito:"Mugello Circuit", paese:"IT", data:"2026-09-11", org:"Toscana Racing", prezzo:320, posti:3, tot:55, livelli:["Avanzato"]},
-  {circuito:"Cremona Circuit", paese:"IT", data:"2026-09-14", org:"Nord Trackdays", prezzo:145, posti:22, tot:50, livelli:["Base","Intermedio"]},
-  {circuito:"Automotodrom Grobnik", paese:"HR", data:"2026-09-18", org:"Adriatic Track", prezzo:180, posti:26, tot:60, livelli:["Intermedio","Avanzato"]},
-  {circuito:"Autodromo di Franciacorta", paese:"IT", data:"2026-09-21", org:"Nord Trackdays", prezzo:120, posti:38, tot:48, livelli:["Base"]},
-  {circuito:"Autodromo di Vallelunga", paese:"IT", data:"2026-09-25", org:"Lazio Track Events", prezzo:210, posti:11, tot:55, livelli:["Intermedio","Avanzato"]},
-  {circuito:"Misano World Circuit", paese:"IT", data:"2026-09-29", org:"Riviera Trackdays", prezzo:265, posti:0, tot:60, livelli:["Avanzato"]},
-  {circuito:"Autodromo di Adria", paese:"IT", data:"2026-10-02", org:"Delta Racing Days", prezzo:135, posti:29, tot:45, livelli:["Base","Intermedio"]},
-  {circuito:"Autodromo di Varano", paese:"IT", data:"2026-10-05", org:"Emilia Track", prezzo:125, posti:19, tot:40, livelli:["Base"]},
-  {circuito:"Red Bull Ring", paese:"AT", data:"2026-10-09", org:"Alpen Trackdays", prezzo:390, posti:8, tot:70, livelli:["Avanzato"]},
-  {circuito:"Autodrom Most", paese:"CZ", data:"2026-10-12", org:"Bohemia Track", prezzo:160, posti:34, tot:65, livelli:["Intermedio"]},
-  {circuito:"Autodromo di Magione", paese:"IT", data:"2026-10-16", org:"Trackday Italia", prezzo:135, posti:25, tot:45, livelli:["Base","Intermedio","Avanzato"]},
-  {circuito:"Mugello Circuit", paese:"IT", data:"2026-10-20", org:"Toscana Racing", prezzo:340, posti:6, tot:55, livelli:["Avanzato"]},
-  {circuito:"Automotodrom Grobnik", paese:"HR", data:"2026-10-24", org:"Adriatic Track", prezzo:175, posti:41, tot:60, livelli:["Base","Intermedio"]},
-  {circuito:"Cremona Circuit", paese:"IT", data:"2026-10-28", org:"Nord Trackdays", prezzo:150, posti:2, tot:50, livelli:["Intermedio"]},
-  {circuito:"Circuit de Barcelona", paese:"ES", data:"2026-11-04", org:"Iberia Trackdays", prezzo:295, posti:23, tot:80, livelli:["Intermedio","Avanzato"]},
-  {circuito:"Autodromo di Vallelunga", paese:"IT", data:"2026-11-08", org:"Lazio Track Events", prezzo:195, posti:17, tot:55, livelli:["Base","Intermedio"]},
-  {circuito:"Circuito de Almería", paese:"ES", data:"2026-11-14", org:"Sur Racing", prezzo:165, posti:36, tot:50, livelli:["Base","Intermedio"]},
-  {circuito:"Misano World Circuit", paese:"IT", data:"2026-11-18", org:"Riviera Trackdays", prezzo:240, posti:9, tot:60, livelli:["Avanzato"]},
-  {circuito:"Circuito de Jerez", paese:"ES", data:"2026-11-22", org:"Sur Racing", prezzo:230, posti:44, tot:75, livelli:["Intermedio","Avanzato"]},
-  {circuito:"Autodromo di Adria", paese:"IT", data:"2026-11-27", org:"Delta Racing Days", prezzo:115, posti:33, tot:45, livelli:["Base"]},
-  {circuito:"Circuito de Almería", paese:"ES", data:"2026-12-05", org:"Iberia Trackdays", prezzo:180, posti:28, tot:50, livelli:["Intermedio"]},
-  {circuito:"Circuito de Jerez", paese:"ES", data:"2026-12-12", org:"Sur Racing", prezzo:245, posti:52, tot:75, livelli:["Base","Intermedio","Avanzato"]},
-];
-
-const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno",
-  "luglio","agosto","settembre","ottobre","novembre","dicembre"];
-const GIORNI = ["dom","lun","mar","mer","gio","ven","sab"];
-const GIORNI_INTERI = ["domenica","lunedì","martedì","mercoledì","giovedì","venerdì","sabato"];
-const LIVELLI = ["Base","Intermedio","Avanzato"];
-
-// contatti e prezzi box per organizzatore, caricati da organizzatori.json
-// (vuoto finche' i dati veri non arrivano: la demo non mostra dettagli
-// di prenotazione inventati)
-let ORGANIZZATORI = {};
-
-/* --------------------------------------------------------------
-   Bandierina della nazione a partire dal codice ISO a due lettere
-   (es. "IT" -> 🇮🇹). Funziona per qualsiasi codice valido: ogni
-   lettera diventa il suo simbolo "regional indicator" unicode, e i
-   due uniti formano la bandiera — non serve un elenco da mantenere.
-   -------------------------------------------------------------- */
-function bandieraPaese(codice){
-  if (!codice || codice.length !== 2) return "";
-  const base = 0x1F1E6;  // 'regional indicator symbol letter A'
-  return codice.toUpperCase().split("")
-    .map(c => String.fromCodePoint(base + (c.charCodeAt(0) - 65)))
-    .join("");
-}
-
-const stato = {cerca:"", circuito:"", mese:"", ordine:"data", livelli:new Set()};
-
-const $ = s => document.querySelector(s);
-const lista = $("#lista");
-
-/* --- popolamento filtri --- */
-function costruisciFiltri(){
-$("#f-circuito").innerHTML = '<option value="">Tutti</option>';
-$("#f-mese").innerHTML = '<option value="">Tutti</option>';
-[...new Set(EVENTI.map(e=>e.circuito))].sort().forEach(c=>{
-  const o=document.createElement("option"); o.value=c; o.textContent=c;
-  $("#f-circuito").appendChild(o);
-});
-[...new Set(EVENTI.map(e=>e.data.slice(0,7)))].sort().forEach(m=>{
-  const o=document.createElement("option"); o.value=m;
-  const [a,ms]=m.split("-");
-  o.textContent = MESI[+ms-1][0].toUpperCase()+MESI[+ms-1].slice(1)+" "+a;
-  $("#f-mese").appendChild(o);
-});
-}
-costruisciFiltri();
-
-LIVELLI.forEach(l=>{
-  const b=document.createElement("button");
-  b.className="chip"; b.type="button"; b.textContent=l;
-  b.setAttribute("aria-pressed","false");
-  b.onclick=()=>{
-    if(stato.livelli.has(l)){stato.livelli.delete(l);b.setAttribute("aria-pressed","false");}
-    else{stato.livelli.add(l);b.setAttribute("aria-pressed","true");}
-    disegna();
-  };
-  $("#f-livelli").appendChild(b);
-});
-
-/* --- eventi interfaccia --- */
-$("#f-cerca").oninput = e => {stato.cerca=e.target.value.toLowerCase(); disegna();};
-$("#f-circuito").onchange = e => {stato.circuito=e.target.value; disegna();};
-$("#f-mese").onchange = e => {stato.mese=e.target.value; disegna();};
-$("#f-ordine").onchange = e => {stato.ordine=e.target.value; disegna();};
-$("#azzera").onclick = () => {
-  stato.cerca=""; stato.circuito=""; stato.mese=""; stato.ordine="data"; stato.livelli.clear();
-  $("#f-cerca").value=""; $("#f-circuito").value=""; $("#f-mese").value=""; $("#f-ordine").value="data";
-  document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed","false"));
-  disegna();
-};
-
-function filtra(){
-  return EVENTI.filter(e=>{
-    if(stato.circuito && e.circuito!==stato.circuito) return false;
-    if(stato.mese && !e.data.startsWith(stato.mese)) return false;
-    if(stato.livelli.size && ![...stato.livelli].some(l=>e.livelli.includes(l))) return false;
-    if(stato.cerca){
-      const testo = (e.circuito+" "+e.org).toLowerCase();
-      if(!testo.includes(stato.cerca)) return false;
-    }
-    return true;
-  }).sort((a,b)=>{
-    if(stato.ordine==="prezzo"){
-      // gli eventi senza prezzo pubblicato vanno in fondo, non confusi con "gratis"
-      const pa = a.prezzo ?? Infinity, pb = b.prezzo ?? Infinity;
-      return pa-pb;
-    }
-    if(stato.ordine==="posti"){
-      const peso = x => x.disponibilita
-        ? ({disponibile:2, esaurimento:1, esaurito:0})[x.disponibilita] ?? 0
-        : (x.posti ?? 0) > 0 ? 2 : 0;
-      return peso(b)-peso(a);
-    }
-    return a.data.localeCompare(b.data);
-  });
-}
-
-function formattaData(iso){
-  const d = new Date(iso+"T12:00:00");
-  return {
-    breve: String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0"),
-    lunga: GIORNI[d.getDay()]+" "+MESI[d.getMonth()].slice(0,3)+" "+d.getFullYear()
-  };
-}
-
-function elencoGiorniEvento(e){
-  // un Date per ogni giorno da e.data a e.dataFine incluso — solo per
-  // eventi di piu' giorni. Usata sia nella riga della lista sia nel
-  // dettaglio, cosi' raccontano sempre la stessa cosa.
-  if (!(e.giorni > 1) || !e.dataFine) return null;
-  const inizio = new Date(e.data+"T12:00:00");
-  const fine = new Date(e.dataFine+"T12:00:00");
-  const elenco = [];
-  for (let cursore = new Date(inizio); cursore <= fine; cursore.setDate(cursore.getDate()+1)){
-    elenco.push(new Date(cursore));
-  }
-  return elenco;
-}
-
-function quantoManca(e){
-  const oggi = new Date(); oggi.setHours(0,0,0,0);
-  const quando = new Date(e.data+"T00:00:00");
-  const giorni = Math.round((quando-oggi)/86400000);
-  if (giorni <= 0) return "oggi";
-  if (giorni === 1) return "domani";
-  if (giorni < 30) return `tra ${giorni} giorni`;
-  const mesi = Math.round(giorni/30);
-  return mesi === 1 ? "tra circa un mese" : `tra circa ${mesi} mesi`;
-}
-
-function disegna(){
-  const dati = filtra();
-  lista.innerHTML = "";
-
-  if(!dati.length){
-    lista.innerHTML = `<div class="vuoto"><b>Nessuna data trovata</b>
-      <p>Allarga i filtri o azzerali per rivedere tutto il calendario.</p></div>`;
-  }
-
-  dati.forEach((e,i)=>{
-    const d = formattaData(e.data);
-    let classe, larghezza, testoPosti;
-    if (e.disponibilita){
-      // l'organizzatore non pubblica i numeri: mostriamo solo lo stato
-      const mappa = {
-        disponibile:["",100,"Disponibile"],
-        esaurimento:["calda",45,"In esaurimento"],
-        esaurito:["esaurita",100,"Esaurito"]
-      };
-      [classe,larghezza,testoPosti] = mappa[e.disponibilita] || ["",0,"—"];
-    } else if (e.posti != null && e.tot){
-      const quota = e.posti/e.tot;
-      classe = e.posti===0 ? "esaurita" : quota<0.2 ? "calda" : "";
-      larghezza = e.posti===0 ? 100 : Math.round(quota*100);
-      testoPosti = e.posti===0 ? "Esaurito" : e.posti+" posti su "+e.tot;
-    } else {
-      classe = ""; larghezza = 0; testoPosti = "—";
-    }
-
-    const badgeRiga = e.giorni > 1 ? `<span class="badge-giorni">${e.giorni}gg</span>` : "";
-
-    const giorniElenco = elencoGiorniEvento(e);
-    const cellaData = giorniElenco
-      ? `<div class="data-multi">${giorniElenco.map(g =>
-          `<span>${GIORNI[g.getDay()]} ${String(g.getDate()).padStart(2,"0")}</span>`).join("")}</div>`
-      : `${d.breve}<small>${d.lunga}</small>`;
-
-    const riga = document.createElement("div");
-    riga.className = "riga";
-    riga.innerHTML = `
-      <div class="indice">${String(i+1).padStart(2,"0")}</div>
-      <div class="circuito"><b>${e.circuito}${badgeRiga}</b><span>${bandieraPaese(e.paese)} · ${quantoManca(e)}</span></div>
-      <div class="data">${cellaData}</div>
-      <div class="org">${e.org}</div>
-      <div class="prezzo">${testoPrezzo(e)}</div>
-      <div class="posti">
-        <div class="barra ${classe}"><i style="width:${larghezza}%"></i></div>
-        <span>${testoPosti}</span>
-      </div>`;
-    riga.addEventListener("click", ev => {
-      if (ev.target.closest("a")) return;   // il link "pagina iscrizione" resta un link normale
-      apriDettaglio(e);
-    });
-    lista.appendChild(riga);
-  });
-
-  $("#conteggio").textContent = dati.length + " date visibili";
-  $("#c-eventi").textContent = dati.length;
-  $("#c-circuiti").textContent = new Set(dati.map(e=>e.circuito)).size;
-  $("#c-posti").textContent = dati.filter(e =>
-    e.disponibilita ? e.disponibilita !== "esaurito" : (e.posti ?? 0) > 0).length;
-
-}
-
-/* --------------------------------------------------------------
-   Finestra di dettaglio: cosa sapere e come prenotare.
-   Costruita solo con dati che l'evento e l'organizzatore hanno
-   davvero — mai un numero o una mail inventati.
-   -------------------------------------------------------------- */
-function testoDisponibilita(e){
-  const mappa = {disponibile:"Disponibile", esaurimento:"In esaurimento", esaurito:"Esaurito"};
-  if (e.disponibilita) return mappa[e.disponibilita] || "—";
-  if (e.posti != null) return e.posti===0 ? "Esaurito" : e.posti+(e.tot?"/"+e.tot:"");
-  return "—";
-}
-
-function eventoEsaurito(e){
-  if (e.disponibilita) return e.disponibilita === "esaurito";
-  return e.posti === 0;
-}
-
-function testoPrezzo(e){
-  return eventoEsaurito(e) ? "Esaurito" : (e.prezzo ? e.prezzo+" €" : "—");
-}
-
-function apriDettaglio(e){
-  const org = ORGANIZZATORI[e.org] || {};
-  const d = new Date(e.data+"T12:00:00");
-  let dataTesto = `${GIORNI[d.getDay()]} ${d.getDate()} ${MESI[d.getMonth()]} ${d.getFullYear()}`;
-  let badgeGiorni = "";
-
-  const giorniElenco = elencoGiorniEvento(e);
-  if (giorniElenco){
-    const df = new Date(e.dataFine+"T12:00:00");
-    // elenca ogni singolo giorno con nome della settimana e numero,
-    // invece di un generico "dal... al..." — utile per organizzare
-    // ferie/trasferta sapendo esattamente quali giorni sono coinvolti
-    const etichette = giorniElenco.map(g => {
-      const stessoMeseDellUltimo = g.getMonth() === df.getMonth() && g.getFullYear() === df.getFullYear();
-      return stessoMeseDellUltimo
-        ? `${GIORNI_INTERI[g.getDay()]} ${g.getDate()}`
-        : `${GIORNI_INTERI[g.getDay()]} ${g.getDate()} ${MESI[g.getMonth()]}`;
-    });
-    const ultimoGiorno = etichette.pop();
-    dataTesto = etichette.length
-      ? `${etichette.join(", ")} e ${ultimoGiorno} ${MESI[df.getMonth()]} ${df.getFullYear()}`
-      : `${ultimoGiorno} ${MESI[df.getMonth()]} ${df.getFullYear()}`;
-    badgeGiorni = `<span class="dett-badge-giorni">${e.giorni} giorni</span>`;
-  }
-
-  // -- box, solo quelli che l'organizzatore pubblica --
-  const vociBox = [
-    ["Posto box", org.box_normale],
-    ["Box in esclusiva (piccolo)", org.box_esclusiva_piccolo],
-    ["Box in esclusiva (grande)", org.box_esclusiva_grande],
-  ].filter(([,prezzo]) => prezzo != null);
-  const boxHtml = vociBox.length ? `
-    <div class="dett-sezione"><h4>Box</h4>
-      ${vociBox.map(([nome,prezzo]) =>
-        `<div class="dett-box-riga"><span>${nome}</span><b>${prezzo} €</b></div>`).join("")}
-    </div>` : "";
-
-  // -- come prenotare --
-  const azioni = [];
-
-  // il link diretto a QUESTA data conta sempre, che si paghi online o no:
-  // e' comunque la pagina piu' precisa da guardare per quella giornata
-  if (e.url){
-    const testoLink = org.pagamento_online === true
-      ? "Vai al sito e paga con carta"
-      : "Vedi la pagina di questo evento";
-    const classe = org.pagamento_online === true ? "primaria" : "secondaria";
-    azioni.push(`<a class="dett-btn ${classe}" href="${e.url}" target="_blank" rel="noopener">${testoLink}</a>`);
-  }
-
-  if (org.pagamento_online !== true){
-    if (org.email){
-      const oggetto = encodeURIComponent(`Richiesta info track day ${e.circuito} del ${d.getDate()} ${MESI[d.getMonth()]}`);
-      const corpo = encodeURIComponent(
-        `Buongiorno,\n\nvorrei avere informazioni per il track day del ${dataTesto} a ${e.circuito}.\n\nGrazie mille`
-      );
-      azioni.push(
-        `<a class="dett-btn primaria" href="mailto:${org.email}?subject=${oggetto}&body=${corpo}">Scrivi una mail (gia' pronta)</a>`
-      );
-    }
-    if (org.whatsapp){
-      const numero = org.whatsapp.replace(/[^\d]/g,"");
-      const testo = encodeURIComponent(
-        `Buongiorno, vorrei avere informazioni per il track day del ${dataTesto} a ${e.circuito}. Grazie!`
-      );
-      azioni.push(
-        `<a class="dett-btn secondaria" href="https://wa.me/${numero}?text=${testo}" target="_blank" rel="noopener">Scrivi su WhatsApp</a>`
-      );
-    }
-    if (org.telefono_prenotazioni){
-      azioni.push(`<div class="dett-box-riga"><span>Telefono prenotazioni</span><b>${org.telefono_prenotazioni}</b></div>`);
-      if (org.telefono_prenotazioni_orario){
-        azioni.push(`<div class="dett-nota">${org.telefono_prenotazioni_orario}</div>`);
-      }
-    }
-  }
-  if (org.sito && org.sito !== e.url){
-    azioni.push(`<a class="dett-btn contorno" href="${org.sito}" target="_blank" rel="noopener">Sito dell'organizzatore</a>`);
-  }
-  if (org.note_pagamento){
-    azioni.push(`<div class="dett-nota">${org.note_pagamento}</div>`);
-  }
-  if (!azioni.length){
-    azioni.push(`<div class="dett-onesto">Non ho ancora i contatti di ${e.org} in archivio.
-      Manda il link della loro pagina contatti e li aggiungo.</div>`);
-  }
-
-  const notaHtml = e.note
-    ? `<div class="dett-sezione"><h4>Da sapere</h4><div class="dett-nota">${e.note}</div></div>`
-    : "";
-  const livelliHtml = e.livelli.length
-    ? `<div class="dett-nota" style="margin-top:8px">Livelli ammessi: ${e.livelli.join(", ")}</div>`
-    : "";
-  const prezzoIgnotoHtml = (e.prezzo == null && !eventoEsaurito(e))
-    ? `<div class="dett-nota" style="margin-top:8px">${
-        e.url
-          ? "Il prezzo e' pubblicato sulla pagina di questo evento, non qui: apri il link qui sotto per vederlo."
-          : "Prezzo non pubblicato dall'organizzatore: scrivi o chiama per saperlo."
-      }</div>`
-    : "";
-
-  $("#dettaglio-corpo").innerHTML = `
-    <div class="dett-titolo">${e.circuito}${badgeGiorni}</div>
-    <div class="dett-sub">${dataTesto} · ${e.org}</div>
-    <div class="dett-griglia">
-      <div class="dett-voce"><span>Prezzo</span><b>${testoPrezzo(e)}</b></div>
-      <div class="dett-voce"><span>Disponibilita'</span><b>${testoDisponibilita(e)}</b></div>
-      <div class="dett-voce"><span>Durata</span><b>${e.giorni} ${e.giorni===1 ? "giorno" : "giorni"}</b></div>
-      <div class="dett-voce"><span>Paese</span><b>${bandieraPaese(e.paese)} ${e.paese}</b></div>
-    </div>
-    ${livelliHtml}
-    ${prezzoIgnotoHtml}
-    ${boxHtml}
-    ${notaHtml}
-    <div class="dett-sezione"><h4>Come prenotare</h4>
-      <div class="dett-azioni">${azioni.join("")}</div>
-    </div>
-  `;
-  $("#velo-dettaglio").classList.add("aperto");
-}
-
-function chiudiDettaglio(){
-  $("#velo-dettaglio").classList.remove("aperto");
-}
-$("#chiudi-dettaglio").onclick = chiudiDettaglio;
-$("#velo-dettaglio").onclick = ev => { if (ev.target.id === "velo-dettaglio") chiudiDettaglio(); };
-document.addEventListener("keydown", ev => { if (ev.key === "Escape") chiudiDettaglio(); });
-
-disegna();
-
-/* --------------------------------------------------------------
-   Dati veri. Se sito/eventi.json esiste (prodotto da raccogli.py)
-   sostituisce i dati dimostrativi. Se non c'e', la pagina resta
-   utilizzabile con la demo: un prototipo non deve mai mostrare
-   una schermata bianca.
-   -------------------------------------------------------------- */
-async function caricaDatiVeri(){
+/* Le cifre vengono dallo stesso file che alimenta il calendario. Se non
+   c'e' ancora, restano dei trattini invece di mostrare degli zeri che
+   sembrerebbero un calendario vuoto. */
+(async () => {
   try{
-    const rEventi = await fetch("eventi.json", {cache:"no-store"});
-    if(!rEventi.ok) return;
-    const pacchetto = await rEventi.json();
-    if(!pacchetto.eventi || !pacchetto.eventi.length) return;
+    const r = await fetch("eventi.json", {cache:"no-store"});
+    if(!r.ok) return;
+    const dati = await r.json();
+    const oggi = new Date(); oggi.setHours(0,0,0,0);
+    const futuri = dati.eventi.filter(e => new Date(e.data+"T12:00:00") >= oggi);
 
-    // organizzatori.json e' facoltativo: se manca o non carica, il
-    // dettaglio evento resta comunque utilizzabile, solo senza contatti
-    try{
-      const rOrg = await fetch("organizzatori.json", {cache:"no-store"});
-      if (rOrg.ok) ORGANIZZATORI = await rOrg.json();
-    }catch(err){
-      console.warn("organizzatori.json non caricato:", err);
+    document.getElementById("c-eventi").textContent = futuri.length;
+    document.getElementById("c-circuiti").textContent = new Set(futuri.map(e=>e.circuito)).size;
+    document.getElementById("c-organizzatori").textContent = new Set(futuri.map(e=>e.organizzatore)).size;
+    document.getElementById("c-aperte").textContent =
+      futuri.filter(e => e.disponibilita ? e.disponibilita !== "esaurito" : true).length;
+
+    if (dati.aggiornato){
+      const q = new Date(dati.aggiornato).toLocaleDateString("it-IT",
+        {day:"2-digit",month:"long",year:"numeric"});
+      document.getElementById("aggiornato").textContent = "Aggiornato al " + q + ".";
     }
-
-    EVENTI = pacchetto.eventi.map(e => ({
-      circuito: e.circuito,
-      paese: e.paese || "IT",
-      data: e.data,
-      org: e.organizzatore || "—",
-      prezzo: e.prezzo ?? null,
-      posti: e.posti_liberi ?? null,
-      tot: e.posti_totali ?? null,
-      disponibilita: e.disponibilita ?? null,
-      livelli: e.livelli || [],
-      url: e.url_iscrizione || null,
-      giorni: e.giorni || 1,
-      dataFine: e.data_fine || null,
-      note: e.note || null
-    }));
-
-    costruisciFiltri();
-    disegna();
-
-    const q = document.querySelector(".occhiello");
-    const quando = new Date(pacchetto.aggiornato)
-      .toLocaleDateString("it-IT",{day:"2-digit",month:"long",year:"numeric"});
-    q.textContent = "Calendario aggiornato al " + quando;
-    q.style.color = "#5fd996";  // verde piu' chiaro: leggibile anche sul fondo scuro dell'eroe
-  }catch(err){
-    console.warn("eventi.json non caricato, resto sui dati dimostrativi:", err);
-  }
-}
-caricaDatiVeri();
+  }catch(err){ console.warn("eventi.json non disponibile:", err); }
+})();
 </script>
 </body>
 </html>

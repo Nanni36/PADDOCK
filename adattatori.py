@@ -1758,7 +1758,10 @@ def da_elenco_gasss(
     visti = set()
     for link in link_evento:
         titolo = link.get_text(" ", strip=True)
-        if not titolo:
+        # sulla pagina ogni evento ha piu' link: l'immagine (senza testo),
+        # il titolo vero, e un pulsante "DETTAGLI". Solo il titolo contiene
+        # il nome del circuito, quindi gli altri vanno scartati.
+        if not titolo or _semplifica(titolo) in {"dettagli", "details", "mehr", "info"}:
             continue
 
         contenitore = link.parent
