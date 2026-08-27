@@ -1,0 +1,27 @@
+{
+  "_come_si_usa": "Aggiungi qui le aziende. 'categoria' raggruppa le schede sulla pagina: usa sempre la stessa parola per la stessa categoria. Tutti i campi tranne nome e categoria sono facoltativi: quelli vuoti semplicemente non compaiono. Metti solo quello che hai verificato.",
+  "categorie": [
+    "Gomme",
+    "Ricambi e accessori",
+    "Trasporto moto",
+    "Sospensioni",
+    "Abbigliamento",
+    "Officina e assetto",
+    "Fotografia",
+    "Assicurazioni"
+  ],
+  "aziende": [
+    {
+      "nome": "Esempio Gomme Racing",
+      "categoria": "Gomme",
+      "descrizione": "Servizio gomme in pista: montaggio, termocoperte, consulenza sulle pressioni. Presente sulle date dei principali circuiti del nord.",
+      "citta": "Esempio (PR)",
+      "circuiti": ["Cremona Circuit", "Autodromo di Varano"],
+      "sito": "https://esempio.it",
+      "email": "info@esempio.it",
+      "telefono": "+39 000 0000000",
+      "whatsapp": null,
+      "in_pista": true
+    }
+  ]
+}
