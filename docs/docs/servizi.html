@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Servizi — Paddock</title>
+<meta name="description" content="Gommisti, ricambi, trasporto moto e servizi per chi va in pista.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stile.css">
+<style>
+  .intro-servizi{padding:52px 0 30px}
+  .intro-servizi h1{font-size:clamp(38px,6vw,72px);max-width:15ch;margin-top:14px}
+  .intro-servizi .testo-lungo{margin-top:16px}
+
+  .filtri-categoria{display:flex;gap:5px;flex-wrap:wrap;padding:22px 0;
+    border-top:var(--bordo);border-bottom:var(--bordo)}
+  .chip{font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;padding:11px 14px;border:var(--bordo);
+    background:transparent;cursor:pointer;color:var(--cemento-basso);transition:.16s}
+  .chip:hover{color:var(--cemento)}
+  .chip[aria-pressed=true]{background:var(--cemento);color:var(--asfalto);
+    border-color:var(--cemento)}
+
+  .griglia-aziende{display:grid;gap:1px;background:var(--carbonio-alto);
+    grid-template-columns:repeat(auto-fill,minmax(310px,1fr));
+    border:var(--bordo);margin-top:30px}
+  .scheda-azienda{background:var(--asfalto);padding:26px 24px 24px;
+    display:flex;flex-direction:column;gap:11px;transition:background .18s}
+  .scheda-azienda:hover{background:var(--carbonio)}
+  .scheda-azienda .categoria{font-family:var(--mono);font-size:10px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--cordolo)}
+  .scheda-azienda h3{font-size:24px}
+  .scheda-azienda .luogo{font-family:var(--mono);font-size:11px;
+    color:var(--cemento-basso);margin-top:-6px}
+  .scheda-azienda p{font-size:14px;color:var(--cemento-basso)}
+  .etichette{display:flex;gap:6px;flex-wrap:wrap}
+  .etichetta{font-family:var(--mono);font-size:9px;letter-spacing:.1em;
+    text-transform:uppercase;padding:3px 8px;border:var(--bordo);
+    color:var(--cemento-basso)}
+  .etichetta.pista{border-color:var(--bandiera);color:var(--bandiera)}
+  .contatti-azienda{margin-top:auto;padding-top:16px;border-top:var(--bordo);
+    display:flex;flex-wrap:wrap;gap:8px}
+  .contatti-azienda a{font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+    text-transform:uppercase;text-decoration:none;padding:8px 12px;
+    border:var(--bordo);color:var(--cemento);transition:.16s}
+  .contatti-azienda a:hover{background:var(--cemento);color:var(--asfalto)}
+
+  .vuoto{padding:80px 0;text-align:center}
+  .vuoto b{display:block;font-family:var(--display);font-weight:700;font-size:26px;
+    text-transform:uppercase;margin-bottom:10px}
+  .vuoto p{color:var(--cemento-basso);max-width:52ch;margin:0 auto}
+  .vuoto code{font-family:var(--mono);font-size:13px;color:var(--bandiera)}
+</style>
+</head>
+<body>
+
+<header class="testata">
+  <div class="wrap testata-riga">
+    <a class="marchio" href="index.html"><span class="tacca"></span><b>Paddock</b></a>
+    <nav class="navigazione">
+      <a href="index.html">Home</a>
+      <a href="calendario.html">Calendario</a>
+      <a href="servizi.html" aria-current="page">Servizi</a>
+    </nav>
+  </div>
+</header>
+<div class="settori"><span></span><span></span><span class="acceso"></span></div>
+
+<main class="wrap">
+
+  <section class="intro-servizi">
+    <div class="occhiello">Chi ti serve intorno alla pista</div>
+    <h1>Gomme, ricambi,<br>trasporto.</h1>
+    <p class="testo-lungo">
+      Le aziende che lavorano con chi va in pista. Alcune sono presenti
+      direttamente nel paddock durante le giornate.
+    </p>
+  </section>
+
+  <div class="filtri-categoria" id="filtri"></div>
+  <div class="griglia-aziende" id="griglia"></div>
+
+</main>
+
+<footer class="piede">
+  <div class="wrap piede-riga">
+    <div class="piede-firma">
+      <span class="by">by</span>
+      <img src="logo-nanni36.png" alt="Nanni36">
+    </div>
+    <p class="piede-note">
+      Le aziende sono segnalate, non sponsorizzate. Prezzi e disponibilità
+      vanno concordati direttamente con loro.
+    </p>
+  </div>
+</footer>
+
+<script>
+let AZIENDE = [];
+let CATEGORIE = [];
+let filtroAttivo = "";
+
+const griglia = document.getElementById("griglia");
+const barraFiltri = document.getElementById("filtri");
+
+function schedaContatti(a){
+  const voci = [];
+  if (a.sito)     voci.push(`<a href="${a.sito}" target="_blank" rel="noopener">Sito</a>`);
+  if (a.telefono) voci.push(`<a href="tel:${a.telefono.replace(/[^\d+]/g,"")}">Chiama</a>`);
+  if (a.whatsapp) voci.push(`<a href="https://wa.me/${a.whatsapp.replace(/[^\d]/g,"")}" target="_blank" rel="noopener">WhatsApp</a>`);
+  if (a.email)    voci.push(`<a href="mailto:${a.email}">Scrivi</a>`);
+  return voci.length ? `<div class="contatti-azienda">${voci.join("")}</div>` : "";
+}
+
+function disegna(){
+  const visibili = filtroAttivo
+    ? AZIENDE.filter(a => a.categoria === filtroAttivo)
+    : AZIENDE;
+
+  griglia.innerHTML = "";
+
+  if (!visibili.length){
+    griglia.style.border = "none";
+    griglia.innerHTML = AZIENDE.length
+      ? `<div class="vuoto"><b>Nessuna azienda in questa categoria</b>
+           <p>Togli il filtro per vedere tutte le altre.</p></div>`
+      : `<div class="vuoto"><b>Ancora nessuna azienda</b>
+           <p>Aggiungile nel file <code>dati/aziende.json</code>: ce n'è già una
+              di esempio da cui copiare la struttura.</p></div>`;
+    return;
+  }
+  griglia.style.border = "";
+
+  visibili.forEach(a => {
+    const etichette = [];
+    if (a.in_pista) etichette.push('<span class="etichetta pista">in pista</span>');
+    (a.circuiti || []).forEach(c => etichette.push(`<span class="etichetta">${c}</span>`));
+
+    const scheda = document.createElement("div");
+    scheda.className = "scheda-azienda";
+    scheda.innerHTML = `
+      <span class="categoria">${a.categoria || "—"}</span>
+      <h3>${a.nome}</h3>
+      ${a.citta ? `<div class="luogo">${a.citta}</div>` : ""}
+      ${a.descrizione ? `<p>${a.descrizione}</p>` : ""}
+      ${etichette.length ? `<div class="etichette">${etichette.join("")}</div>` : ""}
+      ${schedaContatti(a)}`;
+    griglia.appendChild(scheda);
+  });
+}
+
+function costruisciFiltri(){
+  barraFiltri.innerHTML = "";
+  if (!AZIENDE.length) return;
+
+  const usate = CATEGORIE.filter(c => AZIENDE.some(a => a.categoria === c));
+  [["", "Tutte"]].concat(usate.map(c => [c, c])).forEach(([valore, etichetta]) => {
+    const b = document.createElement("button");
+    b.className = "chip"; b.type = "button"; b.textContent = etichetta;
+    b.setAttribute("aria-pressed", String(filtroAttivo === valore));
+    b.onclick = () => {
+      filtroAttivo = valore;
+      costruisciFiltri(); disegna();
+    };
+    barraFiltri.appendChild(b);
+  });
+}
+
+(async () => {
+  try{
+    const r = await fetch("aziende.json", {cache:"no-store"});
+    if(!r.ok) throw new Error("file non raggiungibile");
+    const dati = await r.json();
+    AZIENDE = dati.aziende || [];
+    CATEGORIE = dati.categorie || [];
+  }catch(err){
+    console.warn("aziende.json non caricato:", err);
+  }
+  costruisciFiltri();
+  disegna();
+})();
+</script>
+</body>
+</html>

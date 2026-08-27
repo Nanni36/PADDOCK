@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paddock — tutti i track day in un posto solo</title>
+<meta name="description" content="Le date dei track day di tutti gli organizzatori italiani ed europei, raccolte in un unico calendario.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stile.css">
+<style>
+  .eroe{position:relative;min-height:min(78vh,660px);display:flex;align-items:flex-end;
+    overflow:hidden;border-bottom:var(--bordo)}
+  .eroe-foto{position:absolute;inset:0;
+    background:var(--asfalto) url('sfondo-hero.jpg') center 38% / cover no-repeat}
+  .eroe-velo{position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(21,24,28,.42) 0%,rgba(21,24,28,.55) 45%,var(--asfalto) 100%)}
+  .eroe-contenuto{position:relative;padding:0 0 52px;width:100%}
+  .eroe h1{margin-top:16px;max-width:11ch}
+  .eroe h1 em{font-style:normal;color:var(--bandiera)}
+  .eroe .testo-lungo{margin-top:20px;color:rgba(232,233,230,.82);max-width:48ch}
+  .eroe-azioni{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+
+  .cifre{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    border-bottom:var(--bordo)}
+  .cifra{padding:26px 0 26px 22px;border-left:var(--bordo)}
+  .cifra:first-child{border-left:none;padding-left:0}
+  .cifra b{display:block;font-family:var(--mono);font-weight:600;font-size:34px;
+    line-height:1;letter-spacing:-.02em}
+  .cifra span{display:block;margin-top:8px;font-family:var(--mono);font-size:10px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--cemento-basso)}
+
+  .presentazione{padding:76px 0 12px;display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:56px}
+  .presentazione .testo-lungo p + p{margin-top:18px}
+
+  .sezioni{margin-top:64px;display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;
+    background:var(--carbonio-alto);border:var(--bordo)}
+  .scheda-sezione{background:var(--asfalto);padding:34px 30px 30px;text-decoration:none;
+    display:flex;flex-direction:column;gap:12px;transition:background .2s}
+  .scheda-sezione:hover{background:var(--carbonio)}
+  .scheda-sezione .numero{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+    color:var(--cordolo)}
+  .scheda-sezione p{color:var(--cemento-basso);font-size:15px}
+  .scheda-sezione .vai{margin-top:auto;padding-top:18px;font-family:var(--mono);
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cemento)}
+
+  @media (max-width:860px){
+    .presentazione{grid-template-columns:1fr;gap:26px;padding-top:52px}
+    .cifra{padding:20px 0 20px 16px}
+  }
+</style>
+</head>
+<body>
+
+<header class="testata">
+  <div class="wrap testata-riga">
+    <a class="marchio" href="index.html"><span class="tacca"></span><b>Paddock</b></a>
+    <nav class="navigazione">
+      <a href="index.html" aria-current="page">Home</a>
+      <a href="calendario.html">Calendario</a>
+      <a href="servizi.html">Servizi</a>
+    </nav>
+  </div>
+</header>
+<div class="settori"><span class="acceso"></span><span></span><span></span></div>
+
+<section class="eroe">
+  <div class="eroe-foto"></div>
+  <div class="eroe-velo"></div>
+  <div class="wrap eroe-contenuto">
+    <div class="occhiello">Track day · Italia ed Europa</div>
+    <h1>Meno tempo a cercare,<br><em>più tempo in pista.</em></h1>
+    <p class="testo-lungo">Tutte le date, tutti gli organizzatori, un solo posto dove guardare.</p>
+    <div class="eroe-azioni">
+      <a class="bottone pieno" href="calendario.html">Vedi il calendario</a>
+      <a class="bottone" href="servizi.html">Servizi per la pista</a>
+    </div>
+  </div>
+</section>
+
+<main class="wrap">
+
+  <div class="cifre">
+    <div class="cifra"><b id="c-eventi">—</b><span>date in calendario</span></div>
+    <div class="cifra"><b id="c-circuiti">—</b><span>circuiti</span></div>
+    <div class="cifra"><b id="c-organizzatori">—</b><span>organizzatori</span></div>
+    <div class="cifra"><b id="c-aperte">—</b><span>ancora aperte</span></div>
+  </div>
+
+  <section class="presentazione">
+    <h2>Perché<br>esiste</h2>
+    <div class="testo-lungo">
+      <p>Per trovare una data in pista oggi devi girare fra i siti di venti
+         organizzatori diversi, i calendari dei circuiti e i gruppi Facebook.
+         Ognuno pubblica come gli pare: chi una tabella, chi un'immagine,
+         chi solo un numero di telefono.</p>
+      <p>Paddock legge quei calendari e li mette tutti nello stesso formato:
+         data, circuito, prezzo quando c'è, e come si prenota. Le date arrivano
+         dalle fonti originali degli organizzatori — quello che loro non
+         pubblicano, qui non viene inventato.</p>
+      <p><!-- Scrivi qui la tua descrizione: chi sei, perché l'hai fatto,
+              dove vuoi arrivare. Questo paragrafo è tuo. --></p>
+    </div>
+  </section>
+
+  <div class="sezioni">
+    <a class="scheda-sezione" href="calendario.html">
+      <span class="numero">01</span>
+      <h3>Calendario</h3>
+      <p>Tutte le date raccolte dagli organizzatori, con prezzi, disponibilità
+         e il modo per prenotare.</p>
+      <span class="vai">Apri il calendario &rarr;</span>
+    </a>
+    <a class="scheda-sezione" href="servizi.html">
+      <span class="numero">02</span>
+      <h3>Servizi</h3>
+      <p>Gommisti, ricambi, trasporto moto, sospensioni: chi ti serve prima,
+         durante e dopo la giornata.</p>
+      <span class="vai">Vedi i servizi &rarr;</span>
+    </a>
+  </div>
+
+</main>
+
+<footer class="piede">
+  <div class="wrap piede-riga">
+    <div class="piede-firma">
+      <span class="by">by</span>
+      <img src="logo-nanni36.png" alt="Nanni36">
+    </div>
+    <p class="piede-note">
+      Le date arrivano dai siti degli organizzatori e possono cambiare.
+      Prima di partire conferma sempre sulla loro pagina.
+      <span id="aggiornato"></span>
+    </p>
+  </div>
+</footer>
+
+<script>
+/* Le cifre vengono dallo stesso file che alimenta il calendario. Se non
+   c'e' ancora, restano dei trattini invece di mostrare degli zeri che
+   sembrerebbero un calendario vuoto. */
+(async () => {
+  try{
+    const r = await fetch("eventi.json", {cache:"no-store"});
+    if(!r.ok) return;
+    const dati = await r.json();
+    const oggi = new Date(); oggi.setHours(0,0,0,0);
+    const futuri = dati.eventi.filter(e => new Date(e.data+"T12:00:00") >= oggi);
+
+    document.getElementById("c-eventi").textContent = futuri.length;
+    document.getElementById("c-circuiti").textContent = new Set(futuri.map(e=>e.circuito)).size;
+    document.getElementById("c-organizzatori").textContent = new Set(futuri.map(e=>e.organizzatore)).size;
+    document.getElementById("c-aperte").textContent =
+      futuri.filter(e => e.disponibilita ? e.disponibilita !== "esaurito" : true).length;
+
+    if (dati.aggiornato){
+      const q = new Date(dati.aggiornato).toLocaleDateString("it-IT",
+        {day:"2-digit",month:"long",year:"numeric"});
+      document.getElementById("aggiornato").textContent = "Aggiornato al " + q + ".";
+    }
+  }catch(err){ console.warn("eventi.json non disponibile:", err); }
+})();
+</script>
+</body>
+</html>

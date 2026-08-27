@@ -1,0 +1,132 @@
+/* ═══════════════════════════════════════════════════════════════
+   PADDOCK — foglio di stile condiviso
+
+   Direzione: il muretto box di notte. Fondo asfalto scuro, dati in
+   monospaziato come su un monitor dei tempi, e il rosso cordolo usato
+   una volta sola per volta — mai come decorazione diffusa.
+
+   L'elemento firma e' la BARRA SETTORI: la riga di segmenti che sui
+   monitor di cronometraggio dice in che settore e' il pilota. Qui
+   segna in che pagina sei. Non e' un ornamento: e' il navigatore.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root{
+  --asfalto:#15181C;        /* fondo, asfalto bagnato di sera */
+  --carbonio:#1E2228;       /* superfici sollevate */
+  --carbonio-alto:#282D34;  /* bordi e separatori */
+  --cemento:#E8E9E6;        /* testo principale */
+  --cemento-basso:#9AA0A8;  /* testo secondario */
+  --cordolo:#D42630;        /* accento unico */
+  --bandiera:#F5C518;       /* dati in evidenza */
+  --verde:#3CB371;          /* disponibile */
+
+  --display:'Big Shoulders Display',Impact,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --body:'Barlow',system-ui,sans-serif;
+
+  --gabbia:1180px;
+  --bordo:1px solid var(--carbonio-alto);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--asfalto);color:var(--cemento);
+  font-family:var(--body);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--gabbia);margin:0 auto;padding:0 28px}
+a{color:inherit}
+
+/* ── TESTATA ────────────────────────────────────────────────── */
+.testata{
+  position:sticky;top:0;z-index:40;
+  background:rgba(21,24,28,.94);backdrop-filter:blur(10px);
+  border-bottom:var(--bordo);
+}
+.testata-riga{
+  display:flex;align-items:center;justify-content:space-between;
+  height:70px;gap:24px;
+}
+.marchio{display:flex;align-items:center;gap:11px;text-decoration:none}
+.marchio b{
+  font-family:var(--display);font-weight:800;font-size:30px;
+  letter-spacing:.01em;text-transform:uppercase;line-height:1;
+}
+.marchio .tacca{width:3px;height:26px;background:var(--cordolo);display:block}
+
+.navigazione{display:flex;gap:4px;align-items:center}
+.navigazione a{
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;text-decoration:none;color:var(--cemento-basso);
+  padding:9px 15px;position:relative;transition:color .18s;
+}
+.navigazione a:hover{color:var(--cemento)}
+.navigazione a[aria-current=page]{color:var(--cemento)}
+
+/* ── FIRMA: barra settori ───────────────────────────────────── */
+/* Tre segmenti come i settori di un giro. Quello della pagina
+   corrente e' acceso; gli altri restano spenti. */
+.settori{display:flex;gap:3px;height:3px;max-width:var(--gabbia);
+  margin:0 auto;padding:0 28px}
+.settori span{flex:1;background:var(--carbonio-alto);transition:background .3s}
+.settori span.acceso{background:var(--cordolo)}
+
+/* ── TIPOGRAFIA ─────────────────────────────────────────────── */
+.occhiello{
+  font-family:var(--mono);font-size:10px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--bandiera);
+}
+h1{
+  font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(46px,8vw,104px);line-height:.86;letter-spacing:-.005em;
+}
+h2{
+  font-family:var(--display);font-weight:700;text-transform:uppercase;
+  font-size:clamp(28px,4vw,44px);line-height:.95;
+}
+h3{
+  font-family:var(--display);font-weight:700;text-transform:uppercase;
+  font-size:22px;line-height:1.05;
+}
+.testo-lungo{max-width:62ch;color:var(--cemento-basso);font-size:17px}
+
+/* ── PULSANTI ───────────────────────────────────────────────── */
+.bottone{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;text-decoration:none;
+  padding:14px 24px;border:1px solid var(--cemento);
+  background:transparent;color:var(--cemento);cursor:pointer;
+  transition:background .18s,color .18s,border-color .18s;
+}
+.bottone:hover{background:var(--cemento);color:var(--asfalto)}
+.bottone.pieno{background:var(--cordolo);border-color:var(--cordolo);color:#fff}
+.bottone.pieno:hover{background:#fff;border-color:#fff;color:var(--asfalto)}
+
+:focus-visible{outline:2px solid var(--bandiera);outline-offset:3px}
+
+/* ── PIEDE ──────────────────────────────────────────────────── */
+.piede{
+  margin-top:80px;border-top:var(--bordo);
+  background:var(--carbonio);padding:44px 0 52px;
+}
+.piede-riga{display:flex;justify-content:space-between;gap:36px;flex-wrap:wrap;
+  align-items:flex-end}
+.piede-firma{display:flex;align-items:center;gap:12px}
+.piede-firma .by{font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--cemento-basso)}
+.piede-firma img{height:44px;width:auto;display:block}
+.piede-note{font-family:var(--mono);font-size:11px;line-height:1.9;
+  color:var(--cemento-basso);max-width:46ch}
+.piede-note a{color:var(--cemento-basso)}
+
+@media (max-width:760px){
+  .testata-riga{height:60px;gap:12px}
+  .marchio b{font-size:24px}
+  .navigazione a{padding:8px 10px;font-size:10px;letter-spacing:.1em}
+  .wrap,.settori{padding:0 18px}
+  .piede-riga{flex-direction:column;align-items:flex-start}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;
+  scroll-behavior:auto!important}}
