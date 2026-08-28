@@ -9,9 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="stile.css">
 <style>
-  .intro-calendario{padding:52px 0 30px}
-  .intro-calendario h1{font-size:clamp(38px,6vw,72px);max-width:14ch;margin-top:14px}
-  .intro-calendario .testo-lungo{margin-top:16px}
 
   .comandi{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;
     padding:22px 0;border-top:var(--bordo);border-bottom:var(--bordo)}
@@ -75,14 +72,15 @@
     text-transform:uppercase;color:var(--cemento-basso);padding:34px 0 10px;
     border-bottom:var(--bordo)}
 
-  .fascia-foto{position:relative;min-height:210px;display:flex;align-items:center;
-    overflow:hidden;margin-top:72px;border-top:var(--bordo);
-    background:linear-gradient(180deg,rgba(21,24,28,.55) 0%,rgba(21,24,28,.82) 100%),
-      var(--asfalto) url('sfondo-secondario.jpg') center 55% / cover no-repeat}
-  .fascia-foto p{font-family:var(--display);font-weight:700;text-transform:uppercase;
-    font-size:clamp(21px,3.4vw,34px);line-height:1.15;max-width:17ch;
-    padding:38px 0;text-shadow:0 2px 16px rgba(0,0,0,.55)}
-  .fascia-foto em{font-style:normal;color:var(--bandiera)}
+  .eroe-calendario{position:relative;min-height:min(46vh,380px);display:flex;
+    align-items:flex-end;overflow:hidden;border-bottom:var(--bordo)}
+  .eroe-calendario .eroe-foto{position:absolute;inset:0;
+    background:var(--asfalto) url('sfondo-secondario.jpg') center 45% / cover no-repeat}
+  .eroe-calendario .eroe-velo{position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(21,24,28,.45) 0%,rgba(21,24,28,.6) 45%,var(--asfalto) 100%)}
+  .eroe-calendario .eroe-contenuto{position:relative;padding:0 0 40px;width:100%}
+  .eroe-calendario h1{font-size:clamp(34px,5.5vw,64px);max-width:14ch;margin-top:14px}
+  .eroe-calendario .testo-lungo{margin-top:14px;color:rgba(232,233,230,.82)}
 
   .vuoto{padding:80px 0;text-align:center}
   .vuoto b{display:block;font-family:var(--display);font-weight:700;font-size:26px;
@@ -164,13 +162,18 @@
 </header>
 <div class="settori"><span></span><span class="acceso"></span><span></span></div>
 
-<main class="wrap">
-
-  <section class="intro-calendario">
+<section class="eroe-calendario">
+  <div class="eroe-foto"></div>
+  <div class="eroe-velo"></div>
+  <div class="wrap eroe-contenuto">
     <div class="occhiello">Calendario</div>
     <h1>Tutte le date,<br>un elenco solo.</h1>
     <p class="testo-lungo">Clicca una data per vedere prezzo, disponibilità e come prenotare.</p>
-  </section>
+  </div>
+</section>
+
+<main class="wrap">
+
 
 <section class="comandi">
     <div class="campo">
@@ -194,8 +197,8 @@
       </select>
     </div>
     <div class="campo">
-      <label>Livello</label>
-      <div class="gruppi" id="f-livelli"></div>
+      <label for="f-paese">Nazione</label>
+      <select id="f-paese"><option value="">Tutte</option></select>
     </div>
     <button class="azzera" id="azzera">Azzera filtri</button>
   </section>
@@ -217,12 +220,6 @@
   </div>
 </div>
 
-
-<section class="fascia-foto">
-  <div class="wrap">
-    <p>La pista non aspetta.<br><em>Scegli la tua data.</em></p>
-  </div>
-</section>
 
 <footer class="piede">
   <div class="wrap piede-riga">
@@ -248,7 +245,9 @@ const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno",
   "luglio","agosto","settembre","ottobre","novembre","dicembre"];
 const GIORNI = ["dom","lun","mar","mer","gio","ven","sab"];
 const GIORNI_INTERI = ["domenica","lunedì","martedì","mercoledì","giovedì","venerdì","sabato"];
-const LIVELLI = ["Base","Intermedio","Avanzato"];
+const NOMI_PAESE = {IT:"Italia", ES:"Spagna", FR:"Francia", DE:"Germania",
+  AT:"Austria", HR:"Croazia", CZ:"Rep. Ceca", SK:"Slovacchia", HU:"Ungheria",
+  PT:"Portogallo", SI:"Slovenia", CH:"Svizzera", BE:"Belgio", NL:"Paesi Bassi"};
 
 // contatti e prezzi box per organizzatore, caricati da organizzatori.json
 // (vuoto finche' i dati veri non arrivano: la demo non mostra dettagli
@@ -269,7 +268,7 @@ function bandieraPaese(codice){
     .join("");
 }
 
-const stato = {cerca:"", circuito:"", mese:"", ordine:"data", livelli:new Set()};
+const stato = {cerca:"", circuito:"", mese:"", paese:"", ordine:"data"};
 
 const $ = s => document.querySelector(s);
 const lista = $("#lista");
@@ -288,30 +287,26 @@ $("#f-mese").innerHTML = '<option value="">Tutti</option>';
   o.textContent = MESI[+ms-1][0].toUpperCase()+MESI[+ms-1].slice(1)+" "+a;
   $("#f-mese").appendChild(o);
 });
+// le nazioni presenti nel calendario, con bandierina e nome per esteso
+$("#f-paese").innerHTML = '<option value="">Tutte</option>';
+[...new Set(EVENTI.map(e=>e.paese))].filter(Boolean).sort().forEach(p=>{
+  const o=document.createElement("option"); o.value=p;
+  o.textContent = bandieraPaese(p) + "  " + (NOMI_PAESE[p] || p);
+  $("#f-paese").appendChild(o);
+});
 }
 costruisciFiltri();
-
-LIVELLI.forEach(l=>{
-  const b=document.createElement("button");
-  b.className="chip"; b.type="button"; b.textContent=l;
-  b.setAttribute("aria-pressed","false");
-  b.onclick=()=>{
-    if(stato.livelli.has(l)){stato.livelli.delete(l);b.setAttribute("aria-pressed","false");}
-    else{stato.livelli.add(l);b.setAttribute("aria-pressed","true");}
-    disegna();
-  };
-  $("#f-livelli").appendChild(b);
-});
 
 /* --- eventi interfaccia --- */
 $("#f-cerca").oninput = e => {stato.cerca=e.target.value.toLowerCase(); disegna();};
 $("#f-circuito").onchange = e => {stato.circuito=e.target.value; disegna();};
 $("#f-mese").onchange = e => {stato.mese=e.target.value; disegna();};
+$("#f-paese").onchange = e => {stato.paese=e.target.value; disegna();};
 $("#f-ordine").onchange = e => {stato.ordine=e.target.value; disegna();};
 $("#azzera").onclick = () => {
-  stato.cerca=""; stato.circuito=""; stato.mese=""; stato.ordine="data"; stato.livelli.clear();
-  $("#f-cerca").value=""; $("#f-circuito").value=""; $("#f-mese").value=""; $("#f-ordine").value="data";
-  document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed","false"));
+  stato.cerca=""; stato.circuito=""; stato.mese=""; stato.paese=""; stato.ordine="data";
+  $("#f-cerca").value=""; $("#f-circuito").value=""; $("#f-mese").value="";
+  $("#f-paese").value=""; $("#f-ordine").value="data";
   disegna();
 };
 
@@ -319,7 +314,7 @@ function filtra(){
   return EVENTI.filter(e=>{
     if(stato.circuito && e.circuito!==stato.circuito) return false;
     if(stato.mese && !e.data.startsWith(stato.mese)) return false;
-    if(stato.livelli.size && ![...stato.livelli].some(l=>e.livelli.includes(l))) return false;
+    if(stato.paese && e.paese!==stato.paese) return false;
     if(stato.cerca){
       const testo = (e.circuito+" "+e.org).toLowerCase();
       if(!testo.includes(stato.cerca)) return false;
