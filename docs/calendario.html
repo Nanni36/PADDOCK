@@ -217,16 +217,6 @@
   </div>
 </div>
 
-<footer>
-  <div class="wrap">
-    <p class="nota">
-      <b>Nota tecnica.</b> Questo è il prototipo funzionante dell'interfaccia.
-      I dati sono dimostrativi e servono solo a far vedere il prodotto:
-      vanno sostituiti con eventi reali, raccolti dai siti degli organizzatori.
-      Il passo successivo è il collegamento con i calendari veri e il modulo di prenotazione.
-    </p>
-  </div>
-</footer>
 
 <section class="fascia-foto">
   <div class="wrap">
@@ -448,11 +438,14 @@ function disegna(){
     lista.appendChild(riga);
   });
 
-  $("#conteggio").textContent = dati.length + " date visibili";
-  $("#c-eventi").textContent = dati.length;
-  $("#c-circuiti").textContent = new Set(dati.map(e=>e.circuito)).size;
-  $("#c-posti").textContent = dati.filter(e =>
-    e.disponibilita ? e.disponibilita !== "esaurito" : (e.posti ?? 0) > 0).length;
+  // questi contatori esistono solo su alcune pagine: se non ci sono si
+  // salta, invece di far fallire tutto il disegno della lista
+  const scrivi = (sel, valore) => { const n = $(sel); if (n) n.textContent = valore; };
+  scrivi("#conteggio", dati.length + " date visibili");
+  scrivi("#c-eventi", dati.length);
+  scrivi("#c-circuiti", new Set(dati.map(e=>e.circuito)).size);
+  scrivi("#c-posti", dati.filter(e =>
+    e.disponibilita ? e.disponibilita !== "esaurito" : (e.posti ?? 0) > 0).length);
 
 }
 
@@ -610,10 +603,8 @@ document.addEventListener("keydown", ev => { if (ev.key === "Escape") chiudiDett
 disegna();
 
 /* --------------------------------------------------------------
-   Dati veri. Se sito/eventi.json esiste (prodotto da raccogli.py)
-   sostituisce i dati dimostrativi. Se non c'e', la pagina resta
-   utilizzabile con la demo: un prototipo non deve mai mostrare
-   una schermata bianca.
+   Dati veri, prodotti da raccogli.py. Se il file non c'e' o non si
+   legge, la pagina lo dichiara: nessun dato inventato di ripiego.
    -------------------------------------------------------------- */
 async function caricaDatiVeri(){
   try{
@@ -652,10 +643,12 @@ async function caricaDatiVeri(){
     disegna();
 
     const q = document.querySelector(".occhiello");
-    const quando = new Date(pacchetto.aggiornato)
-      .toLocaleDateString("it-IT",{day:"2-digit",month:"long",year:"numeric"});
-    q.textContent = "Calendario aggiornato al " + quando;
-    q.style.color = "#5fd996";  // verde piu' chiaro: leggibile anche sul fondo scuro dell'eroe
+    if (q && pacchetto.aggiornato){
+      const quando = new Date(pacchetto.aggiornato)
+        .toLocaleDateString("it-IT",{day:"2-digit",month:"long",year:"numeric"});
+      q.textContent = "Calendario aggiornato al " + quando;
+      q.style.color = "#5fd996";
+    }
   }catch(err){
     console.error("eventi.json non caricato:", err);
     disegna();
