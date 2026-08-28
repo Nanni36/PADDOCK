@@ -80,6 +80,9 @@ FONTI = [
     {
         "attiva": True,
         "organizzatore": "Motart",
+        # il loro certificato di sicurezza e' scaduto: leggiamo comunque il
+        # calendario pubblico, ma nessun dato viene mai inviato a questo sito
+        "certificato_scaduto": True,
         "tipo": "framer_schede",
         "url": "https://motart.it/attivit%C3%A0/track-day",
         "selettore": ".framer-e09p2j",
@@ -182,7 +185,9 @@ def raccogli_fonte(fonte: dict, html: str | None = None) -> list:
     tipo = fonte["tipo"]
     scaricato_ora = html is None
     testo = html if html is not None else adattatori.scarica(
-        fonte["url"], ignora_robots=fonte.get("permesso_accordato", False)
+        fonte["url"],
+        ignora_robots=fonte.get("permesso_accordato", False),
+        certificato_scaduto=fonte.get("certificato_scaduto", False),
     )
 
     if scaricato_ora:

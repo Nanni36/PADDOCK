@@ -65,18 +65,31 @@ def robots_permette(url: str) -> bool:
     return _ROBOT_CACHE[radice].can_fetch(INTESTAZIONI["User-Agent"], url)
 
 
-def scarica(url: str, ignora_robots: bool = False) -> str:
+def scarica(url: str, ignora_robots: bool = False,
+            certificato_scaduto: bool = False) -> str:
     """
     ignora_robots va messo a True SOLO per un sito che ti ha dato
     il permesso esplicito (una mail dell'organizzatore, un accordo).
     Non e' un interruttore da usare per comodita'.
+
+    certificato_scaduto serve quando l'organizzatore si e' dimenticato di
+    rinnovare il certificato di sicurezza del proprio sito. Succede spesso
+    ai siti piccoli. Va usato SOLO per leggere un calendario pubblico:
+    significa rinunciare alla verifica dell'identita' del sito, quindi non
+    va mai attivato su pagine dove si inseriscono dati o si paga.
     """
     if not ignora_robots and not robots_permette(url):
         raise AccessoNegato(
             f"{urlsplit(url).netloc} vieta l'accesso automatico nel robots.txt. "
             "Scrivi all'organizzatore e chiedi il permesso o il calendario."
         )
-    r = requests.get(url, headers=INTESTAZIONI, timeout=TIMEOUT)
+
+    if certificato_scaduto:
+        import urllib3
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+    r = requests.get(url, headers=INTESTAZIONI, timeout=TIMEOUT,
+                     verify=not certificato_scaduto)
     r.raise_for_status()
     r.encoding = r.encoding or "utf-8"
     return r.text

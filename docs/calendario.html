@@ -75,6 +75,15 @@
     text-transform:uppercase;color:var(--cemento-basso);padding:34px 0 10px;
     border-bottom:var(--bordo)}
 
+  .fascia-foto{position:relative;min-height:210px;display:flex;align-items:center;
+    overflow:hidden;margin-top:72px;border-top:var(--bordo);
+    background:linear-gradient(180deg,rgba(21,24,28,.55) 0%,rgba(21,24,28,.82) 100%),
+      var(--asfalto) url('sfondo-secondario.jpg') center 55% / cover no-repeat}
+  .fascia-foto p{font-family:var(--display);font-weight:700;text-transform:uppercase;
+    font-size:clamp(21px,3.4vw,34px);line-height:1.15;max-width:17ch;
+    padding:38px 0;text-shadow:0 2px 16px rgba(0,0,0,.55)}
+  .fascia-foto em{font-style:normal;color:var(--bandiera)}
+
   .vuoto{padding:80px 0;text-align:center}
   .vuoto b{display:block;font-family:var(--display);font-weight:700;font-size:26px;
     text-transform:uppercase;margin-bottom:10px}
@@ -219,6 +228,12 @@
   </div>
 </footer>
 
+<section class="fascia-foto">
+  <div class="wrap">
+    <p>La pista non aspetta.<br><em>Scegli la tua data.</em></p>
+  </div>
+</section>
+
 <footer class="piede">
   <div class="wrap piede-riga">
     <div class="piede-firma">
@@ -234,32 +249,10 @@
 
 <script>
 
-let EVENTI = [
-  {circuito:"Misano World Circuit", paese:"IT", data:"2026-09-04", org:"Trackday Italia", prezzo:250, posti:14, tot:60, livelli:["Avanzato","Intermedio"]},
-  {circuito:"Autodromo di Magione", paese:"IT", data:"2026-09-06", org:"Umbria Motor Events", prezzo:130, posti:31, tot:45, livelli:["Base","Intermedio"]},
-  {circuito:"Mugello Circuit", paese:"IT", data:"2026-09-11", org:"Toscana Racing", prezzo:320, posti:3, tot:55, livelli:["Avanzato"]},
-  {circuito:"Cremona Circuit", paese:"IT", data:"2026-09-14", org:"Nord Trackdays", prezzo:145, posti:22, tot:50, livelli:["Base","Intermedio"]},
-  {circuito:"Automotodrom Grobnik", paese:"HR", data:"2026-09-18", org:"Adriatic Track", prezzo:180, posti:26, tot:60, livelli:["Intermedio","Avanzato"]},
-  {circuito:"Autodromo di Franciacorta", paese:"IT", data:"2026-09-21", org:"Nord Trackdays", prezzo:120, posti:38, tot:48, livelli:["Base"]},
-  {circuito:"Autodromo di Vallelunga", paese:"IT", data:"2026-09-25", org:"Lazio Track Events", prezzo:210, posti:11, tot:55, livelli:["Intermedio","Avanzato"]},
-  {circuito:"Misano World Circuit", paese:"IT", data:"2026-09-29", org:"Riviera Trackdays", prezzo:265, posti:0, tot:60, livelli:["Avanzato"]},
-  {circuito:"Autodromo di Adria", paese:"IT", data:"2026-10-02", org:"Delta Racing Days", prezzo:135, posti:29, tot:45, livelli:["Base","Intermedio"]},
-  {circuito:"Autodromo di Varano", paese:"IT", data:"2026-10-05", org:"Emilia Track", prezzo:125, posti:19, tot:40, livelli:["Base"]},
-  {circuito:"Red Bull Ring", paese:"AT", data:"2026-10-09", org:"Alpen Trackdays", prezzo:390, posti:8, tot:70, livelli:["Avanzato"]},
-  {circuito:"Autodrom Most", paese:"CZ", data:"2026-10-12", org:"Bohemia Track", prezzo:160, posti:34, tot:65, livelli:["Intermedio"]},
-  {circuito:"Autodromo di Magione", paese:"IT", data:"2026-10-16", org:"Trackday Italia", prezzo:135, posti:25, tot:45, livelli:["Base","Intermedio","Avanzato"]},
-  {circuito:"Mugello Circuit", paese:"IT", data:"2026-10-20", org:"Toscana Racing", prezzo:340, posti:6, tot:55, livelli:["Avanzato"]},
-  {circuito:"Automotodrom Grobnik", paese:"HR", data:"2026-10-24", org:"Adriatic Track", prezzo:175, posti:41, tot:60, livelli:["Base","Intermedio"]},
-  {circuito:"Cremona Circuit", paese:"IT", data:"2026-10-28", org:"Nord Trackdays", prezzo:150, posti:2, tot:50, livelli:["Intermedio"]},
-  {circuito:"Circuit de Barcelona", paese:"ES", data:"2026-11-04", org:"Iberia Trackdays", prezzo:295, posti:23, tot:80, livelli:["Intermedio","Avanzato"]},
-  {circuito:"Autodromo di Vallelunga", paese:"IT", data:"2026-11-08", org:"Lazio Track Events", prezzo:195, posti:17, tot:55, livelli:["Base","Intermedio"]},
-  {circuito:"Circuito de Almería", paese:"ES", data:"2026-11-14", org:"Sur Racing", prezzo:165, posti:36, tot:50, livelli:["Base","Intermedio"]},
-  {circuito:"Misano World Circuit", paese:"IT", data:"2026-11-18", org:"Riviera Trackdays", prezzo:240, posti:9, tot:60, livelli:["Avanzato"]},
-  {circuito:"Circuito de Jerez", paese:"ES", data:"2026-11-22", org:"Sur Racing", prezzo:230, posti:44, tot:75, livelli:["Intermedio","Avanzato"]},
-  {circuito:"Autodromo di Adria", paese:"IT", data:"2026-11-27", org:"Delta Racing Days", prezzo:115, posti:33, tot:45, livelli:["Base"]},
-  {circuito:"Circuito de Almería", paese:"ES", data:"2026-12-05", org:"Iberia Trackdays", prezzo:180, posti:28, tot:50, livelli:["Intermedio"]},
-  {circuito:"Circuito de Jerez", paese:"ES", data:"2026-12-12", org:"Sur Racing", prezzo:245, posti:52, tot:75, livelli:["Base","Intermedio","Avanzato"]},
-];
+// Nessun dato finto: se eventi.json non si carica la pagina lo dice
+// apertamente, invece di mostrare un calendario inventato che sembra vero.
+let EVENTI = [];
+let datiCaricati = false;
 
 const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno",
   "luglio","agosto","settembre","ottobre","novembre","dicembre"];
@@ -396,8 +389,15 @@ function disegna(){
   lista.innerHTML = "";
 
   if(!dati.length){
-    lista.innerHTML = `<div class="vuoto"><b>Nessuna data trovata</b>
-      <p>Allarga i filtri o azzerali per rivedere tutto il calendario.</p></div>`;
+    lista.innerHTML = !datiCaricati
+      ? `<div class="vuoto"><b>Calendario non caricato</b>
+          <p>Non riesco a leggere il file delle date (eventi.json).
+             Lancia AGGIORNA.command e ricarica la pagina.</p></div>`
+      : EVENTI.length
+        ? `<div class="vuoto"><b>Nessuna data con questi filtri</b>
+            <p>Allarga i filtri o azzerali per rivedere tutto il calendario.</p></div>`
+        : `<div class="vuoto"><b>Nessuna data in calendario</b>
+            <p>Lancia AGGIORNA.command per raccogliere le date.</p></div>`;
   }
 
   dati.forEach((e,i)=>{
@@ -647,6 +647,7 @@ async function caricaDatiVeri(){
       note: e.note || null
     }));
 
+    datiCaricati = true;
     costruisciFiltri();
     disegna();
 
@@ -656,7 +657,8 @@ async function caricaDatiVeri(){
     q.textContent = "Calendario aggiornato al " + quando;
     q.style.color = "#5fd996";  // verde piu' chiaro: leggibile anche sul fondo scuro dell'eroe
   }catch(err){
-    console.warn("eventi.json non caricato, resto sui dati dimostrativi:", err);
+    console.error("eventi.json non caricato:", err);
+    disegna();
   }
 }
 caricaDatiVeri();

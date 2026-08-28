@@ -21,6 +21,14 @@
   .eroe h1 em{font-style:normal;color:var(--bandiera)}
   .eroe .testo-lungo{margin-top:20px;color:rgba(232,233,230,.82);max-width:48ch}
   .eroe-azioni{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+  .firma-eroe{display:flex;align-items:center;gap:13px;margin-top:38px;
+    padding-top:22px;border-top:1px solid rgba(232,233,230,.16);
+    max-width:280px}
+  .firma-eroe .by{font-family:var(--mono);font-size:10px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--cemento-basso)}
+  .firma-eroe img{height:50px;width:auto;display:block;
+    filter:drop-shadow(0 2px 12px rgba(0,0,0,.5))}
+  @media (max-width:600px){ .firma-eroe img{height:40px} }
 
   .cifre{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
     border-bottom:var(--bordo)}
@@ -72,11 +80,18 @@
   <div class="eroe-velo"></div>
   <div class="wrap eroe-contenuto">
     <div class="occhiello">Track day · Italia ed Europa</div>
-    <h1>Meno tempo a cercare,<br><em>più tempo in pista.</em></h1>
-    <p class="testo-lungo">Tutte le date, tutti gli organizzatori, un solo posto dove guardare.</p>
+    <h1>Non tutto il tempo<br>si guadagna <em>in pista.</em></h1>
+    <p class="testo-lungo">
+      Date, organizzatori e servizi in un posto solo.
+      La curva 1 resta compito tuo.
+    </p>
     <div class="eroe-azioni">
       <a class="bottone pieno" href="calendario.html">Vedi il calendario</a>
       <a class="bottone" href="servizi.html">Servizi per la pista</a>
+    </div>
+    <div class="firma-eroe">
+      <span class="by">by</span>
+      <img src="logo-nanni36.png" alt="Nanni36">
     </div>
   </div>
 </section>
@@ -91,18 +106,14 @@
   </div>
 
   <section class="presentazione">
-    <h2>Perché<br>esiste</h2>
+    <h2>Il primo<br>settore</h2>
     <div class="testo-lungo">
-      <p>Per trovare una data in pista oggi devi girare fra i siti di venti
-         organizzatori diversi, i calendari dei circuiti e i gruppi Facebook.
-         Ognuno pubblica come gli pare: chi una tabella, chi un'immagine,
-         chi solo un numero di telefono.</p>
-      <p>Paddock legge quei calendari e li mette tutti nello stesso formato:
-         data, circuito, prezzo quando c'è, e come si prenota. Le date arrivano
-         dalle fonti originali degli organizzatori — quello che loro non
-         pubblicano, qui non viene inventato.</p>
-      <p><!-- Scrivi qui la tua descrizione: chi sei, perché l'hai fatto,
-              dove vuoi arrivare. Questo paragrafo è tuo. --></p>
+      <p>Una giornata in pista comincia molto prima del semaforo verde:
+         trovare la data giusta, capire chi organizza, sentire il gommista,
+         caricare il furgone.</p>
+      <p>Paddock si occupa di quella parte. Il cronometro lo guardi tu.</p>
+      <p><!-- Se vuoi aggiungere due righe tue — chi sei, com'è nato —
+              scrivile qui. --></p>
     </div>
   </section>
 
@@ -127,10 +138,6 @@
 
 <footer class="piede">
   <div class="wrap piede-riga">
-    <div class="piede-firma">
-      <span class="by">by</span>
-      <img src="logo-nanni36.png" alt="Nanni36">
-    </div>
     <p class="piede-note">
       Le date arrivano dai siti degli organizzatori e possono cambiare.
       Prima di partire conferma sempre sulla loro pagina.
