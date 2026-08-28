@@ -1,6 +1,6 @@
 {
-  "aggiornato": "2026-08-28T12:09:04",
-  "totale": 87,
+  "aggiornato": "2026-08-28T21:14:15",
+  "totale": 84,
   "eventi": [
     {
       "circuito": "Cremona Circuit",
@@ -8,10 +8,10 @@
       "organizzatore": "Gully Racing",
       "fonte_url": "https://www.gullyracing.it/calendario",
       "paese": "IT",
-      "prezzo": 259.0,
+      "prezzo": 239.0,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "esaurimento",
+      "disponibilita": "esaurito",
       "livelli": [],
       "url_iscrizione": "https://www.gullyracing.it/prodotto?id=201",
       "note": null,
@@ -207,22 +207,6 @@
       "livelli": [],
       "url_iscrizione": "https://motorsport.vallelunga.it/pl-moto-2/",
       "note": "4 gruppi — Listino: feriale 180€, prefestivo/festivo 210€, box 230€",
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
-      "circuito": "Autodromo di Varano",
-      "data": "2026-09-07",
-      "organizzatore": "Portami in Pista",
-      "fonte_url": "https://www.portamiinpista.it/TrackDays/",
-      "paese": "IT",
-      "prezzo": 189.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.portamiinpista.it/BookMgm/PreparePaymentForm?quantity=1&eventId=13636&defaultItemId=24629&itemType=Event",
-      "note": null,
       "giorni": 1,
       "data_fine": null
     },
@@ -691,22 +675,6 @@
       "data_fine": null
     },
     {
-      "circuito": "Misano World Circuit",
-      "data": "2026-09-28",
-      "organizzatore": "Portami in Pista",
-      "fonte_url": "https://www.portamiinpista.it/TrackDays/",
-      "paese": "IT",
-      "prezzo": 235.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.portamiinpista.it/BookMgm/PreparePaymentForm?quantity=1&eventId=13603&defaultItemId=24411&itemType=Event",
-      "note": null,
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
       "circuito": "Mugello Circuit",
       "data": "2026-09-28",
       "organizzatore": "Rosso Corsa",
@@ -798,22 +766,6 @@
       "disponibilita": "disponibile",
       "livelli": [],
       "url_iscrizione": "https://www.gullyracing.it/prodotto?id=209",
-      "note": null,
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
-      "circuito": "Cremona Circuit",
-      "data": "2026-10-05",
-      "organizzatore": "Portami in Pista",
-      "fonte_url": "https://www.portamiinpista.it/TrackDays/",
-      "paese": "IT",
-      "prezzo": 195.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.portamiinpista.it/BookMgm/PreparePaymentForm?quantity=1&eventId=13613&defaultItemId=24460&itemType=Event",
       "note": null,
       "giorni": 1,
       "data_fine": null
