@@ -293,6 +293,8 @@ _ALIAS_ORGANIZZATORI = {
     "speer racing": "Speer Racing",
     "speerracing": "Speer Racing",
     "gasss": "Gasss",
+    "activbike": "Activbike",
+    "motor sports": "Motor Sports",
     "eleven riding life": "Eleven Riding Life",
 }
 

@@ -200,6 +200,10 @@
       <label for="f-paese">Nazione</label>
       <select id="f-paese"><option value="">Tutte</option></select>
     </div>
+    <div class="campo">
+      <label>Giorni della settimana</label>
+      <div class="gruppi" id="f-giorni"></div>
+    </div>
     <button class="azzera" id="azzera">Azzera filtri</button>
   </section>
 
@@ -268,7 +272,7 @@ function bandieraPaese(codice){
     .join("");
 }
 
-const stato = {cerca:"", circuito:"", mese:"", paese:"", ordine:"data"};
+const stato = {cerca:"", circuito:"", mese:"", paese:"", giorni:new Set(), ordine:"data"};
 
 const $ = s => document.querySelector(s);
 const lista = $("#lista");
@@ -298,13 +302,29 @@ $("#f-paese").innerHTML = '<option value="">Tutte</option>';
 costruisciFiltri();
 
 /* --- eventi interfaccia --- */
+// un pulsante per giorno della settimana: se ne possono accendere piu'
+// di uno, e valgono in OR (sabato + domenica = tutti i weekend)
+GIORNI.forEach((sigla, indice) => {
+  const b = document.createElement("button");
+  b.className = "chip"; b.type = "button"; b.textContent = sigla;
+  b.setAttribute("aria-pressed", "false");
+  b.onclick = () => {
+    if (stato.giorni.has(indice)) { stato.giorni.delete(indice); b.setAttribute("aria-pressed","false"); }
+    else { stato.giorni.add(indice); b.setAttribute("aria-pressed","true"); }
+    disegna();
+  };
+  $("#f-giorni").appendChild(b);
+});
+
 $("#f-cerca").oninput = e => {stato.cerca=e.target.value.toLowerCase(); disegna();};
 $("#f-circuito").onchange = e => {stato.circuito=e.target.value; disegna();};
 $("#f-mese").onchange = e => {stato.mese=e.target.value; disegna();};
 $("#f-paese").onchange = e => {stato.paese=e.target.value; disegna();};
 $("#f-ordine").onchange = e => {stato.ordine=e.target.value; disegna();};
 $("#azzera").onclick = () => {
-  stato.cerca=""; stato.circuito=""; stato.mese=""; stato.paese=""; stato.ordine="data";
+  stato.cerca=""; stato.circuito=""; stato.mese=""; stato.paese="";
+  stato.ordine="data"; stato.giorni.clear();
+  document.querySelectorAll("#f-giorni .chip").forEach(c=>c.setAttribute("aria-pressed","false"));
   $("#f-cerca").value=""; $("#f-circuito").value=""; $("#f-mese").value="";
   $("#f-paese").value=""; $("#f-ordine").value="data";
   disegna();
@@ -315,6 +335,15 @@ function filtra(){
     if(stato.circuito && e.circuito!==stato.circuito) return false;
     if(stato.mese && !e.data.startsWith(stato.mese)) return false;
     if(stato.paese && e.paese!==stato.paese) return false;
+    if(stato.giorni.size){
+      const inizio = new Date(e.data+"T12:00:00");
+      const fine = e.dataFine ? new Date(e.dataFine+"T12:00:00") : inizio;
+      let combacia = false;
+      for (let c = new Date(inizio); c <= fine && !combacia; c.setDate(c.getDate()+1)){
+        if (stato.giorni.has(c.getDay())) combacia = true;
+      }
+      if (!combacia) return false;
+    }
     if(stato.cerca){
       const testo = (e.circuito+" "+e.org).toLowerCase();
       if(!testo.includes(stato.cerca)) return false;
@@ -505,42 +534,48 @@ function apriDettaglio(e){
     </div>` : "";
 
   // -- come prenotare --
+  // I contatti compaiono SEMPRE quando ci sono, anche se l'organizzatore
+  // vende online: molti preferiscono comunque scrivere per chiedere
+  // gruppo, box o disponibilita' prima di pagare.
   const azioni = [];
 
-  // il link diretto a QUESTA data conta sempre, che si paghi online o no:
-  // e' comunque la pagina piu' precisa da guardare per quella giornata
   if (e.url){
     const testoLink = org.pagamento_online === true
-      ? "Vai al sito e paga con carta"
+      ? "Vai alla pagina e prenota"
       : "Vedi la pagina di questo evento";
-    const classe = org.pagamento_online === true ? "primaria" : "secondaria";
-    azioni.push(`<a class="dett-btn ${classe}" href="${e.url}" target="_blank" rel="noopener">${testoLink}</a>`);
+    azioni.push(`<a class="dett-btn primaria" href="${e.url}" target="_blank" rel="noopener">${testoLink}</a>`);
   }
 
-  if (org.pagamento_online !== true){
-    if (org.email){
-      const oggetto = encodeURIComponent(`Richiesta info track day ${e.circuito} del ${d.getDate()} ${MESI[d.getMonth()]}`);
-      const corpo = encodeURIComponent(
-        `Buongiorno,\n\nvorrei avere informazioni per il track day del ${dataTesto} a ${e.circuito}.\n\nGrazie mille`
-      );
-      azioni.push(
-        `<a class="dett-btn primaria" href="mailto:${org.email}?subject=${oggetto}&body=${corpo}">Scrivi una mail (gia' pronta)</a>`
-      );
-    }
-    if (org.whatsapp){
-      const numero = org.whatsapp.replace(/[^\d]/g,"");
-      const testo = encodeURIComponent(
-        `Buongiorno, vorrei avere informazioni per il track day del ${dataTesto} a ${e.circuito}. Grazie!`
-      );
-      azioni.push(
-        `<a class="dett-btn secondaria" href="https://wa.me/${numero}?text=${testo}" target="_blank" rel="noopener">Scrivi su WhatsApp</a>`
-      );
-    }
-    if (org.telefono_prenotazioni){
-      azioni.push(`<div class="dett-box-riga"><span>Telefono prenotazioni</span><b>${org.telefono_prenotazioni}</b></div>`);
-      if (org.telefono_prenotazioni_orario){
-        azioni.push(`<div class="dett-nota">${org.telefono_prenotazioni_orario}</div>`);
-      }
+  if (org.email){
+    const oggetto = encodeURIComponent(
+      `Richiesta info track day ${e.circuito} — ${dataTesto}`);
+    const corpo = encodeURIComponent(
+      `Buongiorno,\n\n` +
+      `vorrei informazioni sulla giornata in pista del ${dataTesto} a ${e.circuito}` +
+      (e.org ? ` organizzata da ${e.org}` : "") + `.\n\n` +
+      `In particolare mi interessa sapere:\n` +
+      `- se ci sono ancora posti disponibili\n` +
+      `- come sono divisi i gruppi e i turni\n` +
+      `- costo e disponibilita' del box\n` +
+      `- come procedere con l'iscrizione\n\n` +
+      `Grazie mille,\n`);
+    azioni.push(
+      `<a class="dett-btn secondaria" href="mailto:${org.email}?subject=${oggetto}&body=${corpo}">Mail già pronta</a>`);
+  }
+
+  if (org.whatsapp){
+    const numero = org.whatsapp.replace(/[^\d]/g,"");
+    const testo = encodeURIComponent(
+      `Buongiorno, vorrei informazioni sulla giornata del ${dataTesto} a ${e.circuito}. ` +
+      `Ci sono ancora posti? Grazie!`);
+    azioni.push(
+      `<a class="dett-btn secondaria" href="https://wa.me/${numero}?text=${testo}" target="_blank" rel="noopener">WhatsApp già pronto</a>`);
+  }
+
+  if (org.telefono_prenotazioni){
+    azioni.push(`<div class="dett-box-riga"><span>Telefono prenotazioni</span><b>${org.telefono_prenotazioni}</b></div>`);
+    if (org.telefono_prenotazioni_orario){
+      azioni.push(`<div class="dett-nota">${org.telefono_prenotazioni_orario}</div>`);
     }
   }
   if (org.sito && org.sito !== e.url){

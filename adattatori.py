@@ -1660,6 +1660,25 @@ def da_elenco_speer(
         fine = tagli[i + 1].start() if i + 1 < len(tagli) else len(testo)
         blocchi.append((m, testo[m.end():fine]))
 
+    # i link di prenotazione, nell'ordine in cui compaiono nella pagina:
+    # servono per portare l'utente alla SUA data, non al calendario
+    zuppa = BeautifulSoup(html, "lxml")
+    link_prenotazione = [a["href"] for a in
+                         zuppa.select("a[href*='/booking/event/']")]
+    indice_link = 0
+
+    # I link vengono abbinati agli eventi nell'ordine in cui compaiono.
+    # Se i due conteggi non coincidono l'abbinamento slitterebbe e
+    # manderebbe il pilota alla data sbagliata: meglio rinunciare al link
+    # preciso e usare il calendario, dichiarandolo.
+    principali = sum(1 for _, corpo in blocchi if "On-site services" not in corpo)
+    if link_prenotazione and len(link_prenotazione) != principali:
+        avvisi.append(
+            f"{len(link_prenotazione)} link di prenotazione per {principali} eventi: "
+            "non li abbino per non rischiare di puntare alla data sbagliata"
+        )
+        link_prenotazione = []
+
     for indice, (m, corpo) in enumerate(blocchi):
         if "On-site services" in corpo:
             continue                       # e' la scheda dei servizi, non l'evento
@@ -1713,9 +1732,12 @@ def da_elenco_speer(
                         note.append(f"{etichetta} {valore:.0f}€")
 
         link = None
-        for a in BeautifulSoup(html, "lxml").select("a[href*='/booking/event/']"):
-            link = a["href"]
-            break
+        link = None
+        if indice_link < len(link_prenotazione):
+            link = link_prenotazione[indice_link]
+            indice_link += 1
+            if link.startswith("/"):
+                link = urlsplit(fonte_url)._replace(path=link, query="").geturl()
 
         eventi.append(
             Evento(
@@ -1725,7 +1747,8 @@ def da_elenco_speer(
                 organizzatore=organizzatore,
                 prezzo=_prezzo_speer(corpo),
                 disponibilita=disponibilita,
-                url_iscrizione=fonte_url,
+                # link alla pagina di QUESTA data, non al calendario
+                url_iscrizione=link or fonte_url,
                 fonte_url=fonte_url,
                 giorni=(fine - inizio).days + 1 if fine and fine > inizio else 1,
                 data_fine=fine if fine and fine > inizio else None,
@@ -1826,4 +1849,108 @@ def da_elenco_gasss(
             )
         )
 
+    return eventi, avvisi
+
+
+# --------------------------------------------------------------------------
+# T. ACTIVBIKE  (una riga per opzione: 1 giorno + pacchetti)
+# --------------------------------------------------------------------------
+#
+# Lo stesso giorno compare piu' volte, una per ogni formula in vendita:
+#     Saturday 05 september  Dijon-Prenois  1 day          235€
+#     Saturday 05 september  Dijon-Prenois  Pack 2 days    460€
+#     Saturday 05 september  Dijon-Prenois  Pack 3 days    651€
+#
+# Sul portale pubblichiamo UNA riga per giornata, con il prezzo della
+# formula piu' corta (quella del singolo giorno, se c'e'): e' il prezzo
+# di ingresso, quello che il pilota confronta. I pacchetti finiscono
+# nella nota, cosi' non si perde l'informazione ma non si moltiplicano
+# le righe.
+
+_MESI_ACTIVBIKE = {
+    "january":1, "february":2, "march":3, "april":4, "may":5, "june":6,
+    "jully":7, "july":7, "august":8, "september":9, "october":10,
+    "november":11, "december":12,
+}
+_GIORNI_INGLESI = {"monday":0,"tuesday":1,"wednesday":2,"thursday":3,
+                   "friday":4,"saturday":5,"sunday":6}
+
+_PATTERN_ACTIVBIKE = re.compile(
+    r"\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\s+"
+    r"(\d{1,2})\s+"
+    r"(january|february|march|april|may|june|jully|july|august|september|october|november|december)\b"
+    r"(.{0,90}?)"
+    r"(\d{2,4})\s*€",
+    re.IGNORECASE | re.DOTALL,
+)
+
+
+def da_calendario_activbike(
+    html: str,
+    registro: RegistroCircuiti,
+    organizzatore: str,
+    fonte_url: str,
+    anno: int,
+) -> tuple[list[Evento], list[str]]:
+    testo = " ".join(BeautifulSoup(html, "lxml").get_text(" ").split())
+    grezzi: dict[tuple, dict] = {}
+    avvisi: list[str] = []
+
+    trovati = list(_PATTERN_ACTIVBIKE.finditer(testo))
+    if not trovati:
+        avvisi.append(
+            "nessuna data trovata nel formato atteso: il sito potrebbe aver "
+            "cambiato struttura o lingua, controlla a mano"
+        )
+        return [], avvisi
+
+    for m in trovati:
+        sigla, giorno, mese_testo, mezzo, prezzo_testo = m.groups()
+        mese = _MESI_ACTIVBIKE.get(mese_testo.lower())
+        quando = _costruisci(anno, mese, int(giorno)) if mese else None
+        if not quando:
+            continue
+
+        # il giorno della settimana scritto conferma l'anno configurato
+        atteso = _GIORNI_INGLESI.get(sigla.lower())
+        if atteso is not None and quando.weekday() != atteso:
+            continue
+
+        # fra data e prezzo: nome del circuito e formula
+        m_formula = re.search(r"(pack\s*(\d)\s*days?|(\d)\s*day)", mezzo, re.IGNORECASE)
+        giorni = 1
+        if m_formula:
+            cifra = m_formula.group(2) or m_formula.group(3)
+            giorni = int(cifra) if cifra else 1
+        grezzo_circuito = mezzo[:m_formula.start()] if m_formula else mezzo
+        grezzo_circuito = grezzo_circuito.strip(" -–—·")
+        if not grezzo_circuito or len(grezzo_circuito) > 40:
+            continue
+
+        nome, paese = registro.risolvi(grezzo_circuito)
+        prezzo = float(prezzo_testo)
+
+        chiave = (nome, quando)
+        precedente = grezzi.get(chiave)
+        # tiene la formula piu' corta; annota le altre
+        if precedente is None or giorni < precedente["giorni"]:
+            grezzi[chiave] = {"nome":nome, "paese":paese, "quando":quando,
+                              "prezzo":prezzo, "giorni":giorni,
+                              "altri":set() if precedente is None
+                                      else precedente["altri"] | {precedente["giorni"]}}
+        elif giorni > precedente["giorni"]:
+            precedente["altri"].add(giorni)
+
+    eventi = []
+    for d in grezzi.values():
+        nota = None
+        if d["altri"]:
+            elenco = ", ".join(f"{g} giorni" for g in sorted(d["altri"]))
+            nota = f"Prezzo per una giornata; l'organizzatore vende anche pacchetti da {elenco}"
+        eventi.append(Evento(
+            circuito=d["nome"], paese=d["paese"], data=d["quando"],
+            organizzatore=organizzatore, prezzo=d["prezzo"],
+            url_iscrizione=fonte_url, fonte_url=fonte_url,
+            giorni=d["giorni"], note=nota,
+        ))
     return eventi, avvisi

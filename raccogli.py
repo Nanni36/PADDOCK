@@ -156,6 +156,22 @@ FONTI = [
         "url": "https://www.gasss.eu/it/eventi/",
     },
     {
+        "attiva": True,
+        "organizzatore": "Activbike",
+        "tipo": "activbike",
+        "url": "https://www.activbike.net/en/calendar",
+        "anno": 2026,
+    },
+    {
+        # motor-sports.eu vieta l'accesso automatico nel robots.txt.
+        # Resta spenta finche' non arriva un permesso scritto.
+        "attiva": False,
+        "permesso_accordato": False,
+        "organizzatore": "Motor Sports",
+        "tipo": "eventi_ticket",
+        "url": "https://www.motor-sports.eu/",
+    },
+    {
         "attiva": False,
         "organizzatore": "Nome Organizzatore",
         "tipo": "tabella_html",
@@ -244,6 +260,14 @@ def raccogli_fonte(fonte: dict, html: str | None = None) -> list:
             organizzatore=fonte["organizzatore"],
             fonte_url=fonte["url"],
         )
+        for a in avvisi:
+            print(f"        avviso: {a}")
+        return eventi
+    if tipo == "activbike":
+        eventi, avvisi = adattatori.da_calendario_activbike(
+            html=testo, registro=REGISTRO,
+            organizzatore=fonte["organizzatore"], fonte_url=fonte["url"],
+            anno=fonte.get("anno", date.today().year))
         for a in avvisi:
             print(f"        avviso: {a}")
         return eventi

@@ -321,5 +321,69 @@
   "alias": [
    "Calafat"
   ]
+ },
+ {
+  "nome": "Circuit de Bresse",
+  "paese": "FR",
+  "alias": [
+   "Bresse",
+   "Frontenaud"
+  ]
+ },
+ {
+  "nome": "Circuit de Dijon-Prenois",
+  "paese": "FR",
+  "alias": [
+   "Dijon",
+   "Dijon Prenois",
+   "Prenois"
+  ]
+ },
+ {
+  "nome": "Circuit Bugatti Le Mans",
+  "paese": "FR",
+  "alias": [
+   "Le Mans",
+   "Bugatti"
+  ]
+ },
+ {
+  "nome": "Pole Mecanique Ales",
+  "paese": "FR",
+  "alias": [
+   "Ales",
+   "Ales Cevennes"
+  ]
+ },
+ {
+  "nome": "Circuit du Val de Vienne",
+  "paese": "FR",
+  "alias": [
+   "Val de Vienne",
+   "Le Vigeant",
+   "Vigeant"
+  ]
+ },
+ {
+  "nome": "Circuit de Mirecourt",
+  "paese": "FR",
+  "alias": [
+   "Mirecourt"
+  ]
+ },
+ {
+  "nome": "Circuit d'Alcarras",
+  "paese": "ES",
+  "alias": [
+   "Alcarras"
+  ]
+ },
+ {
+  "nome": "Circuito de Andalucia",
+  "paese": "ES",
+  "alias": [
+   "Andalucia",
+   "Almeria Andalucia"
+  ]
  }
 ]

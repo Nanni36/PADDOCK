@@ -13,15 +13,16 @@
   },
   "Gully Racing": {
     "sito": "https://www.gullyracing.it",
-    "email": null,
+    "email": "info@gullyracing.it",
     "telefono_prenotazioni": "+39 342 171 0937",
     "telefono_prenotazioni_orario": "11:00-13:00 e 16:30-18:30, solo feriali",
-    "telefono_generale": null,
+    "telefono_generale": "+39 0124 34585",
     "whatsapp": null,
     "pagamento_online": true,
     "box_normale": null,
     "box_esclusiva_piccolo": null,
-    "box_esclusiva_grande": null
+    "box_esclusiva_grande": null,
+    "note_pagamento": "Sede a Favria (TO). Quando il semaforo è giallo la prenotazione si assicura SOLO dal sito con carta di credito: via mail non garantiscono il posto. Col semaforo verde si può pagare anche con bonifico entro 3 giorni. Se una data è esaurita, scrivi a info@gullyracing.it col tuo numero per la lista d'attesa."
   },
   "Giorgio Team Racing": {
     "sito": "https://www.giorgioteam.com",
@@ -131,7 +132,7 @@
     "email": "info@circuitotazionuvolari.it",
     "telefono_prenotazioni": "+39 0383 1975221",
     "telefono_prenotazioni_orario": null,
-    "telefono_generale": null,
+    "telefono_generale": "+39 0383 1975221",
     "whatsapp": null,
     "pagamento_online": true,
     "box_normale": null,
@@ -140,7 +141,7 @@
   },
   "Mugello Circuit (calendario)": {
     "sito": "https://mugellocircuit.com/it/eventi/prove-libere-moto",
-    "email": null,
+    "email": "info@mugellocircuit.it",
     "telefono_prenotazioni": null,
     "telefono_prenotazioni_orario": null,
     "telefono_generale": "+39 055 8499111",
@@ -173,6 +174,32 @@
     "whatsapp": null,
     "pagamento_online": true,
     "note_pagamento": "Sede a Moso in Passiria (BZ). Si gira sempre a gruppi omogenei per tempo sul giro, transponder obbligatorio. Il prezzo si vede aprendo il singolo evento.",
+    "box_normale": null,
+    "box_esclusiva_piccolo": null,
+    "box_esclusiva_grande": null
+  },
+  "Activbike": {
+    "sito": "https://www.activbike.net/en/calendar",
+    "email": "contact@activbike.net",
+    "telefono_prenotazioni": "+33 385 766 590",
+    "telefono_prenotazioni_orario": null,
+    "telefono_generale": null,
+    "whatsapp": null,
+    "pagamento_online": true,
+    "note_pagamento": "Serve un account sul sito per prenotare; alcune date solo per telefono. Sede in Francia (Dommartin les Cuiseaux). Offrono trasporto moto per le trasferte all'estero e noleggio moto/attrezzatura.",
+    "box_normale": null,
+    "box_esclusiva_piccolo": null,
+    "box_esclusiva_grande": null
+  },
+  "Motor Sports": {
+    "sito": "https://www.motor-sports.eu",
+    "email": null,
+    "telefono_prenotazioni": null,
+    "telefono_prenotazioni_orario": null,
+    "telefono_generale": null,
+    "whatsapp": null,
+    "pagamento_online": null,
+    "note_pagamento": "Il loro sito vieta la lettura automatica: le date vanno guardate direttamente sul sito.",
     "box_normale": null,
     "box_esclusiva_piccolo": null,
     "box_esclusiva_grande": null
