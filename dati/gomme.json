@@ -1,0 +1,194 @@
+{
+  "_come_si_usa": "Catalogo gomme racing. 'modelli' elenca cosa esiste (marca, modello, tipo, mescole, misure). 'offerte' contiene i prezzi VERI che hai verificato: una voce per combinazione modello+mescola+misura+venditore. Il campo 'controllato' è obbligatorio: senza data, il prezzo non viene mostrato. Meglio nessun prezzo che un prezzo vecchio spacciato per attuale.",
+
+  "venditori": [
+    {
+      "id": "gripmoto",
+      "nome": "GripMoto",
+      "citta": "Marone (BS)",
+      "sito": "https://www.ebay.it/str/gripmotogommemotoonline",
+      "whatsapp": "+39 342 815 0932",
+      "email": null,
+      "spedizione_standard": null,
+      "spedizione_gratis_sopra": null,
+      "tempi_tipici": "2-4 giorni lavorativi",
+      "consegna_in_pista": false,
+      "note": "Oltre 28.000 pezzi venduti, 100% feedback positivi. Risponde di solito entro 3 ore."
+    },
+    {
+      "id": "1001pneumatici",
+      "nome": "1001Pneumatici",
+      "citta": null,
+      "sito": "https://www.1001pneumatici.it/pneumatici-moto/pneumatici-circuito",
+      "whatsapp": null,
+      "email": null,
+      "spedizione_standard": null,
+      "spedizione_gratis_sopra": null,
+      "tempi_tipici": null,
+      "consegna_in_pista": false,
+      "note": "Ha una sezione dedicata ai pneumatici da circuito, già divisa per le misure da pista."
+    },
+    {
+      "id": "ammotor",
+      "nome": "Ammotor",
+      "citta": null,
+      "sito": "https://www.ammotor.it/shop/racing/",
+      "whatsapp": null,
+      "email": null,
+      "spedizione_standard": null,
+      "spedizione_gratis_sopra": null,
+      "tempi_tipici": null,
+      "consegna_in_pista": false,
+      "note": "Vende coppie già abbinate SC1/SC2, con l'anno di produzione (DOT) indicato nell'annuncio."
+    },
+    {
+      "id": "proveliberemoto",
+      "nome": "Prove Libere Moto",
+      "citta": "Brescia",
+      "sito": "https://www.proveliberemoto.it/it/16-gomme",
+      "whatsapp": "+39 030 503 2626",
+      "email": "info@proveliberemoto.it",
+      "spedizione_standard": null,
+      "spedizione_gratis_sopra": null,
+      "tempi_tipici": null,
+      "consegna_in_pista": true,
+      "note": "Consegnano le gomme direttamente in pista durante i loro track day, con servizio di montaggio e smontaggio sul posto. Trattano Pirelli e Dunlop."
+    }
+  ],
+
+  "modelli": [
+    {
+      "marca": "Pirelli",
+      "modello": "Diablo Superbike",
+      "tipo": "slick",
+      "mescole": ["SC0", "SC1", "SC2", "SC3"],
+      "misure_anteriore": ["120/70 R17", "125/70 R17"],
+      "misure_posteriore": ["180/60 R17", "190/55 R17", "200/55 R17", "200/60 R17"],
+      "note": "Pneumatico ufficiale del Mondiale Superbike."
+    },
+    {
+      "marca": "Pirelli",
+      "modello": "Diablo Supercorsa SC V4",
+      "tipo": "intagliata",
+      "mescole": ["SC1", "SC2", "SC3"],
+      "misure_anteriore": ["120/70 R17", "125/70 R17"],
+      "misure_posteriore": ["180/55 R17", "180/60 R17", "190/55 R17", "200/55 R17"],
+      "note": "Intagliata da competizione omologata stradale. Mescole full racing."
+    },
+    {
+      "marca": "Pirelli",
+      "modello": "Diablo Rain",
+      "tipo": "pioggia",
+      "mescole": ["SCR1"],
+      "misure_anteriore": ["120/70 R17"],
+      "misure_posteriore": ["180/60 R17", "190/55 R17", "200/60 R17"],
+      "note": null
+    },
+    {
+      "marca": "Michelin",
+      "modello": "Power Slick 2",
+      "tipo": "slick",
+      "mescole": ["Soft", "Medium", "Hard"],
+      "misure_anteriore": ["120/70 R17"],
+      "misure_posteriore": ["180/60 R17", "190/55 R17", "200/55 R17"],
+      "note": null
+    },
+    {
+      "marca": "Michelin",
+      "modello": "Power Cup 2",
+      "tipo": "intagliata",
+      "mescole": ["Standard"],
+      "misure_anteriore": ["120/70 R17"],
+      "misure_posteriore": ["180/55 R17", "190/55 R17", "200/55 R17"],
+      "note": "Omologata stradale, uso misto pista/strada."
+    },
+    {
+      "marca": "Michelin",
+      "modello": "Power Rain",
+      "tipo": "pioggia",
+      "mescole": ["Standard"],
+      "misure_anteriore": ["120/70 R17"],
+      "misure_posteriore": ["190/55 R17", "200/55 R17"],
+      "note": null
+    },
+    {
+      "marca": "Dunlop",
+      "modello": "Sportmax GP Racer D212",
+      "tipo": "intagliata",
+      "mescole": ["Endurance", "Medium", "Soft"],
+      "misure_anteriore": ["120/70 R17"],
+      "misure_posteriore": ["180/55 R17", "190/55 R17", "200/55 R17"],
+      "note": null
+    },
+    {
+      "marca": "Dunlop",
+      "modello": "KR Slick",
+      "tipo": "slick",
+      "mescole": ["KR106", "KR108", "KR133", "KR191"],
+      "misure_anteriore": ["120/70 R17", "125/70 R17"],
+      "misure_posteriore": ["180/60 R17", "190/55 R17", "200/55 R17", "200/60 R17"],
+      "note": "Gomme da competizione pura, spesso vendute solo a team o tramite servizio in pista."
+    },
+    {
+      "marca": "Bridgestone",
+      "modello": "Battlax Racing V02",
+      "tipo": "slick",
+      "mescole": ["Soft", "Medium", "Hard"],
+      "misure_anteriore": ["120/70 R17"],
+      "misure_posteriore": ["180/55 R17", "190/55 R17", "200/55 R17"],
+      "note": null
+    },
+    {
+      "marca": "Bridgestone",
+      "modello": "Battlax Racing W01",
+      "tipo": "pioggia",
+      "mescole": ["Standard"],
+      "misure_anteriore": ["120/70 R17"],
+      "misure_posteriore": ["190/55 R17", "200/55 R17"],
+      "note": null
+    },
+    {
+      "marca": "Metzeler",
+      "modello": "Racetec TD Slick",
+      "tipo": "slick",
+      "mescole": ["K1", "K2", "K3"],
+      "misure_anteriore": ["120/70 R17"],
+      "misure_posteriore": ["180/60 R17", "190/55 R17", "200/55 R17"],
+      "note": null
+    },
+    {
+      "marca": "Metzeler",
+      "modello": "Racetec RR",
+      "tipo": "intagliata",
+      "mescole": ["K1", "K2", "K3"],
+      "misure_anteriore": ["120/70 R17"],
+      "misure_posteriore": ["180/55 R17", "180/60 R17", "190/55 R17", "200/55 R17"],
+      "note": "Omologata stradale."
+    },
+    {
+      "marca": "Metzeler",
+      "modello": "Racetec RR Rain",
+      "tipo": "pioggia",
+      "mescole": ["Standard"],
+      "misure_anteriore": ["120/70 R17"],
+      "misure_posteriore": ["190/55 R17", "200/55 R17"],
+      "note": null
+    }
+  ],
+
+  "offerte": [
+    {
+      "_esempio": "Copia questa struttura per ogni prezzo che verifichi. Cancella questa riga di esempio quando inserisci i primi prezzi veri.",
+      "venditore": "gripmoto",
+      "marca": "Pirelli",
+      "modello": "Diablo Supercorsa SC V4",
+      "mescola": "SC2",
+      "misura": "190/55 R17",
+      "prezzo": 167.00,
+      "spedizione": 0,
+      "disponibile": true,
+      "url": "https://www.ebay.it/itm/176598070089",
+      "controllato": "2026-08-28"
+    }
+  ]
+}

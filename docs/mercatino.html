@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mercatino — Paddock</title>
+<meta name="description" content="Compra e vendi ricambi, attrezzatura e materiale da pista fra pistaioli.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stile.css">
+<style>
+  .intro{padding:52px 0 26px}
+  .intro h1{font-size:clamp(38px,6vw,72px);max-width:13ch;margin-top:14px}
+  .intro .testo-lungo{margin-top:16px}
+
+  .barra-mercatino{display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+    padding:22px 0;border-top:var(--bordo);border-bottom:var(--bordo)}
+  .chip{font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;padding:11px 14px;border:var(--bordo);
+    background:transparent;cursor:pointer;color:var(--cemento-basso);transition:.16s}
+  .chip:hover{color:var(--cemento)}
+  .chip[aria-pressed=true]{background:var(--cemento);color:var(--asfalto);
+    border-color:var(--cemento)}
+  input[type=search],input,select,textarea{font-family:var(--body);font-size:14px;
+    color:var(--cemento);background:var(--carbonio);border:var(--bordo);
+    padding:10px 12px;border-radius:0;width:100%}
+  textarea{min-height:88px;resize:vertical}
+  .a-destra{margin-left:auto}
+
+  .griglia{display:grid;gap:1px;background:var(--carbonio-alto);
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    border:var(--bordo);margin-top:28px}
+  .annuncio{background:var(--asfalto);display:flex;flex-direction:column;
+    transition:background .18s}
+  .annuncio:hover{background:var(--carbonio)}
+  .annuncio.venduto{opacity:.5}
+  .annuncio-foto{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;
+    background:var(--carbonio)}
+  .annuncio-corpo{padding:20px 20px 18px;display:flex;flex-direction:column;
+    gap:9px;flex:1}
+  .annuncio .categoria{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--cordolo)}
+  .annuncio h3{font-size:21px;line-height:1.1}
+  .annuncio .prezzo{font-family:var(--mono);font-size:20px;font-weight:600}
+  .annuncio p{font-size:14px;color:var(--cemento-basso)}
+  .etichette{display:flex;gap:6px;flex-wrap:wrap}
+  .etichetta{font-family:var(--mono);font-size:9px;letter-spacing:.1em;
+    text-transform:uppercase;padding:3px 8px;border:var(--bordo);
+    color:var(--cemento-basso)}
+  .etichetta.venduto{border-color:var(--cordolo);color:var(--cordolo)}
+  .annuncio-fondo{margin-top:auto;padding-top:16px;border-top:var(--bordo);
+    display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .annuncio-fondo a{font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+    text-transform:uppercase;text-decoration:none;padding:8px 12px;
+    border:var(--bordo);color:var(--cemento);transition:.16s}
+  .annuncio-fondo a:hover{background:var(--cemento);color:var(--asfalto)}
+  .quando{font-family:var(--mono);font-size:10px;color:var(--cemento-basso);
+    margin-left:auto}
+
+  .vuoto{padding:80px 20px;text-align:center;grid-column:1/-1}
+  .vuoto b{display:block;font-family:var(--display);font-weight:700;font-size:26px;
+    text-transform:uppercase;margin-bottom:10px}
+  .vuoto p{color:var(--cemento-basso);max-width:54ch;margin:0 auto;font-size:15px}
+  .vuoto code{font-family:var(--mono);color:var(--bandiera);font-size:13px}
+
+  /* finestra di pubblicazione */
+  .velo{position:fixed;inset:0;background:rgba(10,12,14,.78);display:none;
+    align-items:flex-start;justify-content:center;padding:40px 18px;
+    overflow-y:auto;z-index:100;backdrop-filter:blur(3px)}
+  .velo.aperto{display:flex}
+  .scheda{background:var(--carbonio);border:var(--bordo);max-width:640px;
+    width:100%;padding:32px;position:relative}
+  .chiudi{position:absolute;top:14px;right:14px;background:none;border:none;
+    font-size:19px;cursor:pointer;color:var(--cemento-basso);padding:8px}
+  .chiudi:hover{color:var(--cordolo)}
+  .scheda h2{font-size:28px;margin-bottom:6px}
+  .scheda .sottotitolo{font-family:var(--mono);font-size:12px;
+    color:var(--cemento-basso);margin-bottom:24px}
+  form{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+  .campo{display:flex;flex-direction:column;gap:6px}
+  .c4{grid-column:span 4} .c6{grid-column:span 6}
+  .c8{grid-column:span 8} .c12{grid-column:span 12}
+  label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--cemento-basso)}
+  .aiuto{font-family:var(--mono);font-size:11px;color:var(--cemento-basso);
+    line-height:1.6}
+  .bottoni{grid-column:span 12;display:flex;gap:10px;margin-top:6px;
+    padding-top:18px;border-top:var(--bordo);align-items:center}
+  .annulla{margin-left:auto;background:none;border:var(--bordo);padding:13px 20px;
+    cursor:pointer;font-family:var(--mono);font-size:11px;text-transform:uppercase;
+    letter-spacing:.1em;color:var(--cemento-basso)}
+  .avviso{grid-column:span 12;font-family:var(--mono);font-size:12px;padding:12px;
+    line-height:1.6;display:none}
+  .avviso.errore{display:block;background:rgba(212,38,48,.12);color:#ff8a8a}
+  .avviso.ok{display:block;background:rgba(60,179,113,.12);color:#7fe0a8}
+
+  .avviso-giornata{font-family:var(--mono);font-size:12px;line-height:1.7;
+    padding:14px;border:1px solid var(--bandiera);color:var(--cemento-basso)}
+  .avviso-giornata b{color:var(--bandiera);display:block;margin-bottom:6px}
+  .riga-data{font-family:var(--mono);font-size:12px;color:var(--bandiera);
+    padding:9px 12px;background:rgba(245,197,24,.08);
+    border-left:2px solid var(--bandiera);line-height:1.5}
+  .riga-data small{display:block;color:var(--cemento-basso);margin-top:4px}
+
+  .nota-sicurezza{margin-top:36px;padding:20px 22px;border:var(--bordo);
+    background:var(--carbonio);font-family:var(--mono);font-size:12px;
+    line-height:1.8;color:var(--cemento-basso);max-width:70ch}
+  .nota-sicurezza b{color:var(--bandiera)}
+
+  @media (max-width:700px){
+    .c4,.c6,.c8{grid-column:span 12}
+    .scheda{padding:24px 20px}
+    .a-destra{margin-left:0;width:100%}
+  }
+</style>
+</head>
+<body>
+
+<header class="testata">
+  <div class="wrap testata-riga">
+    <a class="marchio" href="index.html"><span class="tacca"></span><b>Paddock</b></a>
+    <nav class="navigazione">
+      <a href="index.html">Home</a>
+      <a href="calendario.html">Calendario</a>
+      <a href="servizi.html">Servizi</a>
+      <a href="mercatino.html" aria-current="page">Mercatino</a>
+    </nav>
+  </div>
+</header>
+<div class="settori"><span></span><span></span><span class="acceso"></span></div>
+
+<main class="wrap">
+
+  <section class="intro">
+    <div class="occhiello">Fra pistaioli</div>
+    <h1>Quello che ti avanza,<br>a qualcuno serve.</h1>
+    <p class="testo-lungo">
+      Carene, scarichi, cerchi, termocoperte, tute. Pubblica in un minuto,
+      senza registrarti.
+    </p>
+  </section>
+
+  <div class="barra-mercatino">
+    <button class="chip" data-cat="" aria-pressed="true">Tutto</button>
+    <button class="chip" data-cat="Giornate in pista">Giornate in pista</button>
+    <button class="chip" data-cat="Ricambi moto">Ricambi</button>
+    <button class="chip" data-cat="Carene">Carene</button>
+    <button class="chip" data-cat="Gomme">Gomme</button>
+    <button class="chip" data-cat="Abbigliamento">Abbigliamento</button>
+    <button class="chip" data-cat="Attrezzatura">Attrezzatura</button>
+    <button class="chip" data-cat="Moto complete">Moto</button>
+    <button class="chip" data-cat="Cerco">Cerco</button>
+    <div class="a-destra">
+      <button class="bottone pieno" id="btn-pubblica">+ Pubblica annuncio</button>
+    </div>
+  </div>
+
+  <div class="griglia" id="griglia"></div>
+
+  <div class="nota-sicurezza">
+    <b>Prima di comprare o vendere.</b><br>
+    Paddock non partecipa alle trattative e non verifica gli annunci: mette
+    solo in contatto due persone. Guarda il pezzo di persona quando puoi —
+    una data in calendario è l'occasione giusta per scambiarselo in paddock.
+    Diffida di chi chiede caparre prima di farti vedere qualcosa, e non pagare
+    mai con ricariche o buoni regalo.
+  </div>
+
+</main>
+
+<div class="velo" id="velo">
+  <div class="scheda">
+    <button class="chiudi" id="chiudi">✕</button>
+    <h2>Pubblica un annuncio</h2>
+    <div class="sottotitolo">Nessuna registrazione. Ti diamo un codice per cancellarlo dopo.</div>
+    <form id="modulo" autocomplete="off">
+      <div class="campo c8">
+        <label for="f-titolo">Cosa vendi *</label>
+        <input id="f-titolo" required maxlength="80" placeholder="Carena vetroresina CBR600RR">
+      </div>
+      <div class="campo c4">
+        <label for="f-prezzo">Prezzo €</label>
+        <input type="number" id="f-prezzo" min="0" step="5" placeholder="250">
+      </div>
+      <div class="campo c6">
+        <label for="f-categoria">Categoria *</label>
+        <select id="f-categoria" required>
+          <option value="Giornate in pista">Giornata in pista da cedere</option>
+          <option value="Ricambi moto">Ricambi moto</option>
+          <option value="Carene">Carene</option>
+          <option value="Gomme">Gomme</option>
+          <option value="Abbigliamento">Abbigliamento</option>
+          <option value="Attrezzatura">Attrezzatura</option>
+          <option value="Moto complete">Moto complete</option>
+          <option value="Cerco">Cerco (non vendo)</option>
+        </select>
+      </div>
+      <div class="campo c6">
+        <label for="f-condizione">Condizione</label>
+        <select id="f-condizione">
+          <option value="">Non specificata</option>
+          <option value="Nuovo">Nuovo</option>
+          <option value="Come nuovo">Come nuovo</option>
+          <option value="Usato">Usato</option>
+          <option value="Da sistemare">Da sistemare</option>
+        </select>
+      </div>
+      <div class="campo c12" id="riquadro-giornata" hidden>
+        <div class="avviso-giornata">
+          <b>Attenzione: il passaggio va sempre confermato con l'organizzatore.</b>
+          Quasi nessuno permette di cedere un posto liberamente. Mettiti
+          d'accordo con loro <em>prima</em> di prendere soldi, altrimenti chi
+          compra rischia di trovarsi al cancello senza iscrizione.
+        </div>
+      </div>
+      <div class="campo c6" id="campo-data" hidden>
+        <label for="f-data-evento">Quale data</label>
+        <select id="f-data-evento"><option value="">Scegli dal calendario…</option></select>
+      </div>
+      <div class="campo c6" id="campo-autorizzato" hidden>
+        <label for="f-autorizzato">Passaggio autorizzato?</label>
+        <select id="f-autorizzato">
+          <option value="">Non ancora chiesto</option>
+          <option value="si">Sì, l'organizzatore è d'accordo</option>
+          <option value="no">No, l'organizzatore non lo consente</option>
+        </select>
+      </div>
+      <div class="campo c12">
+        <label for="f-descrizione">Descrizione</label>
+        <textarea id="f-descrizione" maxlength="600"
+          placeholder="Moto compatibili, stato, difetti, quanti giri ha fatto..."></textarea>
+      </div>
+      <div class="campo c6">
+        <label for="f-zona">Zona *</label>
+        <input id="f-zona" required maxlength="60" placeholder="Lugano / Marche / consegna a Misano">
+      </div>
+      <div class="campo c6">
+        <label for="f-contatto">Come ti contattano *</label>
+        <input id="f-contatto" required maxlength="80" placeholder="WhatsApp 333... oppure mail@esempio.it">
+      </div>
+      <div class="campo c12">
+        <label for="f-foto">Foto (facoltativa)</label>
+        <input type="file" id="f-foto" accept="image/*">
+        <div class="aiuto">Una foto sola, meglio se del pezzo vero e non presa dal catalogo.</div>
+      </div>
+      <div class="avviso" id="avviso"></div>
+      <div class="bottoni">
+        <button type="submit" class="bottone pieno" id="btn-invia">Pubblica</button>
+        <button type="button" class="annulla" id="annulla">Annulla</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer class="piede">
+  <div class="wrap piede-riga">
+    <p class="piede-note">
+      Gli annunci sono pubblicati direttamente dagli utenti. Segnala quelli
+      fuori posto e verranno rimossi.
+    </p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════
+   Configurazione: incolla qui i due valori del tuo progetto
+   Supabase (Impostazioni → API). La chiave "anon" è pensata per
+   stare in una pagina pubblica: da sola non permette di leggere
+   o scrivere nulla che le regole del database non consentano.
+   ══════════════════════════════════════════════════════════════ */
+const SUPABASE_URL = "";      // es. https://abcdefgh.supabase.co
+const SUPABASE_CHIAVE = "";   // la chiave "anon public"
+
+const configurato = SUPABASE_URL && SUPABASE_CHIAVE;
+const db = configurato ? supabase.createClient(SUPABASE_URL, SUPABASE_CHIAVE) : null;
+
+let ANNUNCI = [];
+let EVENTI = [];          // le date del calendario, per la cessione posti
+let ORGANIZZATORI = {};   // i loro contatti, per l'annuncio
+let categoria = "";
+
+const MESI_BREVI = ["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
+
+function etichettaEvento(e){
+  const d = new Date(e.data + "T12:00:00");
+  return `${d.getDate()} ${MESI_BREVI[d.getMonth()]} ${d.getFullYear()} — ${e.circuito} (${e.organizzatore})`;
+}
+
+/* Le date arrivano dallo stesso file del calendario: chi cede un posto
+   sceglie la sua giornata da un elenco invece di scriverla a mano, cosi'
+   l'annuncio resta collegato all'evento vero. */
+async function caricaCalendario(){
+  try{
+    const r = await fetch("eventi.json", {cache:"no-store"});
+    if(!r.ok) return;
+    const dati = await r.json();
+    const oggi = new Date(); oggi.setHours(0,0,0,0);
+    EVENTI = (dati.eventi || [])
+      .filter(e => new Date(e.data+"T12:00:00") >= oggi)
+      .sort((a,b) => a.data.localeCompare(b.data));
+
+    const menu = document.getElementById("f-data-evento");
+    if (menu){
+      EVENTI.forEach((e,i) => {
+        const o = document.createElement("option");
+        o.value = String(i);
+        o.textContent = etichettaEvento(e);
+        menu.appendChild(o);
+      });
+    }
+  }catch(err){ console.warn("calendario non caricato:", err); }
+
+  try{
+    const r = await fetch("organizzatori.json", {cache:"no-store"});
+    if (r.ok) ORGANIZZATORI = await r.json();
+  }catch(err){ /* i contatti sono un extra, non bloccano nulla */ }
+}
+
+const $ = s => document.querySelector(s);
+const griglia = $("#griglia");
+
+function quandoTesto(iso){
+  const giorni = Math.round((Date.now() - new Date(iso)) / 86400000);
+  if (giorni <= 0) return "oggi";
+  if (giorni === 1) return "ieri";
+  if (giorni < 30) return giorni + " giorni fa";
+  const mesi = Math.round(giorni/30);
+  return mesi === 1 ? "un mese fa" : mesi + " mesi fa";
+}
+
+function sicuro(t){
+  // il testo arriva dagli utenti: va inserito come testo, mai come HTML
+  const d = document.createElement("div");
+  d.textContent = t == null ? "" : String(t);
+  return d.innerHTML;
+}
+
+function disegna(){
+  const visibili = categoria
+    ? ANNUNCI.filter(a => a.categoria === categoria)
+    : ANNUNCI;
+
+  griglia.innerHTML = "";
+
+  if (!configurato){
+    griglia.style.border = "none";
+    griglia.innerHTML = `<div class="vuoto"><b>Mercatino non ancora collegato</b>
+      <p>Manca il collegamento al database. Apri <code>mercatino.html</code>,
+         incolla i due valori del tuo progetto Supabase in cima allo script,
+         e il mercatino si accende.</p></div>`;
+    return;
+  }
+  if (!visibili.length){
+    griglia.style.border = "none";
+    griglia.innerHTML = ANNUNCI.length
+      ? `<div class="vuoto"><b>Niente in questa categoria</b>
+          <p>Prova a togliere il filtro, oppure pubblica tu il primo.</p></div>`
+      : `<div class="vuoto"><b>Ancora nessun annuncio</b>
+          <p>Sii il primo: pubblicare richiede un minuto e non serve registrarsi.</p></div>`;
+    return;
+  }
+  griglia.style.border = "";
+
+  visibili.forEach(a => {
+    const etichette = [];
+    if (a.venduto) etichette.push('<span class="etichetta venduto">venduto</span>');
+    if (a.condizione) etichette.push(`<span class="etichetta">${sicuro(a.condizione)}</span>`);
+    if (a.zona) etichette.push(`<span class="etichetta">${sicuro(a.zona)}</span>`);
+
+    const contatto = String(a.contatto || "");
+    const soloCifre = contatto.replace(/[^\d]/g,"");
+    let link = "";
+    if (contatto.includes("@")){
+      link = `<a href="mailto:${sicuro(contatto)}?subject=${encodeURIComponent("Paddock — "+a.titolo)}">Scrivi</a>`;
+    } else if (soloCifre.length >= 9){
+      const testo = encodeURIComponent(`Ciao, ho visto su Paddock il tuo annuncio "${a.titolo}". È ancora disponibile?`);
+      link = `<a href="https://wa.me/${soloCifre.length>10?soloCifre:"39"+soloCifre}?text=${testo}" target="_blank" rel="noopener">WhatsApp</a>`;
+    }
+
+    // per le giornate cedute: data, e il contatto dell'organizzatore, perche'
+    // il passaggio va comunque concordato con lui
+    let bloccoData = "";
+    if (a.evento_data){
+      const d = new Date(a.evento_data + "T12:00:00");
+      const org = ORGANIZZATORI[a.evento_organizzatore] || {};
+      const recapito = org.email || org.telefono_prenotazioni || org.whatsapp;
+      const stato = a.passaggio_autorizzato === "si"
+        ? "Passaggio già autorizzato dall'organizzatore"
+        : a.passaggio_autorizzato === "no"
+          ? "L'organizzatore NON consente il passaggio"
+          : "Passaggio da confermare con l'organizzatore";
+      bloccoData = `<div class="riga-data">
+        ${d.getDate()} ${MESI_BREVI[d.getMonth()]} ${d.getFullYear()} · ${sicuro(a.evento_circuito)}
+        <small>${sicuro(a.evento_organizzatore || "")}${recapito ? " — " + sicuro(recapito) : ""}<br>${stato}</small>
+      </div>`;
+    }
+
+    const scheda = document.createElement("div");
+    scheda.className = "annuncio" + (a.venduto ? " venduto" : "");
+    scheda.innerHTML = `
+      ${a.foto_url ? `<img class="annuncio-foto" src="${sicuro(a.foto_url)}" alt="" loading="lazy">` : ""}
+      <div class="annuncio-corpo">
+        <span class="categoria">${sicuro(a.categoria)}</span>
+        <h3>${sicuro(a.titolo)}</h3>
+        ${a.prezzo != null ? `<div class="prezzo">${a.prezzo} €</div>` : ""}
+        ${bloccoData}
+        ${a.descrizione ? `<p>${sicuro(a.descrizione)}</p>` : ""}
+        ${etichette.length ? `<div class="etichette">${etichette.join("")}</div>` : ""}
+        <div class="annuncio-fondo">
+          ${link}
+          <span class="quando">${quandoTesto(a.creato)}</span>
+        </div>
+      </div>`;
+    griglia.appendChild(scheda);
+  });
+}
+
+document.querySelectorAll("[data-cat]").forEach(b => {
+  b.onclick = () => {
+    categoria = b.dataset.cat;
+    document.querySelectorAll("[data-cat]").forEach(x =>
+      x.setAttribute("aria-pressed", String(x === b)));
+    disegna();
+  };
+});
+
+function aggiornaCampiCategoria(){
+  const eGiornata = $("#f-categoria").value === "Giornate in pista";
+  ["riquadro-giornata","campo-data","campo-autorizzato"].forEach(id => {
+    const n = document.getElementById(id);
+    if (n) n.hidden = !eGiornata;
+  });
+}
+$("#f-categoria").onchange = aggiornaCampiCategoria;
+
+$("#btn-pubblica").onclick = () => { aggiornaCampiCategoria(); $("#velo").classList.add("aperto"); };
+$("#chiudi").onclick = $("#annulla").onclick = () => $("#velo").classList.remove("aperto");
+$("#velo").onclick = e => { if (e.target.id === "velo") $("#velo").classList.remove("aperto"); };
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") $("#velo").classList.remove("aperto");
+});
+
+function avvisa(testo, tipo){
+  const a = $("#avviso");
+  a.innerHTML = testo; a.className = "avviso " + tipo;
+}
+
+$("#modulo").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!configurato){ avvisa("Mercatino non ancora collegato al database.", "errore"); return; }
+
+  const bottone = $("#btn-invia");
+  bottone.disabled = true;
+  avvisa("Pubblico...", "ok");
+
+  try{
+    let foto_url = null;
+    const file = $("#f-foto").files[0];
+    if (file){
+      if (file.size > 5 * 1024 * 1024) throw new Error("La foto supera i 5 MB");
+      const nome = `${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+      const { error: erroreFoto } = await db.storage.from("annunci")
+        .upload(nome, file, { contentType: file.type });
+      if (erroreFoto) throw erroreFoto;
+      foto_url = db.storage.from("annunci").getPublicUrl(nome).data.publicUrl;
+    }
+
+    // codice che permette a chi pubblica di cancellare il proprio annuncio
+    const codice = Math.random().toString(36).slice(2,10).toUpperCase();
+
+    const indice = $("#f-data-evento").value;
+    const evento = ($("#f-categoria").value === "Giornate in pista" && indice !== "")
+      ? EVENTI[Number(indice)] : null;
+
+    const { error } = await db.from("annunci").insert({
+      titolo: $("#f-titolo").value.trim(),
+      categoria: $("#f-categoria").value,
+      prezzo: $("#f-prezzo").value ? Number($("#f-prezzo").value) : null,
+      condizione: $("#f-condizione").value || null,
+      descrizione: $("#f-descrizione").value.trim() || null,
+      zona: $("#f-zona").value.trim(),
+      contatto: $("#f-contatto").value.trim(),
+      foto_url,
+      codice_gestione: codice,
+      evento_data: evento ? evento.data : null,
+      evento_circuito: evento ? evento.circuito : null,
+      evento_organizzatore: evento ? evento.organizzatore : null,
+      passaggio_autorizzato: $("#f-categoria").value === "Giornate in pista"
+        ? ($("#f-autorizzato").value || null) : null,
+    });
+    if (error) throw error;
+
+    avvisa(`Pubblicato. <b>Il tuo codice per cancellarlo è ${codice}</b> — segnatelo, non te lo ripetiamo.`, "ok");
+    $("#modulo").reset();
+    await carica();
+  }catch(err){
+    console.error(err);
+    avvisa("Non sono riuscito a pubblicare: " + (err.message || "errore sconosciuto"), "errore");
+  }finally{
+    bottone.disabled = false;
+  }
+});
+
+async function carica(){
+  if (!configurato){ disegna(); return; }
+  try{
+    const { data, error } = await db.from("annunci")
+      .select("*").order("creato", { ascending: false }).limit(200);
+    if (error) throw error;
+    ANNUNCI = data || [];
+  }catch(err){
+    console.error("annunci non caricati:", err);
+    ANNUNCI = [];
+  }
+  disegna();
+}
+
+(async () => { await caricaCalendario(); await carica(); })();
+</script>
+</body>
+</html>
