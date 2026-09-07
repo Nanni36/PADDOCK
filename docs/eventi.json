@@ -1,23 +1,7 @@
 {
-  "aggiornato": "2026-09-06T03:07:44",
-  "totale": 96,
+  "aggiornato": "2026-09-07T03:07:37",
+  "totale": 94,
   "eventi": [
-    {
-      "circuito": "Circuit de Dijon-Prenois",
-      "data": "2026-09-06",
-      "organizzatore": "Activbike",
-      "fonte_url": "https://www.activbike.net/en/calendar",
-      "paese": "FR",
-      "prezzo": 235.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.activbike.net/en/calendar",
-      "note": "Prezzo per una giornata; l'organizzatore vende anche pacchetti da 2 giorni",
-      "giorni": 1,
-      "data_fine": null
-    },
     {
       "circuito": "Autodromo di Vallelunga",
       "data": "2026-09-07",
@@ -331,7 +315,7 @@
       "prezzo": 280.27,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "esaurimento",
+      "disponibilita": "esaurito",
       "livelli": [],
       "url_iscrizione": "https://www.speer-racing.de/en/",
       "note": "Anneau du Rhin — Posto box 40€",
@@ -1380,7 +1364,7 @@
     },
     {
       "circuito": "Circuito de Cartagena",
-      "data": "2027-02-25",
+      "data": "2027-02-26",
       "organizzatore": "Rehm Race Days",
       "fonte_url": "https://www.rehmracedays.com/it/rehm-race-calendario/",
       "paese": "ES",
@@ -1392,23 +1376,7 @@
       "url_iscrizione": "https://www.rehmracedays.com/it/rehm-race-calendario/",
       "note": "Edizione: Cartagena II",
       "giorni": 3,
-      "data_fine": "2027-02-27"
-    },
-    {
-      "circuito": "Circuito de Almeria",
-      "data": "2027-03-01",
-      "organizzatore": "Rehm Race Days",
-      "fonte_url": "https://www.rehmracedays.com/it/rehm-race-calendario/",
-      "paese": "ES",
-      "prezzo": 510.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": "esaurito",
-      "livelli": [],
-      "url_iscrizione": "https://www.rehmracedays.com/it/rehm-race-calendario/",
-      "note": null,
-      "giorni": 3,
-      "data_fine": "2027-03-03"
+      "data_fine": "2027-02-28"
     },
     {
       "circuito": "Circuit de Calafat",
