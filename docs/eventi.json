@@ -1,6 +1,6 @@
 {
-  "aggiornato": "2026-09-09T03:07:42",
-  "totale": 88,
+  "aggiornato": "2026-09-10T03:07:44",
+  "totale": 95,
   "eventi": [
     {
       "circuito": "Automotodrom Grobnik",
@@ -147,6 +147,22 @@
       "data_fine": null
     },
     {
+      "circuito": "Cremona Circuit",
+      "data": "2026-09-14",
+      "organizzatore": "Eleven Riding Life",
+      "fonte_url": "https://www.elevenridinglife.com/track-days/",
+      "paese": "IT",
+      "prezzo": 189.0,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": "esaurito",
+      "livelli": [],
+      "url_iscrizione": "https://www.elevenridinglife.com/prodotto/track-day-circuito-di-cremona-14-settembre-2026/",
+      "note": null,
+      "giorni": 1,
+      "data_fine": null
+    },
+    {
       "circuito": "Mugello Circuit",
       "data": "2026-09-14",
       "organizzatore": "Rosso Corsa",
@@ -163,12 +179,28 @@
       "data_fine": null
     },
     {
+      "circuito": "Cremona Circuit",
+      "data": "2026-09-16",
+      "organizzatore": "Eleven Riding Life",
+      "fonte_url": "https://www.elevenridinglife.com/track-days/",
+      "paese": "IT",
+      "prezzo": 185.0,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": "disponibile",
+      "livelli": [],
+      "url_iscrizione": "https://www.elevenridinglife.com/prodotto/track-day-circuito-di-cremona-16-settembre-2026/",
+      "note": null,
+      "giorni": 1,
+      "data_fine": null
+    },
+    {
       "circuito": "Anneau du Rhin",
       "data": "2026-09-17",
       "organizzatore": "Speer Racing",
       "fonte_url": "https://www.speer-racing.de/en/",
       "paese": "FR",
-      "prezzo": 325.1,
+      "prezzo": 334.85,
       "posti_liberi": null,
       "posti_totali": null,
       "disponibilita": "esaurito",
@@ -371,6 +403,22 @@
       "data_fine": null
     },
     {
+      "circuito": "Misano World Circuit",
+      "data": "2026-09-24",
+      "organizzatore": "Eleven Riding Life",
+      "fonte_url": "https://www.elevenridinglife.com/track-days/",
+      "paese": "IT",
+      "prezzo": 219.0,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": "esaurito",
+      "livelli": [],
+      "url_iscrizione": "https://www.elevenridinglife.com/prodotto/track-day-circuito-di-misano-24-settembre-2026/",
+      "note": null,
+      "giorni": 1,
+      "data_fine": null
+    },
+    {
       "circuito": "Autodromo di Vallelunga",
       "data": "2026-09-25",
       "organizzatore": "Vallelunga (circuito)",
@@ -483,6 +531,22 @@
       "data_fine": null
     },
     {
+      "circuito": "Autodromo di Magione",
+      "data": "2026-09-28",
+      "organizzatore": "Eleven Riding Life",
+      "fonte_url": "https://www.elevenridinglife.com/track-days/",
+      "paese": "IT",
+      "prezzo": 110.0,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": "disponibile",
+      "livelli": [],
+      "url_iscrizione": "https://www.elevenridinglife.com/prodotto/track-day-circuito-di-magione-28-settembre-2026/",
+      "note": null,
+      "giorni": 1,
+      "data_fine": null
+    },
+    {
       "circuito": "Cremona Circuit",
       "data": "2026-09-28",
       "organizzatore": "Promo Racing",
@@ -511,6 +575,22 @@
       "livelli": [],
       "url_iscrizione": "https://www.speer-racing.de/en/",
       "note": "Hockenheim — Posto box 30€",
+      "giorni": 1,
+      "data_fine": null
+    },
+    {
+      "circuito": "Misano World Circuit",
+      "data": "2026-09-28",
+      "organizzatore": "Eleven Riding Life",
+      "fonte_url": "https://www.elevenridinglife.com/track-days/",
+      "paese": "IT",
+      "prezzo": 249.0,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": "esaurito",
+      "livelli": [],
+      "url_iscrizione": "https://www.elevenridinglife.com/prodotto/track-day-circuito-di-misano-28-settembre-2026/",
+      "note": null,
       "giorni": 1,
       "data_fine": null
     },
@@ -867,17 +947,49 @@
       "data_fine": "2026-10-18"
     },
     {
+      "circuito": "Autodromo di Magione",
+      "data": "2026-10-18",
+      "organizzatore": "Eleven Riding Life",
+      "fonte_url": "https://www.elevenridinglife.com/track-days/",
+      "paese": "IT",
+      "prezzo": 129.0,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": "disponibile",
+      "livelli": [],
+      "url_iscrizione": "https://www.elevenridinglife.com/prodotto/track-day-circuito-di-magione-18-ottobre-2026/",
+      "note": null,
+      "giorni": 1,
+      "data_fine": null
+    },
+    {
       "circuito": "Misano World Circuit",
       "data": "2026-10-19",
       "organizzatore": "Rosso Corsa",
       "fonte_url": "https://www.rossocorsaonline.com/prove",
       "paese": "IT",
-      "prezzo": 239.0,
+      "prezzo": 249.0,
       "posti_liberi": null,
       "posti_totali": null,
       "disponibilita": "esaurimento",
       "livelli": [],
       "url_iscrizione": "https://www.rossocorsaonline.com/prove/detail/388",
+      "note": null,
+      "giorni": 1,
+      "data_fine": null
+    },
+    {
+      "circuito": "Misano World Circuit",
+      "data": "2026-10-19",
+      "organizzatore": "Eleven Riding Life",
+      "fonte_url": "https://www.elevenridinglife.com/track-days/",
+      "paese": "IT",
+      "prezzo": 219.0,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": "esaurito",
+      "livelli": [],
+      "url_iscrizione": "https://www.elevenridinglife.com/prodotto/track-day-circuito-di-misano-19-ottobre-2026/",
       "note": null,
       "giorni": 1,
       "data_fine": null
