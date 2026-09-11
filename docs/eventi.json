@@ -1,5 +1,5 @@
 {
-  "aggiornato": "2026-09-10T03:07:44",
+  "aggiornato": "2026-09-11T03:07:34",
   "totale": 95,
   "eventi": [
     {
@@ -187,7 +187,7 @@
       "prezzo": 185.0,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "disponibile",
+      "disponibilita": "esaurito",
       "livelli": [],
       "url_iscrizione": "https://www.elevenridinglife.com/prodotto/track-day-circuito-di-cremona-16-settembre-2026/",
       "note": null,
@@ -808,7 +808,7 @@
       "organizzatore": "Speer Racing",
       "fonte_url": "https://www.speer-racing.de/en/",
       "paese": "ES",
-      "prezzo": 957.73,
+      "prezzo": 986.46,
       "posti_liberi": null,
       "posti_totali": null,
       "disponibilita": "esaurimento",
@@ -824,7 +824,7 @@
       "organizzatore": "Speer Racing",
       "fonte_url": "https://www.speer-racing.de/en/",
       "paese": "ES",
-      "prezzo": 649.48,
+      "prezzo": 668.96,
       "posti_liberi": null,
       "posti_totali": null,
       "disponibilita": "disponibile",
