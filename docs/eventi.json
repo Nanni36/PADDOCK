@@ -1,6 +1,6 @@
 {
-  "aggiornato": "2026-09-15T03:08:35",
-  "totale": 88,
+  "aggiornato": "2026-09-16T03:07:36",
+  "totale": 77,
   "eventi": [
     {
       "circuito": "Anneau du Rhin",
@@ -83,22 +83,6 @@
       "data_fine": null
     },
     {
-      "circuito": "Circuit de Dijon-Prenois",
-      "data": "2026-09-19",
-      "organizzatore": "Activbike",
-      "fonte_url": "https://www.activbike.net/en/calendar",
-      "paese": "FR",
-      "prezzo": 235.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.activbike.net/en/calendar",
-      "note": "Prezzo per una giornata; l'organizzatore vende anche pacchetti da 2 giorni, 3 giorni",
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
       "circuito": "Mugello Circuit",
       "data": "2026-09-19",
       "organizzatore": "Promo Racing",
@@ -115,22 +99,6 @@
       "data_fine": null
     },
     {
-      "circuito": "Circuit de Dijon-Prenois",
-      "data": "2026-09-20",
-      "organizzatore": "Activbike",
-      "fonte_url": "https://www.activbike.net/en/calendar",
-      "paese": "FR",
-      "prezzo": 235.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.activbike.net/en/calendar",
-      "note": "Prezzo per una giornata; l'organizzatore vende anche pacchetti da 2 giorni",
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
       "circuito": "Mugello Circuit",
       "data": "2026-09-20",
       "organizzatore": "Promo Racing",
@@ -142,22 +110,6 @@
       "disponibilita": "esaurito",
       "livelli": [],
       "url_iscrizione": "https://www.promoracing.it/it/calendario/moto.647/prove-moto#20",
-      "note": null,
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
-      "circuito": "Circuit de Dijon-Prenois",
-      "data": "2026-09-21",
-      "organizzatore": "Activbike",
-      "fonte_url": "https://www.activbike.net/en/calendar",
-      "paese": "FR",
-      "prezzo": 201.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.activbike.net/en/calendar",
       "note": null,
       "giorni": 1,
       "data_fine": null
@@ -227,22 +179,6 @@
       "data_fine": null
     },
     {
-      "circuito": "Circuit d'Alcarras",
-      "data": "2026-09-25",
-      "organizzatore": "Activbike",
-      "fonte_url": "https://www.activbike.net/en/calendar",
-      "paese": "ES",
-      "prezzo": 430.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.activbike.net/en/calendar",
-      "note": "Prezzo per una giornata; l'organizzatore vende anche pacchetti da 3 giorni",
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
       "circuito": "Autodromo di Vallelunga",
       "data": "2026-09-26",
       "organizzatore": "Vallelunga (circuito)",
@@ -255,22 +191,6 @@
       "livelli": [],
       "url_iscrizione": "https://motorsport.vallelunga.it/pl-moto-2/",
       "note": "3 gruppi THE BIKE — Listino: feriale 180€, prefestivo/festivo 210€, box 230€",
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
-      "circuito": "Circuit d'Alcarras",
-      "data": "2026-09-26",
-      "organizzatore": "Activbike",
-      "fonte_url": "https://www.activbike.net/en/calendar",
-      "paese": "ES",
-      "prezzo": 300.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.activbike.net/en/calendar",
-      "note": "Prezzo per una giornata; l'organizzatore vende anche pacchetti da 2 giorni",
       "giorni": 1,
       "data_fine": null
     },
@@ -435,22 +355,6 @@
       "data_fine": null
     },
     {
-      "circuito": "MotorLand Aragon",
-      "data": "2026-10-02",
-      "organizzatore": "Activbike",
-      "fonte_url": "https://www.activbike.net/en/calendar",
-      "paese": "ES",
-      "prezzo": 680.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.activbike.net/en/calendar",
-      "note": "Prezzo per una giornata; l'organizzatore vende anche pacchetti da 3 giorni",
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
       "circuito": "Anneau du Rhin",
       "data": "2026-10-03",
       "organizzatore": "Speer Racing",
@@ -467,22 +371,6 @@
       "data_fine": null
     },
     {
-      "circuito": "Circuit de Bresse",
-      "data": "2026-10-03",
-      "organizzatore": "Activbike",
-      "fonte_url": "https://www.activbike.net/en/calendar",
-      "paese": "FR",
-      "prezzo": 164.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.activbike.net/en/calendar",
-      "note": null,
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
       "circuito": "Cremona Circuit",
       "data": "2026-10-03",
       "organizzatore": "Gully Racing",
@@ -494,22 +382,6 @@
       "disponibilita": "esaurimento",
       "livelli": [],
       "url_iscrizione": "https://www.gullyracing.it/prodotto?id=209",
-      "note": null,
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
-      "circuito": "Circuit de Bresse",
-      "data": "2026-10-04",
-      "organizzatore": "Activbike",
-      "fonte_url": "https://www.activbike.net/en/calendar",
-      "paese": "FR",
-      "prezzo": 164.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.activbike.net/en/calendar",
       "note": null,
       "giorni": 1,
       "data_fine": null
@@ -627,22 +499,6 @@
       "data_fine": null
     },
     {
-      "circuito": "Pole Mecanique Ales",
-      "data": "2026-10-09",
-      "organizzatore": "Activbike",
-      "fonte_url": "https://www.activbike.net/en/calendar",
-      "paese": "FR",
-      "prezzo": 127.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.activbike.net/en/calendar",
-      "note": "Prezzo per una giornata; l'organizzatore vende anche pacchetti da 2 giorni",
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
       "circuito": "Mugello Circuit",
       "data": "2026-10-10",
       "organizzatore": "Promo Racing",
@@ -654,22 +510,6 @@
       "disponibilita": "esaurito",
       "livelli": [],
       "url_iscrizione": "https://www.promoracing.it/it/calendario/moto.649/prove-moto#10",
-      "note": null,
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
-      "circuito": "Pole Mecanique Ales",
-      "data": "2026-10-10",
-      "organizzatore": "Activbike",
-      "fonte_url": "https://www.activbike.net/en/calendar",
-      "paese": "FR",
-      "prezzo": 158.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.activbike.net/en/calendar",
       "note": null,
       "giorni": 1,
       "data_fine": null
@@ -767,22 +607,6 @@
       "livelli": [],
       "url_iscrizione": "https://mugellocircuit.com/it/eventi/prove-libere-moto/details/2026-10-24/1795-gasss-2",
       "note": "Data dal calendario del circuito: prezzo e iscrizione vanno chiesti all'organizzatore",
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
-      "circuito": "Circuito de Portimao",
-      "data": "2026-10-26",
-      "organizzatore": "Activbike",
-      "fonte_url": "https://www.activbike.net/en/calendar",
-      "paese": "PT",
-      "prezzo": 700.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.activbike.net/en/calendar",
-      "note": "Prezzo per una giornata; l'organizzatore vende anche pacchetti da 3 giorni",
       "giorni": 1,
       "data_fine": null
     },
