@@ -1,5 +1,5 @@
 {
-  "aggiornato": "2026-09-16T03:07:36",
+  "aggiornato": "2026-09-17T03:07:39",
   "totale": 77,
   "eventi": [
     {
@@ -139,7 +139,7 @@
       "prezzo": 480.0,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "esaurimento",
+      "disponibilita": "esaurito",
       "livelli": [],
       "url_iscrizione": "https://www.speer-racing.de/en/",
       "note": "Sachsenring 2 — Posto box 60€",
