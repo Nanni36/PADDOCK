@@ -1,5 +1,5 @@
 {
-  "aggiornato": "2026-09-22T08:10:50",
+  "aggiornato": "2026-09-23T08:13:16",
   "totale": 73,
   "eventi": [
     {
@@ -75,7 +75,7 @@
       "prezzo": 288.67,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "disponibile",
+      "disponibilita": "esaurimento",
       "livelli": [],
       "url_iscrizione": "https://www.speer-racing.de/en/",
       "note": "Anneau du Rhin — Posto box 40€",
