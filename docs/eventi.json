@@ -1,23 +1,7 @@
 {
-  "aggiornato": "2026-09-26T08:15:14",
-  "totale": 70,
+  "aggiornato": "2026-09-27T08:52:13",
+  "totale": 69,
   "eventi": [
-    {
-      "circuito": "Autodromo di Vallelunga",
-      "data": "2026-09-26",
-      "organizzatore": "Vallelunga (circuito)",
-      "fonte_url": "https://motorsport.vallelunga.it/pl-moto-2/",
-      "paese": "IT",
-      "prezzo": null,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://motorsport.vallelunga.it/pl-moto-2/",
-      "note": "3 gruppi THE BIKE — Listino: feriale 180€, prefestivo/festivo 210€, box 230€",
-      "giorni": 1,
-      "data_fine": null
-    },
     {
       "circuito": "Anneau du Rhin",
       "data": "2026-09-27",
@@ -171,7 +155,7 @@
       "prezzo": 265.57,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "esaurimento",
+      "disponibilita": "esaurito",
       "livelli": [],
       "url_iscrizione": "https://www.speer-racing.de/en/",
       "note": "Anneau du Rhin — Posto box 40€",
@@ -803,22 +787,6 @@
       "data_fine": "2027-03-20"
     },
     {
-      "circuito": "Circuito de Portimao",
-      "data": "2027-03-19",
-      "organizzatore": "Rehm Race Days",
-      "fonte_url": "https://www.rehmracedays.com/it/rehm-race-calendario/",
-      "paese": "PT",
-      "prezzo": 890.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": "disponibile",
-      "livelli": [],
-      "url_iscrizione": "https://www.rehmracedays.com/it/rehm-race-calendario/",
-      "note": "Edizione: Portimao I",
-      "giorni": 3,
-      "data_fine": "2027-03-21"
-    },
-    {
       "circuito": "Circuit de Calafat",
       "data": "2027-03-20",
       "organizzatore": "Speer Racing",
@@ -913,6 +881,22 @@
       "note": "Barcelona 1 - compact — Posto box 120€",
       "giorni": 2,
       "data_fine": "2027-03-28"
+    },
+    {
+      "circuito": "Circuito de Portimao",
+      "data": "2027-04-03",
+      "organizzatore": "Rehm Race Days",
+      "fonte_url": "https://www.rehmracedays.com/it/rehm-race-calendario/",
+      "paese": "PT",
+      "prezzo": 890.0,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": "disponibile",
+      "livelli": [],
+      "url_iscrizione": "https://www.rehmracedays.com/it/rehm-race-calendario/",
+      "note": "Edizione: Portimao I",
+      "giorni": 3,
+      "data_fine": "2027-04-05"
     },
     {
       "circuito": "Anneau du Rhin",
