@@ -1,6 +1,6 @@
 {
-  "aggiornato": "2026-09-30T09:14:29",
-  "totale": 59,
+  "aggiornato": "2026-10-01T09:42:08",
+  "totale": 60,
   "eventi": [
     {
       "circuito": "Anneau du Rhin",
@@ -11,7 +11,7 @@
       "prezzo": 265.57,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "esaurito",
+      "disponibilita": "esaurimento",
       "livelli": [],
       "url_iscrizione": "https://www.speer-racing.de/en/",
       "note": "Anneau du Rhin — Posto box 40€",
@@ -40,7 +40,7 @@
       "organizzatore": "Gully Racing",
       "fonte_url": "https://www.gullyracing.it/calendario",
       "paese": "IT",
-      "prezzo": 199.0,
+      "prezzo": 209.0,
       "posti_liberi": null,
       "posti_totali": null,
       "disponibilita": "esaurimento",
@@ -264,7 +264,7 @@
       "organizzatore": "Rosso Corsa",
       "fonte_url": "https://www.rossocorsaonline.com/prove",
       "paese": "IT",
-      "prezzo": 249.0,
+      "prezzo": 259.0,
       "posti_liberi": null,
       "posti_totali": null,
       "disponibilita": "esaurimento",
@@ -369,6 +369,22 @@
       "note": null,
       "giorni": 3,
       "data_fine": "2026-10-29"
+    },
+    {
+      "circuito": "Mugello Circuit",
+      "data": "2026-10-30",
+      "organizzatore": "ACI RACING WEEKEND - C.I. AUTOMOBILISMO",
+      "fonte_url": "https://mugellocircuit.com/it/eventi/prove-libere-moto",
+      "paese": "IT",
+      "prezzo": null,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": null,
+      "livelli": [],
+      "url_iscrizione": "https://mugellocircuit.com/it/gare/details/2026-10-30/1753-aci-racing-weekend-c-i-automobilismo-5",
+      "note": "Data dal calendario del circuito: prezzo e iscrizione vanno chiesti all'organizzatore",
+      "giorni": 1,
+      "data_fine": null
     },
     {
       "circuito": "MotorLand Aragon",
