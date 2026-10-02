@@ -1,6 +1,6 @@
 {
-  "aggiornato": "2026-10-01T09:42:08",
-  "totale": 60,
+  "aggiornato": "2026-10-02T09:16:21",
+  "totale": 58,
   "eventi": [
     {
       "circuito": "Anneau du Rhin",
@@ -40,10 +40,10 @@
       "organizzatore": "Gully Racing",
       "fonte_url": "https://www.gullyracing.it/calendario",
       "paese": "IT",
-      "prezzo": 209.0,
+      "prezzo": 179.0,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "esaurimento",
+      "disponibilita": "esaurito",
       "livelli": [],
       "url_iscrizione": "https://www.gullyracing.it/prodotto?id=208",
       "note": null,
@@ -243,22 +243,6 @@
       "data_fine": "2026-10-18"
     },
     {
-      "circuito": "Autodromo di Magione",
-      "data": "2026-10-18",
-      "organizzatore": "Eleven Riding Life",
-      "fonte_url": "https://www.elevenridinglife.com/track-days/",
-      "paese": "IT",
-      "prezzo": 129.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": "disponibile",
-      "livelli": [],
-      "url_iscrizione": "https://www.elevenridinglife.com/prodotto/track-day-circuito-di-magione-18-ottobre-2026/",
-      "note": null,
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
       "circuito": "Misano World Circuit",
       "data": "2026-10-19",
       "organizzatore": "Rosso Corsa",
@@ -270,22 +254,6 @@
       "disponibilita": "esaurimento",
       "livelli": [],
       "url_iscrizione": "https://www.rossocorsaonline.com/prove/detail/388",
-      "note": null,
-      "giorni": 1,
-      "data_fine": null
-    },
-    {
-      "circuito": "Misano World Circuit",
-      "data": "2026-10-19",
-      "organizzatore": "Eleven Riding Life",
-      "fonte_url": "https://www.elevenridinglife.com/track-days/",
-      "paese": "IT",
-      "prezzo": 219.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": "esaurito",
-      "livelli": [],
-      "url_iscrizione": "https://www.elevenridinglife.com/prodotto/track-day-circuito-di-misano-19-ottobre-2026/",
       "note": null,
       "giorni": 1,
       "data_fine": null
