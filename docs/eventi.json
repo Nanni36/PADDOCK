@@ -1,23 +1,7 @@
 {
-  "aggiornato": "2026-10-07T09:40:32",
-  "totale": 51,
+  "aggiornato": "2026-10-08T09:50:49",
+  "totale": 50,
   "eventi": [
-    {
-      "circuito": "Circuit Ricardo Tormo",
-      "data": "2026-10-07",
-      "organizzatore": "Rehm Race Days",
-      "fonte_url": "https://www.rehmracedays.com/it/rehm-race-calendario/",
-      "paese": "ES",
-      "prezzo": 790.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": "disponibile",
-      "livelli": [],
-      "url_iscrizione": "https://www.rehmracedays.com/it/rehm-race-calendario/",
-      "note": "Edizione: Valencia I — prezzo del pacchetto completo — questo organizzatore permette di prenotare anche un solo giorno, a un prezzo piu' basso",
-      "giorni": 3,
-      "data_fine": "2026-10-09"
-    },
     {
       "circuito": "Circuit de Barcelona-Catalunya",
       "data": "2026-10-08",
