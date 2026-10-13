@@ -1,5 +1,5 @@
 {
-  "aggiornato": "2026-10-12T10:07:21",
+  "aggiornato": "2026-10-13T10:00:22",
   "totale": 46,
   "eventi": [
     {
@@ -75,7 +75,7 @@
       "prezzo": 811.36,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "esaurimento",
+      "disponibilita": "esaurito",
       "livelli": [],
       "url_iscrizione": "https://www.speer-racing.de/en/",
       "note": "Portimao — Posto box 120€",
@@ -91,7 +91,7 @@
       "prezzo": 572.89,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "esaurimento",
+      "disponibilita": "esaurito",
       "livelli": [],
       "url_iscrizione": "https://www.speer-racing.de/en/",
       "note": "Portimao - compact — Posto box 80€",
