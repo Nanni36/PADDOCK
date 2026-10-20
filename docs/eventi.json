@@ -1,23 +1,7 @@
 {
-  "aggiornato": "2026-10-19T08:24:20",
-  "totale": 50,
+  "aggiornato": "2026-10-20T08:07:06",
+  "totale": 49,
   "eventi": [
-    {
-      "circuito": "Misano World Circuit",
-      "data": "2026-10-19",
-      "organizzatore": "Eleven Riding Life",
-      "fonte_url": "https://www.elevenridinglife.com/track-days/",
-      "paese": "IT",
-      "prezzo": 219.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": "esaurito",
-      "livelli": [],
-      "url_iscrizione": "https://www.elevenridinglife.com/prodotto/track-day-circuito-di-misano-19-ottobre-2026/",
-      "note": null,
-      "giorni": 1,
-      "data_fine": null
-    },
     {
       "circuito": "Circuito de Portimao",
       "data": "2026-10-22",
@@ -27,7 +11,7 @@
       "prezzo": 835.68,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "esaurito",
+      "disponibilita": "esaurimento",
       "livelli": [],
       "url_iscrizione": "https://www.speer-racing.de/en/",
       "note": "Portimao — Posto box 120€",
