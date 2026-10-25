@@ -1,23 +1,7 @@
 {
-  "aggiornato": "2026-10-24T07:50:15",
-  "totale": 47,
+  "aggiornato": "2026-10-25T08:02:55",
+  "totale": 46,
   "eventi": [
-    {
-      "circuito": "Mugello Circuit",
-      "data": "2026-10-24",
-      "organizzatore": "Gasss",
-      "fonte_url": "https://mugellocircuit.com/it/eventi/prove-libere-moto",
-      "paese": "IT",
-      "prezzo": null,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://mugellocircuit.com/it/eventi/prove-libere-moto/details/2026-10-24/1795-gasss-2",
-      "note": "Data dal calendario del circuito: prezzo e iscrizione vanno chiesti all'organizzatore",
-      "giorni": 1,
-      "data_fine": null
-    },
     {
       "circuito": "Misano World Circuit",
       "data": "2026-10-26",
