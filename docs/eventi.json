@@ -1,6 +1,6 @@
 {
-  "aggiornato": "2026-10-29T09:14:24",
-  "totale": 56,
+  "aggiornato": "2026-10-30T09:28:46",
+  "totale": 57,
   "eventi": [
     {
       "circuito": "Mugello Circuit",
@@ -33,6 +33,22 @@
       "note": "Edizione: Aragon II — prezzo del pacchetto completo — questo organizzatore permette di prenotare anche un solo giorno, a un prezzo piu' basso",
       "giorni": 3,
       "data_fine": "2026-11-06"
+    },
+    {
+      "circuito": "Circuito de Jerez",
+      "data": "2026-11-05",
+      "organizzatore": "Gully Racing",
+      "fonte_url": "https://www.gullyracing.it/calendario",
+      "paese": "ES",
+      "prezzo": 739.0,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": "disponibile",
+      "livelli": [],
+      "url_iscrizione": "https://www.gullyracing.it/prodotto?id=221",
+      "note": null,
+      "giorni": 3,
+      "data_fine": "2026-11-07"
     },
     {
       "circuito": "Autodromo di Vallelunga",
@@ -253,7 +269,7 @@
       "posti_totali": null,
       "disponibilita": "disponibile",
       "livelli": [],
-      "url_iscrizione": "https://www.promoracing.it/it/calendario/moto.690/prove-moto-#08",
+      "url_iscrizione": "https://www.promoracing.it/it/calendario/moto.690/prove-moto#08",
       "note": null,
       "giorni": 1,
       "data_fine": null
@@ -269,7 +285,7 @@
       "posti_totali": null,
       "disponibilita": "disponibile",
       "livelli": [],
-      "url_iscrizione": "https://www.promoracing.it/it/calendario/moto.690/prove-moto-#09",
+      "url_iscrizione": "https://www.promoracing.it/it/calendario/moto.690/prove-moto#09",
       "note": null,
       "giorni": 1,
       "data_fine": null
@@ -285,7 +301,7 @@
       "posti_totali": null,
       "disponibilita": "disponibile",
       "livelli": [],
-      "url_iscrizione": "https://www.promoracing.it/it/calendario/moto.690/prove-moto-#10",
+      "url_iscrizione": "https://www.promoracing.it/it/calendario/moto.690/prove-moto#10",
       "note": null,
       "giorni": 1,
       "data_fine": null
