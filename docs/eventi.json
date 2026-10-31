@@ -1,23 +1,7 @@
 {
-  "aggiornato": "2026-10-30T09:28:46",
-  "totale": 57,
+  "aggiornato": "2026-10-31T09:12:10",
+  "totale": 56,
   "eventi": [
-    {
-      "circuito": "Mugello Circuit",
-      "data": "2026-10-30",
-      "organizzatore": "ACI RACING WEEKEND - C.I. AUTOMOBILISMO",
-      "fonte_url": "https://mugellocircuit.com/it/eventi/prove-libere-moto",
-      "paese": "IT",
-      "prezzo": null,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://mugellocircuit.com/it/gare/details/2026-10-30/1753-aci-racing-weekend-c-i-automobilismo-5",
-      "note": "Data dal calendario del circuito: prezzo e iscrizione vanno chiesti all'organizzatore",
-      "giorni": 1,
-      "data_fine": null
-    },
     {
       "circuito": "MotorLand Aragon",
       "data": "2026-11-04",
