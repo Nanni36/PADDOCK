@@ -1,6 +1,6 @@
 {
-  "aggiornato": "2026-11-02T10:27:29",
-  "totale": 56,
+  "aggiornato": "2026-11-03T10:24:19",
+  "totale": 59,
   "eventi": [
     {
       "circuito": "MotorLand Aragon",
@@ -307,6 +307,22 @@
       "data_fine": "2027-02-28"
     },
     {
+      "circuito": "Misano World Circuit",
+      "data": "2027-03-11",
+      "organizzatore": "Gasss",
+      "fonte_url": "https://www.gasss.eu/it/eventi/",
+      "paese": "IT",
+      "prezzo": null,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": null,
+      "livelli": [],
+      "url_iscrizione": "https://www.gasss.eu/it/event/misano-11-13-03-2027/",
+      "note": null,
+      "giorni": 3,
+      "data_fine": "2027-03-13"
+    },
+    {
       "circuito": "Circuit de Calafat",
       "data": "2027-03-17",
       "organizzatore": "Speer Racing",
@@ -499,6 +515,22 @@
       "data_fine": null
     },
     {
+      "circuito": "Cremona Circuit",
+      "data": "2027-04-02",
+      "organizzatore": "Gasss",
+      "fonte_url": "https://www.gasss.eu/it/eventi/",
+      "paese": "IT",
+      "prezzo": null,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": null,
+      "livelli": [],
+      "url_iscrizione": "https://www.gasss.eu/it/event/cremona-02-04-04-2027/",
+      "note": null,
+      "giorni": 3,
+      "data_fine": "2027-04-04"
+    },
+    {
       "circuito": "Circuito de Portimao",
       "data": "2027-04-03",
       "organizzatore": "Rehm Race Days",
@@ -577,6 +609,22 @@
       "note": "Anneau du Rhin - 2 days — Posto box 80€",
       "giorni": 1,
       "data_fine": null
+    },
+    {
+      "circuito": "Pannonia Ring",
+      "data": "2027-05-14",
+      "organizzatore": "Gasss",
+      "fonte_url": "https://www.gasss.eu/it/eventi/",
+      "paese": "HU",
+      "prezzo": null,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": null,
+      "livelli": [],
+      "url_iscrizione": "https://www.gasss.eu/it/event/pannonia-ring-14-16-05-2027/",
+      "note": null,
+      "giorni": 3,
+      "data_fine": "2027-05-16"
     },
     {
       "circuito": "Automotodrom Grobnik",
