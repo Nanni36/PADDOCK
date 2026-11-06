@@ -1,23 +1,7 @@
 {
-  "aggiornato": "2026-11-05T10:13:14",
-  "totale": 65,
+  "aggiornato": "2026-11-06T10:16:54",
+  "totale": 64,
   "eventi": [
-    {
-      "circuito": "Circuito de Jerez",
-      "data": "2026-11-05",
-      "organizzatore": "Gully Racing",
-      "fonte_url": "https://www.gullyracing.it/calendario",
-      "paese": "ES",
-      "prezzo": 749.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": "disponibile",
-      "livelli": [],
-      "url_iscrizione": "https://www.gullyracing.it/prodotto?id=221",
-      "note": null,
-      "giorni": 3,
-      "data_fine": "2026-11-07"
-    },
     {
       "circuito": "Autodromo di Vallelunga",
       "data": "2026-11-07",
