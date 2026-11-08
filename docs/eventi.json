@@ -1,23 +1,7 @@
 {
-  "aggiornato": "2026-11-07T09:31:46",
-  "totale": 64,
+  "aggiornato": "2026-11-08T09:48:12",
+  "totale": 63,
   "eventi": [
-    {
-      "circuito": "Autodromo di Vallelunga",
-      "data": "2026-11-07",
-      "organizzatore": "Vallelunga (circuito)",
-      "fonte_url": "https://motorsport.vallelunga.it/pl-moto-2/",
-      "paese": "IT",
-      "prezzo": null,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://motorsport.vallelunga.it/pl-moto-2/",
-      "note": "3 gruppi — Listino: feriale 180€, prefestivo/festivo 210€, box 230€",
-      "giorni": 1,
-      "data_fine": null
-    },
     {
       "circuito": "Autodromo di Vallelunga",
       "data": "2026-11-08",
@@ -40,10 +24,10 @@
       "organizzatore": "Gully Racing",
       "fonte_url": "https://www.gullyracing.it/calendario",
       "paese": "ES",
-      "prezzo": 759.0,
+      "prezzo": 699.0,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "esaurimento",
+      "disponibilita": "esaurito",
       "livelli": [],
       "url_iscrizione": "https://www.gullyracing.it/prodotto?id=174",
       "note": null,
