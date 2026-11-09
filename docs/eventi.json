@@ -1,23 +1,7 @@
 {
-  "aggiornato": "2026-11-08T09:48:12",
-  "totale": 63,
+  "aggiornato": "2026-11-09T10:48:43",
+  "totale": 62,
   "eventi": [
-    {
-      "circuito": "Autodromo di Vallelunga",
-      "data": "2026-11-08",
-      "organizzatore": "Vallelunga (circuito)",
-      "fonte_url": "https://motorsport.vallelunga.it/pl-moto-2/",
-      "paese": "IT",
-      "prezzo": null,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://motorsport.vallelunga.it/pl-moto-2/",
-      "note": "3 gruppi — Listino: feriale 180€, prefestivo/festivo 210€, box 230€",
-      "giorni": 1,
-      "data_fine": null
-    },
     {
       "circuito": "Circuito de Jerez",
       "data": "2026-11-13",
