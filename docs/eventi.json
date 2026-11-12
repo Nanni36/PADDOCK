@@ -1,6 +1,6 @@
 {
-  "aggiornato": "2026-11-11T10:12:21",
-  "totale": 57,
+  "aggiornato": "2026-11-12T10:34:09",
+  "totale": 64,
   "eventi": [
     {
       "circuito": "Circuito de Jerez",
@@ -243,6 +243,22 @@
       "data_fine": "2027-02-28"
     },
     {
+      "circuito": "Misano World Circuit",
+      "data": "2027-03-11",
+      "organizzatore": "Gasss",
+      "fonte_url": "https://www.gasss.eu/it/eventi/",
+      "paese": "IT",
+      "prezzo": null,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": null,
+      "livelli": [],
+      "url_iscrizione": "https://www.gasss.eu/it/event/misano-11-13-03-2027/",
+      "note": null,
+      "giorni": 3,
+      "data_fine": "2027-03-13"
+    },
+    {
       "circuito": "Circuit de Calafat",
       "data": "2027-03-17",
       "organizzatore": "Speer Racing",
@@ -451,6 +467,22 @@
       "data_fine": null
     },
     {
+      "circuito": "Cremona Circuit",
+      "data": "2027-04-02",
+      "organizzatore": "Gasss",
+      "fonte_url": "https://www.gasss.eu/it/eventi/",
+      "paese": "IT",
+      "prezzo": null,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": null,
+      "livelli": [],
+      "url_iscrizione": "https://www.gasss.eu/it/event/cremona-02-04-04-2027/",
+      "note": null,
+      "giorni": 3,
+      "data_fine": "2027-04-04"
+    },
+    {
       "circuito": "Circuito de Portimao",
       "data": "2027-04-03",
       "organizzatore": "Rehm Race Days",
@@ -593,6 +625,22 @@
       "note": "Most - compact — Posto box 90€",
       "giorni": 2,
       "data_fine": "2027-05-09"
+    },
+    {
+      "circuito": "Pannonia Ring",
+      "data": "2027-05-14",
+      "organizzatore": "Gasss",
+      "fonte_url": "https://www.gasss.eu/it/eventi/",
+      "paese": "HU",
+      "prezzo": null,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": null,
+      "livelli": [],
+      "url_iscrizione": "https://www.gasss.eu/it/event/pannonia-ring-14-16-05-2027/",
+      "note": null,
+      "giorni": 3,
+      "data_fine": "2027-05-16"
     },
     {
       "circuito": "Automotodrom Grobnik",
@@ -739,6 +787,22 @@
       "data_fine": null
     },
     {
+      "circuito": "Mugello Circuit",
+      "data": "2027-06-16",
+      "organizzatore": "Gasss",
+      "fonte_url": "https://www.gasss.eu/it/eventi/",
+      "paese": "IT",
+      "prezzo": null,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": null,
+      "livelli": [],
+      "url_iscrizione": "https://www.gasss.eu/it/event/mugello-2027/",
+      "note": null,
+      "giorni": 2,
+      "data_fine": "2027-06-17"
+    },
+    {
       "circuito": "TT Circuit Assen",
       "data": "2027-07-03",
       "organizzatore": "Speer Racing",
@@ -769,6 +833,22 @@
       "note": "Assen 4.7. — Posto box 30€",
       "giorni": 1,
       "data_fine": null
+    },
+    {
+      "circuito": "Masaryk Circuit",
+      "data": "2027-07-09",
+      "organizzatore": "Gasss",
+      "fonte_url": "https://www.gasss.eu/it/eventi/",
+      "paese": "CZ",
+      "prezzo": null,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": null,
+      "livelli": [],
+      "url_iscrizione": "https://www.gasss.eu/it/event/brno-09-11-07-2027/",
+      "note": null,
+      "giorni": 3,
+      "data_fine": "2027-07-11"
     },
     {
       "circuito": "Anneau du Rhin",
@@ -819,6 +899,22 @@
       "data_fine": null
     },
     {
+      "circuito": "Cremona Circuit",
+      "data": "2027-07-28",
+      "organizzatore": "Gasss",
+      "fonte_url": "https://www.gasss.eu/it/eventi/",
+      "paese": "IT",
+      "prezzo": null,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": null,
+      "livelli": [],
+      "url_iscrizione": "https://www.gasss.eu/it/event/cremona-2-2027/",
+      "note": null,
+      "giorni": 3,
+      "data_fine": "2027-07-30"
+    },
+    {
       "circuito": "Masaryk Circuit",
       "data": "2027-08-01",
       "organizzatore": "Speer Racing",
@@ -833,6 +929,22 @@
       "note": "Brünn — Posto box 120€",
       "giorni": 1,
       "data_fine": null
+    },
+    {
+      "circuito": "Cremona Circuit",
+      "data": "2027-09-04",
+      "organizzatore": "Gasss",
+      "fonte_url": "https://www.gasss.eu/it/eventi/",
+      "paese": "IT",
+      "prezzo": null,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": null,
+      "livelli": [],
+      "url_iscrizione": "https://www.gasss.eu/it/event/cremona-04-06-09-2027/",
+      "note": null,
+      "giorni": 3,
+      "data_fine": "2027-09-06"
     },
     {
       "circuito": "Hockenheimring",
