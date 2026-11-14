@@ -1,23 +1,7 @@
 {
-  "aggiornato": "2026-11-13T10:26:56",
-  "totale": 63,
+  "aggiornato": "2026-11-14T09:45:18",
+  "totale": 62,
   "eventi": [
-    {
-      "circuito": "Circuito de Jerez",
-      "data": "2026-11-13",
-      "organizzatore": "Gully Racing",
-      "fonte_url": "https://www.gullyracing.it/calendario",
-      "paese": "ES",
-      "prezzo": 699.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": "esaurito",
-      "livelli": [],
-      "url_iscrizione": "https://www.gullyracing.it/prodotto?id=174",
-      "note": null,
-      "giorni": 3,
-      "data_fine": "2026-11-15"
-    },
     {
       "circuito": "Circuito de Jerez",
       "data": "2026-11-18",
