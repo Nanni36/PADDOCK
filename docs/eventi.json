@@ -1,23 +1,7 @@
 {
-  "aggiornato": "2026-11-18T10:59:25",
-  "totale": 66,
+  "aggiornato": "2026-11-19T11:01:45",
+  "totale": 64,
   "eventi": [
-    {
-      "circuito": "Circuito de Jerez",
-      "data": "2026-11-18",
-      "organizzatore": "Rehm Race Days",
-      "fonte_url": "https://www.rehmracedays.com/it/rehm-race-calendario/",
-      "paese": "ES",
-      "prezzo": 760.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": "esaurito",
-      "livelli": [],
-      "url_iscrizione": "https://www.rehmracedays.com/it/rehm-race-calendario/",
-      "note": "Edizione: Jerez II",
-      "giorni": 3,
-      "data_fine": "2026-11-20"
-    },
     {
       "circuito": "Circuit de Barcelona-Catalunya",
       "data": "2026-11-26",
@@ -155,7 +139,7 @@
       "prezzo": 790.0,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "esaurito",
+      "disponibilita": "esaurimento",
       "livelli": [],
       "url_iscrizione": "https://www.rehmracedays.com/it/rehm-race-calendario/",
       "note": "Edizione: Jerez I",
@@ -772,22 +756,6 @@
     },
     {
       "circuito": "Mugello Circuit",
-      "data": "2027-06-16",
-      "organizzatore": "Gasss",
-      "fonte_url": "https://www.gasss.eu/it/eventi/",
-      "paese": "IT",
-      "prezzo": null,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.gasss.eu/it/event/mugello-2027/",
-      "note": null,
-      "giorni": 2,
-      "data_fine": "2027-06-17"
-    },
-    {
-      "circuito": "Mugello Circuit",
       "data": "2027-07-02",
       "organizzatore": "Speer Racing",
       "fonte_url": "https://www.speer-racing.de/en/",
@@ -843,7 +811,7 @@
       "prezzo": 305.55,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "disponibile",
+      "disponibilita": "esaurimento",
       "livelli": [],
       "url_iscrizione": "https://www.speer-racing.de/en/",
       "note": "Assen 4.7. — Posto box 30€",
@@ -913,22 +881,6 @@
       "note": "Anneau du Rhin 1:1 light",
       "giorni": 1,
       "data_fine": null
-    },
-    {
-      "circuito": "Cremona Circuit",
-      "data": "2027-07-28",
-      "organizzatore": "Gasss",
-      "fonte_url": "https://www.gasss.eu/it/eventi/",
-      "paese": "IT",
-      "prezzo": null,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": null,
-      "livelli": [],
-      "url_iscrizione": "https://www.gasss.eu/it/event/cremona-2-2027/",
-      "note": null,
-      "giorni": 3,
-      "data_fine": "2027-07-30"
     },
     {
       "circuito": "Masaryk Circuit",
@@ -1057,6 +1009,22 @@
       "note": "Anneau du Rhin — Posto box 40€",
       "giorni": 1,
       "data_fine": null
+    },
+    {
+      "circuito": "Cremona Circuit",
+      "data": "2027-10-20",
+      "organizzatore": "Gasss",
+      "fonte_url": "https://www.gasss.eu/it/eventi/",
+      "paese": "IT",
+      "prezzo": null,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": null,
+      "livelli": [],
+      "url_iscrizione": "https://www.gasss.eu/it/event/cremona-20-22-10-2027/",
+      "note": null,
+      "giorni": 3,
+      "data_fine": "2027-10-22"
     }
   ]
 }
