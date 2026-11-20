@@ -1,5 +1,5 @@
 {
-  "aggiornato": "2026-11-19T11:01:45",
+  "aggiornato": "2026-11-20T10:50:25",
   "totale": 64,
   "eventi": [
     {
@@ -795,7 +795,7 @@
       "prezzo": 599.46,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "esaurimento",
+      "disponibilita": "esaurito",
       "livelli": [],
       "url_iscrizione": "https://www.speer-racing.de/en/",
       "note": "Assen — Posto box 60€",
@@ -811,7 +811,7 @@
       "prezzo": 305.55,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "esaurimento",
+      "disponibilita": "esaurito",
       "livelli": [],
       "url_iscrizione": "https://www.speer-racing.de/en/",
       "note": "Assen 4.7. — Posto box 30€",
