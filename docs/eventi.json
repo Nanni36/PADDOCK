@@ -1,6 +1,6 @@
 {
-  "aggiornato": "2026-11-23T11:40:14",
-  "totale": 64,
+  "aggiornato": "2026-11-24T13:12:26",
+  "totale": 65,
   "eventi": [
     {
       "circuito": "Circuit de Barcelona-Catalunya",
@@ -465,6 +465,22 @@
       "note": "Edizione: Portimao I",
       "giorni": 3,
       "data_fine": "2027-04-05"
+    },
+    {
+      "circuito": "Mugello Circuit",
+      "data": "2027-04-16",
+      "organizzatore": "Gasss",
+      "fonte_url": "https://www.gasss.eu/it/eventi/",
+      "paese": "IT",
+      "prezzo": null,
+      "posti_liberi": null,
+      "posti_totali": null,
+      "disponibilita": null,
+      "livelli": [],
+      "url_iscrizione": "https://www.gasss.eu/it/event/mugello-16-18-04-2027/",
+      "note": null,
+      "giorni": 3,
+      "data_fine": "2027-04-18"
     },
     {
       "circuito": "Hockenheimring",
