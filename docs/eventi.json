@@ -1,23 +1,7 @@
 {
-  "aggiornato": "2026-11-25T12:00:23",
-  "totale": 65,
+  "aggiornato": "2026-11-26T11:49:05",
+  "totale": 64,
   "eventi": [
-    {
-      "circuito": "Circuit de Barcelona-Catalunya",
-      "data": "2026-11-26",
-      "organizzatore": "Rehm Race Days",
-      "fonte_url": "https://www.rehmracedays.com/it/rehm-race-calendario/",
-      "paese": "ES",
-      "prezzo": 640.0,
-      "posti_liberi": null,
-      "posti_totali": null,
-      "disponibilita": "esaurimento",
-      "livelli": [],
-      "url_iscrizione": "https://www.rehmracedays.com/it/rehm-race-calendario/",
-      "note": null,
-      "giorni": 2,
-      "data_fine": "2026-11-27"
-    },
     {
       "circuito": "Circuito de Cartagena",
       "data": "2026-12-22",
@@ -427,7 +411,7 @@
       "prezzo": 732.68,
       "posti_liberi": null,
       "posti_totali": null,
-      "disponibilita": "disponibile",
+      "disponibilita": "esaurimento",
       "livelli": [],
       "url_iscrizione": "https://www.speer-racing.de/en/",
       "note": "Aragon 1 — Posto box 90€",
